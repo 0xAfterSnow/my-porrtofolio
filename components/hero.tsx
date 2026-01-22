@@ -7,6 +7,7 @@ import { useState, useEffect, useRef } from "react"
 import { gsap } from "gsap"
 import PixelBlast from './PixelBlast';
 import DarkVeil from './DarkVeil';
+import { useTheme } from "next-themes"
 
 interface HeroProps {
   mode: "backend" | "web3"
@@ -19,7 +20,12 @@ export function Hero({ mode }: HeroProps) {
   const heroRef = useRef<HTMLDivElement>(null)
   const backendRef = useRef<HTMLDivElement>(null);
   const web3Ref = useRef<HTMLDivElement>(null);
+  const { theme } = useTheme()
+  const [mounted, setMounted] = useState(false)
 
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   useEffect(() => {
     let index = 0
@@ -35,7 +41,7 @@ export function Hero({ mode }: HeroProps) {
     return () => clearInterval(interval)
   }, [mode, fullText])
 
-   // GSAP fade transition between backend ↔ web3
+  // GSAP fade transition between backend ↔ web3
   useEffect(() => {
     const backend = backendRef.current;
     const web3 = web3Ref.current;
@@ -60,29 +66,31 @@ export function Hero({ mode }: HeroProps) {
       ref={heroRef}
       className="relative min-h-screen flex items-center justify-center px-6 py-20 overflow-hidden"
     >
-{/* Backend Beams */}
+      {/* Backend Beams */}
       <div
         ref={backendRef}
         className="absolute inset-0 opacity-0 pointer-events-none transition-opacity duration-700"
       >
         <PixelBlast
-        variant="circle"
-        pixelSize={6}
-        color="#3b82f6"
-        patternDensity={1.2}
-        pixelSizeJitter={0.5}
-        enableRipples
-        rippleSpeed={0.4}
-        rippleThickness={0.12}
-        rippleIntensityScale={1.5}
-        liquid
-        liquidStrength={0.12}
-        liquidRadius={1.2}
-        liquidWobbleSpeed={5}
-        speed={0.6}
-        edgeFade={0.25}
-        transparent
-        patternScale={3}
+          variant="circle"
+          pixelSize={6}
+          color={theme === "light" ? "#000000" : "#ffffff"}
+          patternDensity={1.2}
+          pixelSizeJitter={0.5}
+          enableRipples
+          rippleSpeed={0.4}
+          rippleThickness={0.12}
+          rippleIntensityScale={1.5}
+          liquid
+          liquidStrength={0.12}
+          liquidRadius={1.2}
+          liquidWobbleSpeed={5}
+          speed={0.6}
+          edgeFade={0.25}
+          transparent
+          patternScale={3}
+          className=""
+          style={{}}
         />
       </div>
 
@@ -91,7 +99,7 @@ export function Hero({ mode }: HeroProps) {
         ref={web3Ref}
         className="absolute inset-0 opacity-0 pointer-events-none transition-opacity duration-700"
       >
-          <DarkVeil />
+        <DarkVeil />
 
       </div>
 
@@ -125,8 +133,8 @@ export function Hero({ mode }: HeroProps) {
                 style={{
                   background:
                     mode === "backend"
-                      ? "linear-gradient(90deg, #3b82f6, #0ea5e9)"
-                      : "linear-gradient(90deg, #a855f7, #d946ef)",
+                      ? "linear-gradient(90deg, #ffffff, #a1a1aa)"
+                      : "linear-gradient(90deg, #d4d4d8, #71717a)",
                 }}
               />
             </span>
@@ -134,7 +142,7 @@ export function Hero({ mode }: HeroProps) {
             that solve real problems
           </h1>
 
-          <p className="text-xl text-white md:text-2xl text-muted-foreground max-w-3xl mx-auto font-light leading-relaxed">
+          <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto font-light leading-relaxed">
             {mode === "backend"
               ? "Architecting robust APIs and microservices with Python, Django, and cloud infrastructure"
               : "Crafting smart contracts and DeFi protocols on Ethereum, Solana, and beyond"}
@@ -174,7 +182,7 @@ export function Hero({ mode }: HeroProps) {
           className="flex gap-4 justify-center items-center pt-4 animate-fade-in-up"
           style={{ animationDelay: "0.3s" }}
         >
-           <a
+          <a
             href="https://x.com/CodeShagbaor"
             target="_blank"
             rel="noopener noreferrer"
@@ -206,7 +214,7 @@ export function Hero({ mode }: HeroProps) {
           </a>
         </div>
 
-        
+
       </div>
 
       <ResumeModal open={showResume} onOpenChange={setShowResume} mode={mode} />

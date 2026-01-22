@@ -57,41 +57,36 @@ export function Skills({ mode }: SkillsProps) {
     <section className="relative py-32 px-6 overflow-hidden">
       {/* Animated background */}
       <div className="absolute inset-0 cyber-grid opacity-20" />
-      <div
-        className={`absolute inset-0 bg-gradient-to-b ${
-          mode === "backend"
-            ? "from-blue-500/5 via-transparent to-cyan-500/5"
-            : "from-purple-500/5 via-transparent to-pink-500/5"
+      <div className={`absolute inset-0 bg-gradient-to-b ${mode === "backend"
+        ? "from-primary/5 via-transparent to-muted/5"
+        : "from-muted/10 via-transparent to-muted/20"
         }`}
       />
 
       <div ref={floatingTextRef} className="absolute inset-0 opacity-10 pointer-events-none overflow-hidden">
         <div
-          className="floating-text absolute text-6xl font-bold"
+          className="floating-text absolute text-6xl font-bold text-primary/20"
           style={{
             left: "10%",
             top: "20%",
-            color: mode === "backend" ? "#3b82f6" : "#a855f7",
           }}
         >
           {mode === "backend" ? "API" : "WEB3"}
         </div>
         <div
-          className="floating-text absolute text-5xl font-bold"
+          className="floating-text absolute text-5xl font-bold text-muted-foreground/20"
           style={{
             right: "15%",
             top: "40%",
-            color: mode === "backend" ? "#06b6d4" : "#ec4899",
           }}
         >
           {mode === "backend" ? "DB" : "DEFI"}
         </div>
         <div
-          className="floating-text absolute text-7xl font-bold"
+          className="floating-text absolute text-7xl font-bold text-foreground/10"
           style={{
             left: "50%",
             bottom: "25%",
-            color: mode === "backend" ? "#0ea5e9" : "#d946ef",
           }}
         >
           {mode === "backend" ? "OPS" : "NFT"}
@@ -102,9 +97,7 @@ export function Skills({ mode }: SkillsProps) {
         {/* Section Header */}
         <div className="text-center mb-16">
           <h2
-            className={`text-5xl md:text-7xl font-bold mb-4 ${
-              mode === "backend" ? "text-blue-400" : "text-purple-400"
-            }`}
+            className="text-5xl md:text-7xl font-bold mb-4 text-foreground"
           >
             {mode === "backend" ? "Backend Arsenal" : "Web3 Toolkit"}
           </h2>
@@ -128,23 +121,22 @@ export function Skills({ mode }: SkillsProps) {
               }}
             >
               <div
-                className={`glass-card p-6 rounded-2xl transition-all duration-500 ${
-                  hoveredSkill === skill.name ? "scale-110 -translate-y-2" : ""
-                }`}
+                className={`glass-card p-6 rounded-2xl transition-all duration-500 ${hoveredSkill === skill.name ? "scale-110 -translate-y-2" : ""
+                  }`}
                 style={{
                   boxShadow:
                     hoveredSkill === skill.name
                       ? mode === "backend"
-                        ? "0 20px 60px rgba(59, 130, 246, 0.4)"
-                        : "0 20px 60px rgba(168, 85, 247, 0.4)"
+                        ? "0 20px 60px rgba(255, 255, 255, 0.2)"
+                        : "0 20px 60px rgba(161, 161, 170, 0.2)"
                       : "none",
                 }}
               >
                 <img
-                    src={skill.icon}
-                    className="mb-4 transition-transform duration-500 group-hover:scale-125 group-hover:rotate-12"
-                    alt={skill.name}
-                    style={{ width: "48px", height: "48px" }}
+                  src={skill.icon}
+                  className="mb-4 transition-transform duration-500 group-hover:scale-125 group-hover:rotate-12"
+                  alt={skill.name}
+                  style={{ width: "48px", height: "48px" }}
                 />
 
                 {/* Skill Name */}
@@ -153,22 +145,21 @@ export function Skills({ mode }: SkillsProps) {
                 {/* Progress Bar */}
                 <div className="relative h-2 bg-secondary rounded-full overflow-hidden">
                   <div
-                    className={`absolute inset-y-0 left-0 rounded-full transition-all duration-1000 ${
-                      mode === "backend"
-                        ? "bg-gradient-to-r from-blue-500 to-cyan-500"
-                        : "bg-gradient-to-r from-purple-500 to-pink-500"
-                    }`}
+                    className={`absolute inset-y-0 left-0 rounded-full transition-all duration-1000 ${mode === "backend"
+                      ? "bg-gradient-to-r from-zinc-100 to-zinc-400"
+                      : "bg-gradient-to-r from-zinc-400 to-zinc-700"
+                      }`}
                     style={{
                       width: hoveredSkill === skill.name ? `${skill.level}%` : "0%",
                       boxShadow:
-                        mode === "backend" ? "0 0 10px rgba(59, 130, 246, 0.8)" : "0 0 10px rgba(168, 85, 247, 0.8)",
+                        mode === "backend" ? "0 0 10px rgba(255, 255, 255, 0.5)" : "0 0 10px rgba(161, 161, 170, 0.5)",
                     }}
                   />
                 </div>
 
                 {/* Skill Level */}
                 <div className="mt-2 text-right">
-                  <span className={`text-sm font-semibold ${mode === "backend" ? "text-blue-400" : "text-purple-400"}`}>
+                  <span className="text-sm font-semibold text-muted-foreground">
                     {skill.level}%
                   </span>
                 </div>
@@ -190,6 +181,6 @@ export function Skills({ mode }: SkillsProps) {
           }
         }
       `}</style>
-    </section>
+    </section >
   )
 }

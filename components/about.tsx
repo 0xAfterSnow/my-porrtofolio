@@ -46,11 +46,10 @@ export function About({ mode }: AboutProps) {
 
         <div className="grid md:grid-cols-2 gap-8 mb-12">
           <Card
-            className={`relative border-2 transition-all duration-500 glass-card overflow-hidden ${
-              mode === "backend"
+            className={`relative border-2 transition-all duration-500 glass-card overflow-hidden ${mode === "backend"
                 ? "border-primary shadow-2xl shadow-primary/30 scale-105"
                 : "border-border hover:border-primary/50"
-            }`}
+              }`}
           >
             {mode === "backend" && (
               <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-transparent" />
@@ -86,11 +85,10 @@ export function About({ mode }: AboutProps) {
           </Card>
 
           <Card
-            className={`relative border-2 transition-all duration-500 glass-card overflow-hidden ${
-              mode === "web3"
-                ? "border-accent shadow-2xl shadow-accent/30 scale-105"
-                : "border-border hover:border-accent/50"
-            }`}
+            className={`relative border-2 transition-all duration-500 glass-card overflow-hidden ${mode === "web3"
+                ? "border-zinc-500 shadow-2xl shadow-zinc-500/20 scale-105"
+                : "border-border hover:border-zinc-500/50"
+              }`}
           >
             {mode === "web3" && (
               <div className="absolute inset-0 bg-gradient-to-br from-accent/10 via-transparent to-transparent" />
@@ -99,8 +97,8 @@ export function About({ mode }: AboutProps) {
             <CardHeader className="relative">
               <CardTitle className="text-2xl md:text-3xl flex items-center gap-3">
                 <div className="relative">
-                  <Blocks className="h-8 w-8 text-accent" />
-                  {mode === "web3" && <div className="absolute inset-0 bg-accent/30 blur-xl animate-pulse" />}
+                  <Blocks className="h-8 w-8 text-zinc-400" />
+                  {mode === "web3" && <div className="absolute inset-0 bg-zinc-400/30 blur-xl animate-pulse" />}
                 </div>
                 <span className="font-bold">Web3 Development</span>
               </CardTitle>
@@ -116,7 +114,7 @@ export function About({ mode }: AboutProps) {
                   <Badge
                     key={i}
                     variant="secondary"
-                    className="text-sm font-semibold px-3 py-1.5 bg-secondary/80 hover:bg-accent hover:text-accent-foreground transition-all duration-300"
+                    className="text-sm font-semibold px-3 py-1.5 bg-secondary/80 hover:bg-zinc-700 hover:text-zinc-100 transition-all duration-300"
                   >
                     {tech}
                   </Badge>
@@ -133,7 +131,7 @@ export function About({ mode }: AboutProps) {
               With <span className="text-primary font-semibold">5+ years</span> of experience building production
               systems, I specialize in creating applications that combine the{" "}
               <span className="text-primary font-semibold">reliability of traditional backend engineering</span> with
-              the <span className="text-accent font-semibold">innovation of Web3 technology</span>. I've worked with
+              the <span className="text-zinc-400 font-semibold">innovation of Web3 technology</span>. I've worked with
               startups and enterprises to deliver scalable solutions that solve real-world problems.
             </p>
           </CardContent>

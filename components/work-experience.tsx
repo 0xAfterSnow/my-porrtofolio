@@ -114,20 +114,17 @@ export function WorkExperience({ mode }: WorkExperienceProps) {
       {/* Animated background */}
       <div className="absolute inset-0 cyber-grid opacity-20" />
       <div
-        className={`absolute inset-0 bg-gradient-to-b ${
-          mode === "backend"
-            ? "from-cyan-500/5 via-transparent to-blue-500/5"
-            : "from-pink-500/5 via-transparent to-purple-500/5"
-        }`}
+        className={`absolute inset-0 bg-gradient-to-b ${mode === "backend"
+          ? "from-zinc-100/5 via-transparent to-zinc-400/5"
+          : "from-zinc-400/5 via-transparent to-zinc-700/5"
+          }`}
       />
 
       <div className="max-w-5xl mx-auto relative z-10">
         {/* Section Header */}
         <div className="text-center mb-20">
           <h2
-            className={`text-5xl md:text-7xl font-bold mb-4 ${
-              mode === "backend" ? "text-cyan-400" : "text-pink-400"
-            }`}
+            className="text-5xl md:text-7xl font-bold mb-4 text-foreground"
           >
             {mode === "backend" ? "Backend Journey" : "Web3 Experience"}
           </h2>
@@ -142,13 +139,9 @@ export function WorkExperience({ mode }: WorkExperienceProps) {
         <div className="relative">
           {/* Vertical line */}
           <div
-            className={`absolute left-0 md:left-1/2 top-0 bottom-0 w-0.5 ${
-              mode === "backend"
-                ? "bg-gradient-to-b from-blue-500 via-cyan-500 to-blue-500"
-                : "bg-gradient-to-b from-purple-500 via-pink-500 to-purple-500"
-            }`}
+            className="absolute left-0 md:left-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-primary/50 via-primary to-primary/50"
             style={{
-              boxShadow: mode === "backend" ? "0 0 20px rgba(59, 130, 246, 0.5)" : "0 0 20px rgba(168, 85, 247, 0.5)",
+              boxShadow: "0 0 15px rgba(var(--mode-glow), 0.3)",
             }}
           />
 
@@ -156,25 +149,17 @@ export function WorkExperience({ mode }: WorkExperienceProps) {
           {filteredExperiences.map((exp, index) => (
             <div
               key={index}
-              className={`relative mb-16 md:mb-24 ${
-                index % 2 === 0 ? "md:pr-[calc(50%+3rem)]" : "md:pl-[calc(50%+3rem)] md:text-right"
-              }`}
+              className={`relative mb-16 md:mb-24 ${index % 2 === 0 ? "md:pr-[calc(50%+3rem)]" : "md:pl-[calc(50%+3rem)] md:text-right"
+                }`}
               style={{
                 animation: `fadeInUp 0.8s ease-out ${index * 0.2}s both`,
               }}
             >
               {/* Timeline dot */}
               <div
-                className={`absolute left-0 md:left-1/2 top-8 w-6 h-6 rounded-full -ml-3 ${
-                  mode === "backend"
-                    ? "bg-gradient-to-br from-blue-500 to-cyan-500"
-                    : "bg-gradient-to-br from-purple-500 to-pink-500"
-                }`}
+                className="absolute left-0 md:left-1/2 top-8 w-6 h-6 rounded-full -ml-3 bg-primary border-4 border-background"
                 style={{
-                  boxShadow:
-                    mode === "backend"
-                      ? "0 0 20px rgba(59, 130, 246, 0.8), inset 0 0 10px rgba(255, 255, 255, 0.5)"
-                      : "0 0 20px rgba(168, 85, 247, 0.8), inset 0 0 10px rgba(255, 255, 255, 0.5)",
+                  boxShadow: "0 0 15px rgba(var(--mode-glow), 0.5)",
                 }}
               />
 
@@ -183,15 +168,13 @@ export function WorkExperience({ mode }: WorkExperienceProps) {
                 {/* Company & Title */}
                 <div className="flex items-start gap-4 mb-4">
                   <div
-                    className={`p-3 rounded-xl ${
-                      mode === "backend" ? "bg-blue-500/20 text-blue-400" : "bg-purple-500/20 text-purple-400"
-                    }`}
+                    className="p-3 rounded-xl bg-zinc-200/20 text-foreground"
                   >
                     <Briefcase className="h-6 w-6" />
                   </div>
                   <div className="flex-1">
                     <h3 className="text-2xl font-bold text-foreground mb-1">{exp.title}</h3>
-                    <p className={`text-lg font-semibold ${mode === "backend" ? "text-cyan-400" : "text-pink-400"}`}>
+                    <p className="text-lg font-semibold text-zinc-400">
                       {exp.company}
                     </p>
                   </div>
@@ -217,12 +200,9 @@ export function WorkExperience({ mode }: WorkExperienceProps) {
                   {exp.achievements.map((achievement, i) => (
                     <div key={i} className="flex items-start gap-3">
                       <div
-                        className={`mt-1.5 w-1.5 h-1.5 rounded-full ${
-                          mode === "backend" ? "bg-blue-400" : "bg-purple-400"
-                        }`}
+                        className="mt-1.5 w-1.5 h-1.5 rounded-full bg-zinc-400"
                         style={{
-                          boxShadow:
-                            mode === "backend" ? "0 0 8px rgba(59, 130, 246, 0.8)" : "0 0 8px rgba(168, 85, 247, 0.8)",
+                          boxShadow: "0 0 8px rgba(255, 255, 255, 0.3)",
                         }}
                       />
                       <p className="text-sm text-foreground/70">{achievement}</p>
