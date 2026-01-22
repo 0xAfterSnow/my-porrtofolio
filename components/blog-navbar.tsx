@@ -31,15 +31,15 @@ export function BlogNavbar() {
                 </div>
 
                 {/* Center: Menu */}
-                <div className="hidden md:flex items-center justify-center gap-8">
-                    <Link href="/blog" className="text-sm font-medium hover:text-primary transition-colors flex items-center gap-2 py-2 border-b-2 border-primary">
-                        <Newspaper className="h-4 w-4" />
-                        Blog
+                <div className="flex items-center justify-center gap-4 md:gap-8">
+                    <Link href="/blog" className="text-xs md:text-sm font-medium hover:text-primary transition-colors flex items-center gap-1 md:gap-2 py-2 border-b-2 border-primary">
+                        <Newspaper className="h-3 w-3 md:h-4 md:w-4" />
+                        <span className="hidden sm:inline">Blog</span>
                     </Link>
-                    <Link href="/#projects" className="text-sm font-medium hover:text-primary transition-colors">
+                    <Link href="/#projects" className="text-xs md:text-sm font-medium hover:text-primary transition-colors">
                         Projects
                     </Link>
-                    <Link href="/#about" className="text-sm font-medium hover:text-primary transition-colors">
+                    <Link href="/#about" className="text-xs md:text-sm font-medium hover:text-primary transition-colors">
                         About
                     </Link>
                 </div>

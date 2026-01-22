@@ -86,14 +86,28 @@ export default function DarkVeil({
   const ref = useRef(null);
   useEffect(() => {
     const canvas = ref.current;
-    const parent = canvas.parentElement;
+    if (!canvas) return;
 
-    const renderer = new Renderer({
-      dpr: Math.min(window.devicePixelRatio, 2),
-      canvas
-    });
+    const parent = canvas.parentElement;
+    if (!parent) return;
+
+    let renderer;
+    try {
+      renderer = new Renderer({
+        dpr: Math.min(window.devicePixelRatio, 2),
+        canvas
+      });
+    } catch (error) {
+      console.error('Failed to create WebGL renderer:', error);
+      return;
+    }
 
     const gl = renderer.gl;
+    if (!gl) {
+      console.error('WebGL context not available');
+      return;
+    }
+
     const geometry = new Triangle(gl);
 
     const program = new Program(gl, {

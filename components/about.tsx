@@ -47,8 +47,8 @@ export function About({ mode }: AboutProps) {
         <div className="grid md:grid-cols-2 gap-8 mb-12">
           <Card
             className={`relative border-2 transition-all duration-500 glass-card overflow-hidden ${mode === "backend"
-                ? "border-primary shadow-2xl shadow-primary/30 scale-105"
-                : "border-border hover:border-primary/50"
+              ? "border-primary shadow-2xl shadow-primary/30 scale-105"
+              : "border-border hover:border-primary/50"
               }`}
           >
             {mode === "backend" && (
@@ -86,8 +86,8 @@ export function About({ mode }: AboutProps) {
 
           <Card
             className={`relative border-2 transition-all duration-500 glass-card overflow-hidden ${mode === "web3"
-                ? "border-zinc-500 shadow-2xl shadow-zinc-500/20 scale-105"
-                : "border-border hover:border-zinc-500/50"
+              ? "border-zinc-500 shadow-2xl shadow-zinc-500/20 scale-105"
+              : "border-border hover:border-zinc-500/50"
               }`}
           >
             {mode === "web3" && (
@@ -128,9 +128,9 @@ export function About({ mode }: AboutProps) {
           <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-accent/5 to-primary/5" />
           <CardContent className="pt-8 pb-8 relative">
             <p className="text-lg md:text-xl text-foreground leading-relaxed text-center max-w-4xl mx-auto font-light">
-              With <span className="text-primary font-semibold">5+ years</span> of experience building production
+              With <span className="text-foreground font-semibold">5+ years</span> of experience building production
               systems, I specialize in creating applications that combine the{" "}
-              <span className="text-primary font-semibold">reliability of traditional backend engineering</span> with
+              <span className="text-foreground font-semibold">reliability of traditional backend engineering</span> with
               the <span className="text-zinc-400 font-semibold">innovation of Web3 technology</span>. I've worked with
               startups and enterprises to deliver scalable solutions that solve real-world problems.
             </p>

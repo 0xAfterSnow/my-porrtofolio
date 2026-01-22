@@ -351,14 +351,36 @@ const PixelBlast = ({
         threeRef.current = null;
       }
       const canvas = document.createElement('canvas');
-      const gl = canvas.getContext('webgl2', { antialias, alpha: true });
+      // Try optional WebGL 2 first
+      let gl;
+      try {
+        gl = canvas.getContext('webgl2', { antialias, alpha: true });
+      } catch (e) {
+        console.warn('WebGL 2 not supported, falling back to WebGL 1');
+      }
+      if (!gl) {
+        try {
+          gl = canvas.getContext('webgl', { antialias, alpha: true }) ||
+            canvas.getContext('experimental-webgl', { antialias, alpha: true });
+        } catch (e) {
+          console.error('WebGL not supported');
+          return;
+        }
+      }
       if (!gl) return;
-      const renderer = new THREE.WebGLRenderer({
-        canvas,
-        context: gl,
-        antialias,
-        alpha: true
-      });
+
+      let renderer;
+      try {
+        renderer = new THREE.WebGLRenderer({
+          canvas,
+          context: gl,
+          antialias,
+          alpha: true
+        });
+      } catch (error) {
+        console.error('Failed to create WebGL renderer:', error);
+        return;
+      }
       renderer.domElement.style.width = '100%';
       renderer.domElement.style.height = '100%';
       renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));

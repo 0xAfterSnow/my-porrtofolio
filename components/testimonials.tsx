@@ -10,38 +10,20 @@ interface TestimonialsProps {
 export function Testimonials({ mode }: TestimonialsProps) {
   const testimonials = [
     {
-      name: "Sarah Johnson",
-      role: "CTO at TechCorp",
-      image: "/professional-woman-diverse.png",
+      name: "Saviour Ukobong",
+      role: "CEO Asterverse",
+      image: "/saviour.png",
       content:
-        "Outstanding work on our microservices architecture. The system handles millions of requests daily with zero downtime.",
+        "Working with Shagbaor Agber has been an outstanding experience. He is a highly skilled backend developer who brings clarity, structure, and innovation to every project. His expertise in Python and Django consistently results in clean, scalable solutions that solve real problems What sets Shagbaor apart is not just his technical ability, but also his work ethic and commitment to excellence. He communicates clearly, delivers on time, and often goes the extra mile to ensure that the final product exceeds expectations. Shagbaor is a dependable teammate and a problem-solver at heart. I would confidently recommend him for any development project that values quality, reliability, and impact.",
       rating: 5,
       relevant: "backend",
     },
     {
-      name: "Michael Chen",
-      role: "Founder of DeFi Protocol",
-      image: "/professional-man.jpg",
+      name: "John Okeke",
+      role: "Founder Sandlip Oasis",
+      image: "/john.png",
       content:
-        "Exceptional smart contract development. The security audit came back flawless, and gas optimization was impressive.",
-      rating: 5,
-      relevant: "web3",
-    },
-    {
-      name: "Emily Rodriguez",
-      role: "Product Manager at StartupX",
-      image: "/professional-woman-smiling.png",
-      content:
-        "Delivered a complex API integration ahead of schedule. Communication was excellent throughout the project.",
-      rating: 5,
-      relevant: "backend",
-    },
-    {
-      name: "David Kim",
-      role: "CEO of NFT Marketplace",
-      image: "/professional-asian-man.png",
-      content:
-        "Built our entire NFT minting platform. The smart contracts are efficient and the user experience is seamless.",
+        "Working with Shagbaor is the dream of every company; he personalises the job and internalises the requirements down to the smallest detail. Very patient, soft spoken and doesn't stress you over. His primary focus is to deliver excellence.",
       rating: 5,
       relevant: "web3",
     },
@@ -56,7 +38,7 @@ export function Testimonials({ mode }: TestimonialsProps) {
       <div className="max-w-7xl mx-auto relative z-10">
         <div className="text-center mb-16 space-y-4">
           <h2 className="text-4xl md:text-5xl font-bold">
-            What <span className="text-primary">Clients Say</span>
+            What <span className="text-foreground">Clients Say</span>
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             Trusted by startups and enterprises worldwide
@@ -72,10 +54,10 @@ export function Testimonials({ mode }: TestimonialsProps) {
             >
               <div className="space-y-6">
                 <div className="flex items-start justify-between">
-                  <Quote className="h-10 w-10 text-primary/30" />
+                  <Quote className="h-10 w-10 text-foreground/30" />
                   <div className="flex gap-1">
                     {[...Array(testimonial.rating)].map((_, i) => (
-                      <Star key={i} className="h-4 w-4 fill-primary text-primary" />
+                      <Star key={i} className="h-4 w-4 fill-foreground text-foreground" />
                     ))}
                   </div>
                 </div>

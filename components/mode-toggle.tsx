@@ -53,13 +53,34 @@ export function ModeToggle({ mode, onModeChange }: ModeToggleProps) {
   }, [])
 
   return (
-    <div className="fixed top-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2">
-      <div className="relative flex items-center gap-2">
+    <div
+      className="
+    fixed
+    bottom-4
+    left-4
+    right-4
+    z-50
+    flex
+    items-center
+    justify-between
+    md:justify-center
+    gap-2
+    mx-auto
+    max-w-md
+    md:w-auto
+    md:inset-auto
+    md:bottom-auto
+    md:top-6
+    md:left-1/2
+    md:transform
+    md:-translate-x-1/2
+  "
+    >      <div className="relative flex items-center gap-2">
         <div
           ref={particlesRef}
           className="absolute inset-0 w-full h-full opacity-30 pointer-events-none overflow-visible"
         >
-          {[...Array(8)].map((_, i) => (
+          {mounted && [...Array(8)].map((_, i) => (
             <div
               key={i}
               className="toggle-particle absolute w-2 h-2 rounded-full"
@@ -127,7 +148,7 @@ export function ModeToggle({ mode, onModeChange }: ModeToggleProps) {
           className="glass-card rounded-full p-1.5 px-6 flex gap-2 items-center text-muted-foreground hover:text-foreground hover:bg-white/5 transition-all backdrop-blur-md h-full"
         >
           <Newspaper className="h-4 w-4 text-primary" />
-          <span className="font-semibold">Blog</span>
+          <span className="font-semibold hidden sm:inline">Blog</span>
         </Button>
       </Link>
 

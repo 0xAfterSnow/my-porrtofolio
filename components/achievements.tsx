@@ -73,7 +73,8 @@ export function Achievements({ mode }: AchievementsProps) {
       year: "2024",
       relevant: "backend",
     },
-    { icon: Award,
+    {
+      icon: Award,
       title: "Django for Everybody Specialization",
       description: "University of Michigan - Coursera",
       year: "2023",
@@ -105,7 +106,7 @@ export function Achievements({ mode }: AchievementsProps) {
       <div className="max-w-7xl mx-auto relative z-10">
         <div className="text-center mb-16 space-y-4">
           <h2 className="text-4xl md:text-5xl font-bold">
-            Achievements & <span className="text-primary">Certifications</span>
+            Achievements & <span className="text-foreground">Certifications</span>
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             Recognized expertise and proven track record
@@ -124,17 +125,17 @@ export function Achievements({ mode }: AchievementsProps) {
                 <div className="space-y-4">
                   <div className="relative inline-block">
                     <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full group-hover:bg-primary/30 transition-colors" />
-                    <div className="relative p-3 bg-primary/10 rounded-xl border border-primary/20 group-hover:border-primary/40 transition-colors">
-                      <Icon className="h-6 w-6 text-primary" />
+                    <div className="relative p-3 bg-primary/10 rounded-xl border border-foreground/20 group-hover:border-primary/40 transition-colors">
+                      <Icon className="h-6 w-6 text-foreground" />
                     </div>
                   </div>
 
                   <div>
-                    <h3 className="text-xl font-bold mb-2 group-hover:text-primary transition-colors">
+                    <h3 className="text-xl font-bold mb-2 group-hover:text-foreground transition-colors">
                       {achievement.title}
                     </h3>
                     <p className="text-muted-foreground mb-2">{achievement.description}</p>
-                    <p className="text-sm text-primary font-semibold">{achievement.year}</p>
+                    <p className="text-sm text-foreground font-semibold">{achievement.year}</p>
                   </div>
                 </div>
               </Card>

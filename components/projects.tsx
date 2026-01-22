@@ -45,7 +45,7 @@ export function Projects({ mode }: ProjectsProps) {
             <Sparkles className="h-8 w-8 text-primary animate-glow-pulse" />
             <h2 className="text-5xl md:text-6xl font-bold">
               Featured{" "}
-              <span className="text-primary animate-glow-pulse">{mode === "backend" ? "Backend" : "Web3"}</span>{" "}
+              <span className="text-foreground animate-glow-pulse">{mode === "backend" ? "Backend" : "Web3"}</span>{" "}
               Projects
             </h2>
           </div>
@@ -63,26 +63,26 @@ export function Projects({ mode }: ProjectsProps) {
             <p className="text-muted-foreground text-lg">No projects available yet.</p>
           </div>
         ) : (
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {projects.map((project) => (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {projects.map((project) => (
               <Card
-              key={project.id}
-              className="group relative glass-card hover:border-primary transition-all duration-500 hover:scale-[1.02] overflow-hidden p-0 pb-3"
-            >
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/0 via-primary/0 to-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                key={project.id}
+                className="group relative glass-card hover:border-primary transition-all duration-500 hover:scale-[1.02] overflow-hidden p-0 pb-3"
+              >
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/0 via-primary/0 to-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
-              <div className="relative overflow-hidden rounded-t-lg">
-                <img
-                  src={project.image || "/placeholder.svg"}
-                  alt={project.title}
-                  className="w-full h-56 object-cover group-hover:scale-110 transition-transform duration-700"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-card via-card/50 to-transparent pointer-events-none" />
+                <div className="relative overflow-hidden rounded-t-lg">
+                  <img
+                    src={project.image || "/placeholder.svg"}
+                    alt={project.title}
+                    className="w-full h-56 object-cover group-hover:scale-110 transition-transform duration-700"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-card via-card/50 to-transparent pointer-events-none" />
 
-                <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-primary/30 to-transparent" />
-              </div>
+                  <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-primary/30 to-transparent" />
+                </div>
 
-              <CardHeader>
+                <CardHeader>
                   <CardTitle className="flex items-center justify-between text-xl">
                     <span className="font-bold">{project.title}</span>
                     <div className="flex gap-2">
@@ -98,36 +98,36 @@ export function Projects({ mode }: ProjectsProps) {
                       )}
                     </div>
                   </CardTitle>
-                    <CardDescription className="text-base text-justify">{project.description}</CardDescription>
+                  <CardDescription className="text-base text-justify">{project.description}</CardDescription>
                 </CardHeader>
 
-              <CardContent className="space-y-5">
-                {project.impact && project.impact !== "" ? (
-                  <div className="flex items-start gap-2">
-                  <Sparkles className="h-4 w-4 text-accent mt-0.5 flex-shrink-0" />
-                  <p className="text-sm text-accent font-medium leading-relaxed">{project.impact}</p>
-                  </div>
-                ) : (
-                  <div className="flex items-start gap-2">
-                    <div></div>
-                  </div>
-                )}
+                <CardContent className="space-y-5">
+                  {project.impact && project.impact !== "" ? (
+                    <div className="flex items-start gap-2">
+                      <Sparkles className="h-4 w-4 text-accent mt-0.5 flex-shrink-0" />
+                      <p className="text-sm text-accent font-medium leading-relaxed">{project.impact}</p>
+                    </div>
+                  ) : (
+                    <div className="flex items-start gap-2">
+                      <div></div>
+                    </div>
+                  )}
 
-                <div className="flex flex-wrap gap-2">
-                  {project.tech.map((tech: string, i: number) => (
-                    <Badge
-                      key={i}
-                      variant="secondary"
-                      className="text-xs font-semibold px-3 py-1 bg-secondary/80 hover:bg-primary hover:text-primary-foreground transition-colors"
-                    >
-                      {tech}
-                    </Badge>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+                  <div className="flex flex-wrap gap-2">
+                    {project.tech.map((tech: string, i: number) => (
+                      <Badge
+                        key={i}
+                        variant="secondary"
+                        className="text-xs font-semibold px-3 py-1 bg-secondary/80 hover:bg-primary hover:text-primary-foreground transition-colors"
+                      >
+                        {tech}
+                      </Badge>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
             ))}
-        </div>
+          </div>
         )}
       </div>
     </section>

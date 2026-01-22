@@ -27,24 +27,25 @@ export default function Home() {
   }
 
   return (
-    <div
-      className={`min-h-screen transition-all duration-700 ${mode === "backend" ? "backend-mode" : "web3-mode"} ${
-        isTransitioning ? "opacity-50 scale-[0.98]" : "opacity-100 scale-100"
-      }`}
-    >
+    <>
       <ModeToggle mode={mode} onModeChange={handleModeChange} />
+      <div
+        className={`min-h-screen transition-all duration-700 ${mode === "backend" ? "backend-mode" : "web3-mode"} ${isTransitioning ? "opacity-50 scale-[0.98]" : "opacity-100 scale-100"
+          }`}
+      >
 
-      <main className="relative" key={key}>
-        <Hero mode={mode} />
-        <Skills mode={mode} />
-        <Projects mode={mode} />
-        <WorkExperience mode={mode} />
-        <Achievements mode={mode} />
-        <CaseStudies mode={mode} />
-        <Testimonials mode={mode} />
-        <About mode={mode} />
-        <Contact mode={mode} />
-      </main>
-    </div>
+        <main className="relative" key={key}>
+          <Hero mode={mode} />
+          <Skills mode={mode} />
+          <Projects mode={mode} />
+          <WorkExperience mode={mode} />
+          <Achievements mode={mode} />
+          <CaseStudies mode={mode} />
+          <Testimonials mode={mode} />
+          <About mode={mode} />
+          <Contact mode={mode} />
+        </main>
+      </div>
+    </>
   )
 }

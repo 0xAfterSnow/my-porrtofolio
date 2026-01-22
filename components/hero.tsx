@@ -74,7 +74,7 @@ export function Hero({ mode }: HeroProps) {
         <PixelBlast
           variant="circle"
           pixelSize={6}
-          color={theme === "light" ? "#000000" : "#ffffff"}
+          color={mounted && theme === "light" ? "#000000" : "#ffffff"}
           patternDensity={1.2}
           pixelSizeJitter={0.5}
           enableRipples
@@ -110,32 +110,26 @@ export function Hero({ mode }: HeroProps) {
           <div className="relative">
             <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full animate-pulse" />
             {mode === "backend" ? (
-              <Code2 className="h-5 w-5 text-primary animate-glow-pulse relative z-10" />
+              <Code2 className="h-5 w-5 text-foreground animate-glow-pulse relative z-10" />
             ) : (
-              <Blocks className="h-5 w-5 text-primary animate-glow-pulse relative z-10" />
+              <Blocks className="h-5 w-5 text-foreground animate-glow-pulse relative z-10" />
             )}
           </div>
-          <span className="text-sm font-bold tracking-widest uppercase text-primary">
+          <span className="text-sm font-bold tracking-widest uppercase text-foreground">
             {mode === "backend" ? "Backend Engineer" : "Web3 Developer"}
           </span>
         </div>
 
         <div className="space-y-6 animate-fade-in-up" style={{ animationDelay: "0.1s" }}>
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold leading-tight tracking-tight">
+          <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold leading-tight tracking-tight text-foreground">
             Building{" "}
             <span className="relative inline-block">
-              <span className="text-primary">
+              <span className="text-foreground">
                 {displayedText}
                 <span className="animate-blink">|</span>
               </span>
               <div
-                className="absolute -inset-2 blur-2xl opacity-30 animate-pulse"
-                style={{
-                  background:
-                    mode === "backend"
-                      ? "linear-gradient(90deg, #ffffff, #a1a1aa)"
-                      : "linear-gradient(90deg, #d4d4d8, #71717a)",
-                }}
+                className="absolute -inset-2 blur-2xl opacity-10 dark:opacity-20 animate-pulse bg-foreground"
               />
             </span>
             <br />
@@ -155,10 +149,10 @@ export function Hero({ mode }: HeroProps) {
         >
           <Button
             size="lg"
-            className="group relative text-base px-8 py-6 bg-primary hover:bg-primary/90 font-semibold overflow-hidden rounded-xl shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-all duration-300"
+            className="group relative text-base px-8 py-6 bg-foreground text-background hover:bg-foreground/90 font-semibold overflow-hidden rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
             onClick={() => scrollToSection("projects")}
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-background/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
             <span className="relative z-10 flex items-center gap-2">
               View Projects
               <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
@@ -168,7 +162,7 @@ export function Hero({ mode }: HeroProps) {
           <Button
             size="lg"
             variant="outline"
-            className="group relative text-base px-8 py-6 border-2 font-semibold overflow-hidden rounded-xl bg-transparent hover:bg-primary/10 transition-all duration-300"
+            className="group relative text-base px-8 py-6 border-2 border-foreground/20 font-semibold overflow-hidden rounded-xl bg-transparent hover:bg-foreground/5 transition-all duration-300"
             onClick={() => setShowResume(true)}
           >
             <span className="relative z-10 flex items-center gap-2">

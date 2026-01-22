@@ -138,8 +138,8 @@ export default async function BlogPostPage({ params }: Props) {
             {/* Cover Image */}
             {post.cover_image && (
                 <section className="w-full max-w-7xl mx-auto px-6 py-12">
-                    <div className="relative aspect-[21/9] rounded-2xl overflow-hidden shadow-2xl border border-border/50">
-                        <img src={post.cover_image || "/placeholder.svg"} alt={post.title} className="w-full h-full object-cover" />
+                    <div className="relative aspect-[4/3] md:aspect-[21/9] rounded-2xl overflow-hidden shadow-2xl border border-border/50">
+                        <img src={post.cover_image || "/placeholder.svg"} alt={post.title} className="w-full h-full object-cover object-center" />
                         <div className="absolute inset-0 bg-gradient-to-t from-background/20 to-transparent" />
                     </div>
                 </section>

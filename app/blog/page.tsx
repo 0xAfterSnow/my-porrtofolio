@@ -98,11 +98,11 @@ export default async function BlogPage({ searchParams }: { searchParams: Promise
                                     <Link href={`/blog/${post.slug}`}>
                                         <Card className="group glass-card border-border hover:border-primary/50 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/5 flex flex-col h-full">
                                             {post.cover_image && (
-                                                <div className="relative overflow-hidden rounded-t-lg h-48">
+                                                <div className="relative overflow-hidden rounded-t-lg h-56">
                                                     <img
                                                         src={post.cover_image || "/placeholder.svg"}
                                                         alt={post.title}
-                                                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                                                        className="w-full h-full object-cover object-center group-hover:scale-110 transition-transform duration-700"
                                                     />
                                                 </div>
                                             )}

@@ -63,9 +63,9 @@ export function Skills({ mode }: SkillsProps) {
         }`}
       />
 
-      <div ref={floatingTextRef} className="absolute inset-0 opacity-10 pointer-events-none overflow-hidden">
+      <div ref={floatingTextRef} className="absolute inset-0 opacity-10 pointer-events-none overflow-hidden max-w-[100vw]">
         <div
-          className="floating-text absolute text-6xl font-bold text-primary/20"
+          className="floating-text absolute text-3xl md:text-6xl font-bold text-primary/20"
           style={{
             left: "10%",
             top: "20%",
@@ -74,7 +74,7 @@ export function Skills({ mode }: SkillsProps) {
           {mode === "backend" ? "API" : "WEB3"}
         </div>
         <div
-          className="floating-text absolute text-5xl font-bold text-muted-foreground/20"
+          className="floating-text absolute text-2xl md:text-5xl font-bold text-muted-foreground/20"
           style={{
             right: "15%",
             top: "40%",
@@ -83,7 +83,7 @@ export function Skills({ mode }: SkillsProps) {
           {mode === "backend" ? "DB" : "DEFI"}
         </div>
         <div
-          className="floating-text absolute text-7xl font-bold text-foreground/10"
+          className="floating-text absolute text-4xl md:text-7xl font-bold text-foreground/10"
           style={{
             left: "50%",
             bottom: "25%",
