@@ -14,7 +14,7 @@ export const metadata: Metadata = {
         title: "Developer Blog | Shagbaor Agber",
         description: "Technical articles and tutorials about backend engineering and decentralized technologies.",
         type: "website",
-        url: "https://shagbaor.dev/blog",
+        url: "https://aftersnow.xyz/blog",
     },
     twitter: {
         card: "summary_large_image",
@@ -96,9 +96,9 @@ export default async function BlogPage({ searchParams }: { searchParams: Promise
                             {posts.map((post) => (
                                 <article key={post.id} className="h-full">
                                     <Link href={`/blog/${post.slug}`}>
-                                        <Card className="group glass-card border-border hover:border-primary/50 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/5 flex flex-col h-full">
+                                        <Card className="group glass-card border-border hover:border-foreground/30 transition-all duration-500 hover:shadow-2xl hover:shadow-foreground/5 flex flex-col h-full overflow-hidden p-0">
                                             {post.cover_image && (
-                                                <div className="relative overflow-hidden rounded-t-lg h-56">
+                                                <div className="relative overflow-hidden h-56 w-full">
                                                     <img
                                                         src={post.cover_image || "/placeholder.svg"}
                                                         alt={post.title}
@@ -106,40 +106,43 @@ export default async function BlogPage({ searchParams }: { searchParams: Promise
                                                     />
                                                 </div>
                                             )}
-                                            <CardHeader className="flex-1">
-                                                <div className="flex items-center gap-2 mb-3">
-                                                    <Badge variant="secondary" className="text-[10px] uppercase tracking-wider font-bold">
-                                                        {post.category}
-                                                    </Badge>
-                                                    {post.tags?.slice(0, 2).map((tag: string) => (
-                                                        <span key={tag} className="text-[10px] text-muted-foreground font-medium border-l border-border pl-2">
-                                                            #{tag}
-                                                        </span>
-                                                    ))}
-                                                </div>
-                                                <CardTitle className="text-xl group-hover:text-primary transition-colors line-clamp-2 leading-tight">{post.title}</CardTitle>
-                                                <CardDescription className="line-clamp-2 mt-2">{post.excerpt}</CardDescription>
-                                            </CardHeader>
-                                            <CardContent>
-                                                <div className="flex items-center gap-4 text-xs text-muted-foreground mb-6">
-                                                    <div className="flex items-center gap-1">
-                                                        <Calendar className="h-3.5 w-3.5" />
-                                                        {new Date(post.created_at).toLocaleDateString("en-US", {
-                                                            month: "short",
-                                                            day: "numeric",
-                                                            year: "numeric",
-                                                        })}
+                                            <div className="p-6 flex flex-col flex-1">
+                                                <div className="flex-1">
+                                                    <div className="flex items-center gap-2 mb-3">
+                                                        <Badge variant="secondary" className="text-[10px] uppercase tracking-wider font-bold">
+                                                            {post.category}
+                                                        </Badge>
+                                                        {post.tags?.slice(0, 2).map((tag: string) => (
+                                                            <span key={tag} className="text-[10px] text-muted-foreground font-medium border-l border-border pl-2">
+                                                                #{tag}
+                                                            </span>
+                                                        ))}
                                                     </div>
-                                                    <div className="flex items-center gap-1">
-                                                        <Clock className="h-3.5 w-3.5" />
-                                                        {Math.ceil(post.content.split(" ").length / 200)} min read
+                                                    <h3 className="text-xl font-semibold group-hover:text-foreground transition-colors line-clamp-2 leading-tight mb-2">{post.title}</h3>
+                                                    <p className="text-muted-foreground line-clamp-2 text-sm">{post.excerpt}</p>
+                                                </div>
+
+                                                <div className="mt-6">
+                                                    <div className="flex items-center gap-4 text-xs text-muted-foreground mb-6">
+                                                        <div className="flex items-center gap-1">
+                                                            <Calendar className="h-3.5 w-3.5" />
+                                                            {new Date(post.created_at).toLocaleDateString("en-US", {
+                                                                month: "short",
+                                                                day: "numeric",
+                                                                year: "numeric",
+                                                            })}
+                                                        </div>
+                                                        <div className="flex items-center gap-1">
+                                                            <Clock className="h-3.5 w-3.5" />
+                                                            {Math.ceil(post.content.split(" ").length / 200)} min read
+                                                        </div>
+                                                    </div>
+                                                    <div className="flex items-center text-foreground text-sm font-bold group-hover:gap-2 transition-all">
+                                                        Read Deep Dive
+                                                        <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
                                                     </div>
                                                 </div>
-                                                <div className="flex items-center text-primary text-sm font-bold group-hover:gap-2 transition-all">
-                                                    Read Deep Dive
-                                                    <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                                                </div>
-                                            </CardContent>
+                                            </div>
                                         </Card>
                                     </Link>
                                 </article>

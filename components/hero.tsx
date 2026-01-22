@@ -6,7 +6,7 @@ import { ResumeModal } from "@/components/resume-modal"
 import { useState, useEffect, useRef } from "react"
 import { gsap } from "gsap"
 import PixelBlast from './PixelBlast';
-import DarkVeil from './DarkVeil';
+import Aurora from './Aurora';
 import { useTheme } from "next-themes"
 
 interface HeroProps {
@@ -99,8 +99,12 @@ export function Hero({ mode }: HeroProps) {
         ref={web3Ref}
         className="absolute inset-0 opacity-0 pointer-events-none transition-opacity duration-700"
       >
-        <DarkVeil />
-
+        <Aurora
+          colorStops={mounted && theme === "dark" ? ["#000000", "#333333", "#1a1a1a"] : ["#ffffff", "#f5f5f5", "#e5e5e5"]}
+          blend={0.5}
+          amplitude={1.0}
+          speed={1}
+        />
       </div>
 
       <div className="absolute inset-0 cyber-grid opacity-40" />
