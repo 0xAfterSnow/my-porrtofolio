@@ -41,8 +41,28 @@ export function Hero({ mode }: HeroProps) {
     return () => clearInterval(interval)
   }, [mode, fullText])
 
+  /* Responsive Logic: Mobile Optimization */
+  const [isDesktop, setIsDesktop] = useState(false)
+
+  // Only render heavy visual effects on desktop (>1024px)
+  useEffect(() => {
+    const checkDesktop = () => {
+      setIsDesktop(window.matchMedia("(min-width: 1024px)").matches)
+    }
+
+    // Initial check
+    checkDesktop()
+
+    const mql = window.matchMedia("(min-width: 1024px)")
+    mql.addEventListener("change", checkDesktop)
+
+    return () => mql.removeEventListener("change", checkDesktop)
+  }, [])
+
   // GSAP fade transition between backend ↔ web3
   useEffect(() => {
+    if (!isDesktop) return; // Skip GSAP animations on mobile for performance
+
     const backend = backendRef.current;
     const web3 = web3Ref.current;
     if (!backend || !web3) return;
@@ -54,7 +74,7 @@ export function Hero({ mode }: HeroProps) {
       gsap.to(backend, { opacity: 0, duration: 0.6, ease: "power2.out" });
       gsap.to(web3, { opacity: 1, duration: 0.8, ease: "power2.inOut" });
     }
-  }, [mode]);
+  }, [mode, isDesktop]);
 
 
   const scrollToSection = (id: string) => {
@@ -66,46 +86,66 @@ export function Hero({ mode }: HeroProps) {
       ref={heroRef}
       className="relative min-h-screen flex items-center justify-center px-6 py-20 overflow-hidden"
     >
-      {/* Backend Beams */}
-      <div
-        ref={backendRef}
-        className="absolute inset-0 opacity-0 pointer-events-none transition-opacity duration-700"
-      >
-        <PixelBlast
-          variant="circle"
-          pixelSize={6}
-          color={mounted && theme === "light" ? "#000000" : "#ffffff"}
-          patternDensity={1.2}
-          pixelSizeJitter={0.5}
-          enableRipples
-          rippleSpeed={0.4}
-          rippleThickness={0.12}
-          rippleIntensityScale={1.5}
-          liquid
-          liquidStrength={0.12}
-          liquidRadius={1.2}
-          liquidWobbleSpeed={5}
-          speed={0.6}
-          edgeFade={0.25}
-          transparent
-          patternScale={3}
-          className=""
-          style={{}}
-        />
-      </div>
+      {/* Desktop Visuals: PixelBlast & Aurora */}
+      {isDesktop ? (
+        <>
+          {/* Backend Beams */}
+          <div
+            ref={backendRef}
+            className="absolute inset-0 opacity-0 pointer-events-none transition-opacity duration-700"
+          >
+            <PixelBlast
+              variant="circle"
+              pixelSize={6}
+              color={mounted && theme === "light" ? "#000000" : "#ffffff"}
+              patternDensity={1.2}
+              pixelSizeJitter={0.5}
+              enableRipples
+              rippleSpeed={0.4}
+              rippleThickness={0.12}
+              rippleIntensityScale={1.5}
+              liquid
+              liquidStrength={0.12}
+              liquidRadius={1.2}
+              liquidWobbleSpeed={5}
+              speed={0.6}
+              edgeFade={0.25}
+              transparent
+              patternScale={3}
+              className=""
+              style={{}}
+            />
+          </div>
 
-      {/* Web3 FaultyTerminal */}
-      <div
-        ref={web3Ref}
-        className="absolute inset-0 opacity-0 pointer-events-none transition-opacity duration-700"
-      >
-        <Aurora
-          colorStops={mounted && theme === "dark" ? ["#000000", "#333333", "#1a1a1a"] : ["#ffffff", "#f5f5f5", "#e5e5e5"]}
-          blend={0.5}
-          amplitude={1.0}
-          speed={1}
-        />
-      </div>
+          {/* Web3 FaultyTerminal */}
+          <div
+            ref={web3Ref}
+            className="absolute inset-0 opacity-0 pointer-events-none transition-opacity duration-700"
+          >
+            <Aurora
+              colorStops={mounted && theme === "dark" ? ["#000000", "#333333", "#1a1a1a"] : ["#ffffff", "#f5f5f5", "#e5e5e5"]}
+              blend={0.5}
+              amplitude={1.0}
+              speed={1}
+            />
+          </div>
+        </>
+      ) : (
+        /* Mobile Fallback: Lightweight Gradient */
+        <div className="absolute inset-0 pointer-events-none">
+          <div className={`absolute inset-0 transition-opacity duration-1000 ${mode === 'backend' ? 'opacity-100' : 'opacity-0'}`}>
+            <div className="absolute inset-0 bg-gradient-to-b from-background via-background/90 to-background" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(var(--foreground-rgb),0.1)_0%,transparent_70%)] opacity-30" />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-primary/20 blur-[100px] rounded-full opacity-30" />
+          </div>
+          <div className={`absolute inset-0 transition-opacity duration-1000 ${mode === 'web3' ? 'opacity-100' : 'opacity-0'}`}>
+            <div className="absolute inset-0 bg-gradient-to-b from-background via-background/90 to-background" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(var(--foreground-rgb),0.1)_0%,transparent_70%)] opacity-40" />
+            <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-purple-500/20 blur-[120px] rounded-full opacity-30" />
+            <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-blue-500/20 blur-[100px] rounded-full opacity-30" />
+          </div>
+        </div>
+      )}
 
       <div className="absolute inset-0 cyber-grid opacity-40" />
 
