@@ -80,12 +80,12 @@ export default async function BlogPage({ searchParams }: { searchParams: Promise
                                 Web3
                             </Badge>
                         </Link>
-                        <Link href="/blog?category=both">
+                        <Link href="/blog?category=tips">
                             <Badge
-                                variant={category === "both" ? "default" : "outline"}
+                                variant={category === "tips" ? "default" : "outline"}
                                 className="cursor-pointer px-6 py-2 text-sm transition-all hover:scale-105"
                             >
-                                Architecture
+                                Tips
                             </Badge>
                         </Link>
                     </nav>
