@@ -177,6 +177,7 @@ export function BlogForm({ post }: { post?: BlogPost }) {
                   <SelectItem value="backend">Backend</SelectItem>
                   <SelectItem value="web3">Web3</SelectItem>
                   <SelectItem value="both">Both</SelectItem>
+                  <SelectItem value="both">Tips</SelectItem>
                 </SelectContent>
               </Select>
             </div>
