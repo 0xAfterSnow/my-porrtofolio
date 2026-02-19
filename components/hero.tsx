@@ -221,7 +221,7 @@ export function Hero({ mode }: HeroProps) {
           style={{ animationDelay: "0.3s" }}
         >
           <a
-            href="https://x.com/CodeShagbaor"
+            href="https://x.com/0xAfterSnow"
             target="_blank"
             rel="noopener noreferrer"
             className="p-3 rounded-full border border-border/50 hover:border-primary/50 hover:bg-primary/10 transition-all duration-300 group"
@@ -237,7 +237,7 @@ export function Hero({ mode }: HeroProps) {
             <Linkedin className="h-5 w-5 group-hover:scale-110 transition-transform" />
           </a>
           <a
-            href="https://github.com/Codewithshagbaor/"
+            href="https://github.com/0xAfterSnow/"
             target="_blank"
             rel="noopener noreferrer"
             className="p-3 rounded-full border border-border/50 hover:border-primary/50 hover:bg-primary/10 transition-all duration-300 group"
