@@ -108,7 +108,7 @@ export function RichTextEditor({ content, onChange, placeholder = "Start writing
     editorProps: {
       attributes: {
         class:
-          "prose prose-sm sm:prose lg:prose-lg xl:prose-xl max-w-none focus:outline-none min-h-[300px] p-4 bg-background rounded-lg border",
+          "prose prose-sm sm:prose lg:prose-lg xl:prose-xl dark:prose-invert max-w-none focus:outline-none min-h-[300px] p-4 bg-background text-foreground rounded-lg border",
       },
     },
   })

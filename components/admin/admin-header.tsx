@@ -12,6 +12,8 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { LogOut, Menu, User } from "lucide-react"
 
+import { ThemeToggle } from "@/components/theme-toggle"
+
 export function AdminHeader() {
   const { user, signOut } = useAuth()
 
@@ -22,6 +24,8 @@ export function AdminHeader() {
       </Button>
 
       <div className="flex-1" />
+
+      <ThemeToggle />
 
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
