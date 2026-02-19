@@ -11,15 +11,36 @@ import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useToast } from "@/hooks/use-toast"
-import { Loader2 } from "lucide-react"
+import { Loader2, RefreshCw } from "lucide-react"
+import { flushSettingsCache } from "@/app/actions/flush-cache"
 
 export default function SettingsPage() {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [uploading, setUploading] = useState(false)
+  const [flushing, setFlushing] = useState(false)
   const [settings, setSettings] = useState<any>(null)
   const { toast } = useToast()
   const supabase = createBrowserSupabaseClient()
+
+  async function handleFlush() {
+    setFlushing(true)
+    try {
+      await flushSettingsCache()
+      toast({
+        title: "Success",
+        description: "Cache flushed successfully. Updates should be visible.",
+      })
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: "Failed to flush cache",
+        variant: "destructive",
+      })
+    } finally {
+      setFlushing(false)
+    }
+  }
 
   useEffect(() => {
     fetchSettings()
@@ -354,7 +375,20 @@ export default function SettingsPage() {
         </TabsContent>
       </Tabs>
 
-      <div className="flex justify-end">
+      <div className="flex justify-end gap-4">
+        <Button variant="outline" onClick={handleFlush} disabled={flushing}>
+          {flushing ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Flushing...
+            </>
+          ) : (
+            <>
+              <RefreshCw className="mr-2 h-4 w-4" />
+              Flush Cache
+            </>
+          )}
+        </Button>
         <Button onClick={handleSave} disabled={saving}>
           {saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
           Save Settings

@@ -4,6 +4,7 @@ import { Chakra_Petch } from "next/font/google"
 import { Suspense } from "react"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
+import { Toaster } from "@/components/ui/toaster"
 
 const chakraPetch = Chakra_Petch({
   weight: ["300", "400", "500", "600", "700"],
@@ -85,6 +86,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <Suspense fallback={null}>{children}</Suspense>
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>

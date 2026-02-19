@@ -17,7 +17,7 @@ import { RichTextEditor } from "./rich-text-editor"
 import { Badge } from "@/components/ui/badge"
 import { BlogContent } from "@/components/blog-content"
 import { cn } from "@/lib/utils"
-// import { useToast } from "@/hooks/use-toast" // Assumed hook exists
+import { useToast } from "@/hooks/use-toast"
 
 type BlogPost = {
   id?: string
@@ -111,6 +111,8 @@ export function BlogForm({ post }: { post?: BlogPost }) {
     setFormData(prev => ({ ...prev, cover_image: "" }))
   }
 
+  const { toast } = useToast()
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
@@ -136,15 +138,31 @@ export function BlogForm({ post }: { post?: BlogPost }) {
       if (post?.id) {
         const { error } = await supabase.from("blog_posts").update(postData).eq("id", post.id)
         if (error) throw error
-      } else {
-        const { error } = await supabase.from("blog_posts").insert([postData])
-        if (error) throw error
-      }
 
-      router.push("/admin/blog")
-      router.refresh()
+        toast({
+          title: "Success",
+          description: "Blog post updated successfully.",
+        })
+      } else {
+        const { data, error } = await supabase.from("blog_posts").insert([postData]).select().single()
+        if (error) throw error
+
+        toast({
+          title: "Success",
+          description: "Blog post created successfully.",
+        })
+
+        if (data?.id) {
+          router.replace(`/admin/blog/${data.id}/edit`)
+        }
+      }
     } catch (err: any) {
       setError(err.message || "Failed to save blog post")
+      toast({
+        title: "Error",
+        description: err.message || "Failed to save blog post",
+        variant: "destructive",
+      })
     } finally {
       setLoading(false)
     }
