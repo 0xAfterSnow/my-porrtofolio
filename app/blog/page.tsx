@@ -3,31 +3,42 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { Calendar, Clock, ArrowRight, Newspaper } from "lucide-react"
 import Link from "next/link"
+import Image from "next/image"
 import type { Metadata } from "next"
 import { trackPageView } from "@/lib/analytics-server"
 import { BlogNavbar } from "@/components/blog-navbar"
+import { getSiteSettings } from "@/lib/get-settings"
 
-export const metadata: Metadata = {
-    title: "Developer Blog | Shagbaor Agber",
-    description: "Insights on Backend Engineering, Web3 Architecture, and Full-Stack Development by Shagbaor Agber.",
-    openGraph: {
-        title: "Developer Blog | Shagbaor Agber",
-        description: "Technical articles and tutorials about backend engineering and decentralized technologies.",
-        type: "website",
-        url: "https://aftersnow.xyz/blog",
-    },
-    twitter: {
-        card: "summary_large_image",
-        title: "Developer Blog | Shagbaor Agber",
-        description: "Technical insights and tutorials by Shagbaor Agber.",
-    },
-    alternates: {
-        canonical: "/blog",
-    },
+export const revalidate = 3600 // Revalidate every hour
+
+export async function generateMetadata(): Promise<Metadata> {
+    const settings = await getSiteSettings()
+    const title = settings?.site_title ? `Blog | ${settings.site_title}` : "Developer Blog | Shagbaor Agber"
+    const description = settings?.site_description || "Insights on Backend Engineering, Web3 Architecture, and Full-Stack Development by Shagbaor Agber."
+
+    return {
+        title,
+        description,
+        openGraph: {
+            title,
+            description,
+            type: "website",
+            url: "https://aftersnow.xyz/blog", // Ideally use siteUrl from settings
+        },
+        twitter: {
+            card: "summary_large_image",
+            title,
+            description,
+        },
+        alternates: {
+            canonical: "/blog",
+        },
+    }
 }
 
 export default async function BlogPage({ searchParams }: { searchParams: Promise<{ category?: string }> }) {
     const supabase = await createServerClient()
+    const settings = await getSiteSettings()
     const { category } = await searchParams
 
     let query = supabase.from("blog_posts").select("*").eq("published", true).order("created_at", { ascending: false })
@@ -48,11 +59,14 @@ export default async function BlogPage({ searchParams }: { searchParams: Promise
                 <div className="max-w-7xl mx-auto">
                     {/* Header */}
                     <header className="text-center mb-16">
-                        <h1 className="text-5xl md:text-6xl font-bold mb-6 tracking-tight">Developer Blog</h1>
+                        <h1 className="text-5xl md:text-6xl font-bold mb-6 tracking-tight">
+                            {settings?.site_title ? `${settings.site_title} Blog` : "Developer Blog"}
+                        </h1>
                         <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-                            Technical articles, deep dives, and insights on backend engineering and Web3 development.
+                            {settings?.site_description || "Technical articles, deep dives, and insights on backend engineering and Web3 development."}
                         </p>
                     </header>
+
 
                     {/* Category Filter */}
                     <nav className="flex flex-wrap justify-center gap-4 mb-12" aria-label="Blog categories">
@@ -99,10 +113,12 @@ export default async function BlogPage({ searchParams }: { searchParams: Promise
                                         <Card className="group glass-card border-border hover:border-foreground/30 transition-all duration-500 hover:shadow-2xl hover:shadow-foreground/5 flex flex-col h-full overflow-hidden p-0">
                                             {post.cover_image && (
                                                 <div className="relative overflow-hidden h-56 w-full">
-                                                    <img
-                                                        src={post.cover_image || "/placeholder.svg"}
+                                                    <Image
+                                                        src={post.cover_image}
                                                         alt={post.title}
-                                                        className="w-full h-full object-cover object-center group-hover:scale-110 transition-transform duration-700"
+                                                        fill
+                                                        className="object-cover object-center group-hover:scale-110 transition-transform duration-700"
+                                                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                                                     />
                                                 </div>
                                             )}

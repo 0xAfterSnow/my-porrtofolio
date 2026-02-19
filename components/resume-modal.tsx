@@ -1,6 +1,8 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { createBrowserSupabaseClient } from "@/lib/supabase/client"
 
 interface ResumeModalProps {
   open: boolean
@@ -9,6 +11,20 @@ interface ResumeModalProps {
 }
 
 export function ResumeModal({ open, onOpenChange, mode }: ResumeModalProps) {
+  const [resumeUrl, setResumeUrl] = useState("/ShagbaorAgberResume.pdf")
+  const supabase = createBrowserSupabaseClient()
+
+  useEffect(() => {
+    async function fetchSettings() {
+      const { data } = await supabase.from("site_settings").select("resume_url").single()
+      if (data?.resume_url) {
+        setResumeUrl(data.resume_url)
+      }
+    }
+    if (open) {
+      fetchSettings()
+    }
+  }, [open])
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -47,7 +63,7 @@ export function ResumeModal({ open, onOpenChange, mode }: ResumeModalProps) {
             className="w-full h-full border-0 block "
           >
             <iframe
-              src="/ShagbaorAgberResume.pdf#toolbar=0&navpanes=0&scrollbar=0"
+              src={`${resumeUrl}#toolbar=0&navpanes=0&scrollbar=0`}
               className="w-full h-full border-0"
               title="Shagbaor Agber Resume"
             />
@@ -57,3 +73,4 @@ export function ResumeModal({ open, onOpenChange, mode }: ResumeModalProps) {
     </Dialog>
   )
 }
+

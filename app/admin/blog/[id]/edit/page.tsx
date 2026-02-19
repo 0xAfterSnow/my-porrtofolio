@@ -13,7 +13,7 @@ export default async function EditBlogPage({ params }: { params: Promise<{ id: s
   }
 
   return (
-    <div className="space-y-6 max-w-4xl">
+    <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold tracking-tight">Edit Blog Post</h1>
         <p className="text-muted-foreground">Update your article</p>

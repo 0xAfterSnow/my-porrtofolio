@@ -3,15 +3,21 @@ import { notFound } from "next/navigation"
 import { Badge } from "@/components/ui/badge"
 import { Calendar, Clock, ArrowLeft } from "lucide-react"
 import Link from "next/link"
+import Image from "next/image"
 import type { Metadata } from "next"
 import { trackPageView } from "@/lib/analytics-server"
 import { BlogContent } from "@/components/blog-content"
 import { BlogNavbar } from "@/components/blog-navbar"
 import Script from "next/script"
+import { getSiteSettings } from "@/lib/get-settings"
+import { AuthorCard } from "@/components/author-card"
+
 
 type Props = {
     params: Promise<{ slug: string }>
 }
+
+export const revalidate = 3600 // Revalidate every hour
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const supabase = await createServerClient()
@@ -73,7 +79,7 @@ export default async function BlogPostPage({ params }: Props) {
             {
                 "@type": "Person",
                 "name": "Shagbaor Agber",
-                "url": "https://shagbaor.dev",
+                "url": "https://aftersnow.xyz",
             },
         ],
     }
@@ -139,7 +145,14 @@ export default async function BlogPostPage({ params }: Props) {
             {post.cover_image && (
                 <section className="w-full max-w-7xl mx-auto px-6 py-12">
                     <div className="relative aspect-[4/3] md:aspect-[21/9] rounded-2xl overflow-hidden shadow-2xl border border-border/50">
-                        <img src={post.cover_image || "/placeholder.svg"} alt={post.title} className="w-full h-full object-cover object-center" />
+                        <Image
+                            src={post.cover_image || "/placeholder.svg"}
+                            alt={post.title}
+                            fill
+                            priority
+                            className="object-cover object-center"
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 1200px"
+                        />
                         <div className="absolute inset-0 bg-gradient-to-t from-background/20 to-transparent" />
                     </div>
                 </section>
@@ -148,10 +161,15 @@ export default async function BlogPostPage({ params }: Props) {
             {/* Content */}
             <section className="max-w-4xl mx-auto px-6 py-16">
                 <BlogContent content={post.content} />
+
+                <div className="mt-16 border-t border-border pt-16">
+                    <AuthorCard settings={await getSiteSettings()} />
+                </div>
             </section>
 
             {/* Related Posts */}
             <aside className="max-w-4xl mx-auto px-6 py-16 border-t border-border">
+
                 <h2 className="text-2xl font-bold mb-8 tracking-tight">Continue Reading</h2>
                 <RelatedPosts currentPostId={post.id} category={post.category} />
             </aside>
