@@ -39,6 +39,7 @@ export async function GET() {
     return new NextResponse(xml, {
         headers: {
             "Content-Type": "application/xml; charset=utf-8",
+            "Content-Encoding": "identity",
             "Cache-Control": "public, max-age=3600, stale-while-revalidate=86400",
         },
     })
