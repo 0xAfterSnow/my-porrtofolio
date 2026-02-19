@@ -1,7 +1,11 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
+import React, { useState, useEffect, useRef } from "react"
 import { gsap } from "gsap"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Button } from "@/components/ui/button"
+import { ArrowRight } from "lucide-react"
+import Image from "next/image"
 
 interface SkillsProps {
   mode: "backend" | "web3"
@@ -17,6 +21,11 @@ export function Skills({ mode }: SkillsProps) {
     { name: "Docker", level: 87, icon: "/icons/docker.svg" },
     { name: "AWS", level: 80, icon: "/icons/aws.svg" },
     { name: "GraphQL", level: 83, icon: "/icons/graphql.svg" },
+    // Extended
+    { name: "Node.js", level: 85, icon: "/icons/nodejs.svg" },
+    { name: "MongoDB", level: 80, icon: "/icons/mongodb.svg" },
+    { name: "Kubernetes", level: 75, icon: "/icons/kubernetes.svg" },
+    { name: "System Design", level: 85, icon: "/icons/system-design.svg" },
   ]
 
   const web3Skills = [
@@ -28,9 +37,15 @@ export function Skills({ mode }: SkillsProps) {
     { name: "Smart Contracts", level: 93, icon: "/icons/file-type-solidity.svg" },
     { name: "DeFi", level: 87, icon: "/icons/defi.svg" },
     { name: "NFTs", level: 84, icon: "/icons/nfts.svg" },
+    // Extended
+    { name: "Ethers.js", level: 86, icon: "/icons/ethers.svg" },
+    { name: "Chainlink", level: 82, icon: "/icons/chainlink.svg" },
+    { name: "The Graph", level: 78, icon: "/icons/thegraph.svg" },
+    { name: "Foundry", level: 80, icon: "/icons/foundry.svg" },
   ]
 
-  const skills = mode === "backend" ? backendSkills : web3Skills
+  const allSkills = mode === "backend" ? backendSkills : web3Skills
+  const displaySkills = allSkills.slice(0, 8)
   const [hoveredSkill, setHoveredSkill] = useState<string | null>(null)
   const floatingTextRef = useRef<HTMLDivElement>(null)
 
@@ -110,7 +125,7 @@ export function Skills({ mode }: SkillsProps) {
 
         {/* Skills Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {skills.map((skill, index) => (
+          {displaySkills.map((skill, index) => (
             <div
               key={skill.name}
               className="group relative"
@@ -132,11 +147,16 @@ export function Skills({ mode }: SkillsProps) {
                       : "none",
                 }}
               >
-                <img
+                <Image
                   src={skill.icon}
-                  className="mb-4 transition-transform duration-500 group-hover:scale-125 group-hover:rotate-12"
+                  width={48}
+                  height={48}
+                  className="mb-4 transition-all duration-500 grayscale group-hover:grayscale-0 group-hover:scale-125 group-hover:rotate-12"
                   alt={skill.name}
-                  style={{ width: "48px", height: "48px" }}
+                  onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+                    const target = e.target as HTMLImageElement;
+                    if (target) target.src = "/icons/default.svg";
+                  }}
                 />
 
                 {/* Skill Name */}
@@ -167,6 +187,51 @@ export function Skills({ mode }: SkillsProps) {
             </div>
           ))}
         </div>
+
+        {/* View More Button */}
+        <div className="mt-12 text-center">
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button size="lg" variant="outline" className="group rounded-full px-8 border-primary/20 hover:bg-primary/10 hover:border-primary/50 transition-all">
+                View Complete {mode === "backend" ? "Arsenal" : "Toolkit"}
+                <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-6xl w-full max-h-[85vh] overflow-y-auto glass-card border-primary/20">
+              <DialogHeader>
+                <DialogTitle className="text-3xl font-bold mb-6">
+                  Full {mode === "backend" ? "Backend Arsenal" : "Web3 Toolkit"}
+                </DialogTitle>
+              </DialogHeader>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {allSkills.map((skill) => (
+                  <div key={skill.name} className="flex items-center gap-4 p-4 rounded-xl border border-border bg-background/50 hover:bg-background/80 transition-colors">
+                    <Image
+                      src={skill.icon}
+                      alt={skill.name}
+                      width={40}
+                      height={40}
+                      className="grayscale hover:grayscale-0 transition-all duration-300"
+                      onError={(e: any) => { (e.target as HTMLImageElement).src = "/icons/default.svg" }}
+                    />
+                    <div className="flex-1">
+                      <h4 className="font-bold">{skill.name}</h4>
+                      <div className="w-full h-1.5 bg-secondary rounded-full mt-2 overflow-hidden">
+                        <div
+                          className="h-full bg-primary/70 rounded-full"
+                          style={{ width: `${skill.level}%` }}
+                        />
+                      </div>
+                    </div>
+                    <span className="text-xs font-mono font-bold">{skill.level}%</span>
+                  </div>
+                ))}
+              </div>
+            </DialogContent>
+          </Dialog>
+        </div>
+
       </div>
 
       <style jsx>{`

@@ -37,7 +37,7 @@ export function Contact({ mode }: { mode?: "backend" | "web3" }) {
       <div className="relative z-10 max-w-4xl mx-auto text-center">
         <h2 className="text-5xl md:text-6xl font-bold mb-8">Let's Build Together</h2>
         <p className="text-xl md:text-2xl text-muted-foreground mb-16 text-balance font-light max-w-3xl mx-auto">
-          {settings?.site_description || "Whether you need scalable backend systems or innovative Web3 solutions, I'm here to help bring your ideas to life."}
+          Whether you need scalable backend systems or innovative Web3 solutions, I'm here to help bring your ideas to life.
         </p>
 
         <Card className="relative neon-border glass-card overflow-hidden">
