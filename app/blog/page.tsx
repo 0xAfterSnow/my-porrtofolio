@@ -14,7 +14,7 @@ export const revalidate = 3600 // Revalidate every hour
 export async function generateMetadata(): Promise<Metadata> {
     const settings = await getSiteSettings()
     const title = settings?.site_title ? `Blog | ${settings.site_title}` : "Developer Blog | Shagbaor Agber"
-    const description = settings?.site_description || "Insights on Backend Engineering, Web3 Architecture, and Full-Stack Development by Shagbaor Agber."
+    const description = "Insights on Backend Engineering, Web3 Architecture, and Full-Stack Development by Shagbaor Agber."
 
     return {
         title,
@@ -63,7 +63,7 @@ export default async function BlogPage({ searchParams }: { searchParams: Promise
                             {settings?.site_title ? `${settings.site_title} Blog` : "Developer Blog"}
                         </h1>
                         <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-                            {settings?.site_description || "Technical articles, deep dives, and insights on backend engineering and Web3 development."}
+                            Technical articles, deep dives, and insights on backend engineering, tips and Web3 development.
                         </p>
                     </header>
 

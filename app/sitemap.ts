@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next"
 import { createServerClient } from "@/lib/supabase/server"
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://shagbaor.is-a.dev/"
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://aftersnow.xyz"
     const supabase = await createServerClient()
 
     // Get all published blog posts
