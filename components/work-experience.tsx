@@ -10,6 +10,22 @@ export function WorkExperience({ mode }: WorkExperienceProps) {
   const experiences = [
     {
       title: "Senior Backend Developer",
+      company: "Asterverse",
+      location: "Remote",
+      period: "03/2025",
+      type: "backend",
+      description:
+        "Company focused on software development",
+      achievements: [
+        "Architected, developed, and maintained scalable backend systems powering multiple production applications using Python, Django, and Django REST Framework",
+        "Led the design and implementation of high-performance RESTful APIs, enabling seamless integration across internal services and third-party platforms",
+        "Optimized application performance through database tuning, caching strategies, and efficient query design, improving system responsiveness under increasing workloads",
+        "Designed scalable backend architectures and reusable service components to accelerate feature delivery across multiple products",
+        "Strengthened platform reliability by implementing robust authentication, validation, logging, monitoring, and error-handling practices throughout backend services",
+      ],
+    },
+    {
+      title: "Senior Backend Developer",
       company: "Claadme",
       location: "Nigeria",
       period: "08/2024 - 11/2024",
