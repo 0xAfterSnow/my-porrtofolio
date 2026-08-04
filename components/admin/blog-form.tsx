@@ -245,13 +245,13 @@ export function BlogForm({ post }: { post?: BlogPost }) {
                 <div className="flex flex-col gap-4">
                   {!formData.cover_image ? (
                     <div className="border-2 border-dashed border-border rounded-lg p-6 flex flex-col items-center justify-center gap-2 hover:bg-muted/50 transition-colors cursor-pointer relative">
-                      <Input
+                      <input
                         id="cover_image_upload"
                         type="file"
                         accept="image/*"
                         onChange={handleCoverImageUpload}
                         disabled={uploadingCover || loading}
-                        className="absolute inset-0 opacity-0 cursor-pointer"
+                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                       />
                       {uploadingCover ? (
                         <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
