@@ -18,7 +18,7 @@ export function Contact({ mode }: { mode?: "backend" | "web3" }) {
     fetchSettings()
   }, [])
 
-  const email = settings?.social_email || "dxtlive@gmail.com"
+  const email = settings?.social_email || "snow@aftersnow.xyz"
   const github = settings?.social_github || "https://github.com/CodeShagbaor/"
   const linkedin = settings?.social_linkedin || "https://linkedin.com/in/shagbaoragber/"
   const twitter = settings?.social_twitter || "https://x.com/CodeShagbaor"

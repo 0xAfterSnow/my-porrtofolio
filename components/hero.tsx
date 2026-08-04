@@ -245,7 +245,7 @@ export function Hero({ mode }: HeroProps) {
             <Github className="h-5 w-5 group-hover:scale-110 transition-transform" />
           </a>
           <a
-            href="mailto:dxtlive@gmail.com"
+            href="mailto:snow@aftersnow.xyz"
             className="p-3 rounded-full border border-border/50 hover:border-primary/50 hover:bg-primary/10 transition-all duration-300 group"
           >
             <Mail className="h-5 w-5 group-hover:scale-110 transition-transform" />
