@@ -7,6 +7,7 @@ import {
   GitBranchIcon,
   PulseRectangle01Icon,
 } from "@hugeicons/core-free-icons"
+import { cn } from "@/lib/utils"
 import { Icon, type IconType } from "@/components/icon"
 import { Reveal, Section } from "@/components/section"
 
@@ -14,98 +15,133 @@ interface AchievementsProps {
   mode: "backend" | "web3"
 }
 
-type Item = {
+type Win = {
   icon: IconType
+  kind: string
   title: string
-  issuer: string
+  org: string
+  story: string
   year: string
-  kind: "Award" | "Role" | "Milestone" | "Certificate"
+  mode: AchievementsProps["mode"]
+  featured?: boolean
 }
 
-const recognition: Record<AchievementsProps["mode"], { featured: Item & { figure: string; detail: string }; items: Item[] }> = {
-  web3: {
-    featured: {
-      icon: ChampionIcon,
-      figure: "1st place",
-      title: "Algorand Global Hackathon",
-      issuer: "Algorand",
-      detail: "Won with Secuda, a peer to peer marketplace for trading smart insurance covers.",
-      year: "2024",
-      kind: "Award",
-    },
-    items: [
-      { icon: Award01Icon, title: "Community Choice Award", issuer: "Crypto Cities Hackathon", year: "2025", kind: "Award" },
-      { icon: GitBranchIcon, title: "Maintainer, AmongFriends Protocol", issuer: "Peer to peer wagering without a middleman", year: "2025", kind: "Role" },
-      { icon: Certificate01Icon, title: "EDU Chain Developer Certificate", issuer: "EDU Chain Developer Program", year: "2025", kind: "Certificate" },
-      { icon: Certificate01Icon, title: "Ethereum Developer Certification", issuer: "Alchemy University", year: "2024", kind: "Certificate" },
-      { icon: Certificate01Icon, title: "Greenfield Certificate", issuer: "HackQuest", year: "2024", kind: "Certificate" },
-    ],
+type Cert = { title: string; issuer: string; year: string; mode: AchievementsProps["mode"] }
+
+const wins: Win[] = [
+  {
+    icon: ChampionIcon,
+    kind: "1st place",
+    title: "Algorand Global Hackathon",
+    org: "Algorand",
+    story: "Won with Secuda, a peer to peer marketplace for trading smart insurance covers.",
+    year: "2024",
+    mode: "web3",
+    featured: true,
   },
-  backend: {
-    featured: {
-      icon: PulseRectangle01Icon,
-      figure: "99.99%",
-      title: "Uptime on critical systems",
-      issuer: "Production",
-      detail: "Kept critical production systems available for more than a year straight.",
-      year: "2023 – 2024",
-      kind: "Milestone",
-    },
-    items: [
-      { icon: Certificate01Icon, title: "GitHub Actions for CI/CD DevOps Pipelines", issuer: "Professional certification", year: "2023", kind: "Certificate" },
-      { icon: Certificate01Icon, title: "Django for Everybody Specialization", issuer: "University of Michigan on Coursera", year: "2023", kind: "Certificate" },
-      { icon: Certificate01Icon, title: "Automate with Python", issuer: "Udemy", year: "2024", kind: "Certificate" },
-      { icon: Certificate01Icon, title: "Python Web Scraping and Automation with BS4 and Selenium", issuer: "Udemy", year: "2024", kind: "Certificate" },
-      { icon: Certificate01Icon, title: "PyTorch Ultimate Bootcamp: Python Deep Learning", issuer: "Udemy", year: "2024", kind: "Certificate" },
-    ],
+  {
+    icon: Award01Icon,
+    kind: "Community Choice Award",
+    title: "Crypto Cities Hackathon",
+    org: "Voted by the community",
+    story: "Voted the best project by the hackathon community.",
+    year: "2025",
+    mode: "web3",
   },
-}
+  {
+    icon: GitBranchIcon,
+    kind: "Maintainer",
+    title: "AmongFriends Protocol",
+    org: "Open protocol",
+    story: "Maintaining a protocol for peer to peer wagering without a middleman.",
+    year: "2025 – now",
+    mode: "web3",
+  },
+  {
+    icon: PulseRectangle01Icon,
+    kind: "99.99% uptime",
+    title: "Critical production systems",
+    org: "Backend operations",
+    story: "Kept critical systems available for more than a year straight.",
+    year: "2023 – 2024",
+    mode: "backend",
+    featured: true,
+  },
+]
+
+const certs: Cert[] = [
+  { title: "EDU Chain Developer Certificate", issuer: "EDU Chain", year: "2025", mode: "web3" },
+  { title: "Ethereum Developer Certification", issuer: "Alchemy University", year: "2024", mode: "web3" },
+  { title: "Greenfield Certificate", issuer: "HackQuest", year: "2024", mode: "web3" },
+  { title: "Automate with Python", issuer: "Udemy", year: "2024", mode: "backend" },
+  { title: "Python Web Scraping and Automation with BS4 and Selenium", issuer: "Udemy", year: "2024", mode: "backend" },
+  { title: "PyTorch Ultimate Bootcamp: Python Deep Learning", issuer: "Udemy", year: "2024", mode: "backend" },
+  { title: "Django for Everybody Specialization", issuer: "University of Michigan", year: "2023", mode: "backend" },
+  { title: "GitHub Actions for CI/CD DevOps Pipelines", issuer: "Professional certification", year: "2023", mode: "backend" },
+]
 
 export function Achievements({ mode }: AchievementsProps) {
-  const { featured, items } = recognition[mode]
+  // Wins are shown in both modes, with the current mode's first.
+  const orderedWins = [...wins.filter((w) => w.mode === mode), ...wins.filter((w) => w.mode !== mode)]
+  const modeCerts = certs.filter((c) => c.mode === mode)
 
   return (
-    <Section
-      id="recognition"
-      label="Recognition"
-      title={mode === "backend" ? "Proof beyond the code" : "Awards, roles, and certifications"}
-    >
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-12">
-        <Reveal className="min-w-0 lg:col-span-5">
-          <article className="flex h-full flex-col rounded-2xl bg-card p-8">
-            <div className="flex items-center justify-between">
-              <span className="flex size-12 items-center justify-center rounded-xl bg-background ring-1 ring-border">
-                <Icon icon={featured.icon} size={24} />
-              </span>
-              <span className="text-sm text-muted-foreground tabular-nums">{featured.year}</span>
-            </div>
-            <p className="text-hero mt-auto pt-16 text-6xl font-semibold tracking-tighter tabular-nums">{featured.figure}</p>
-            <h3 className="mt-4 text-xl font-semibold tracking-tight">{featured.title}</h3>
-            <p className="mt-2 text-base text-muted-foreground">{featured.detail}</p>
-          </article>
-        </Reveal>
+    <Section id="recognition" label="Recognition" title="Wins, roles, and the work behind them">
+      <ol className="border-t border-border">
+        {orderedWins.map((win, i) => {
+          const lead = win.featured && win.mode === mode
+          return (
+            <li key={win.title}>
+              <Reveal delay={Math.min(i * 60, 240)}>
+                <article className="group grid gap-4 border-b border-border py-8 md:grid-cols-12 md:gap-8">
+                  <p className="text-sm text-muted-foreground tabular-nums md:col-span-3 md:pt-1">{win.year}</p>
+                  <div className="md:col-span-5">
+                    <p className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground">
+                      <Icon icon={win.icon} size={16} />
+                      {win.org}
+                    </p>
+                    <h3
+                      className={cn(
+                        "mt-2 font-semibold tracking-tight transition-transform duration-500 ease-soft group-hover:translate-x-1",
+                        lead ? "text-3xl md:text-4xl" : "text-2xl",
+                      )}
+                    >
+                      <span className={cn("block", lead && "text-hero")}>{win.kind}</span>
+                      <span className="block text-muted-foreground">{win.title}</span>
+                    </h3>
+                  </div>
+                  <p className="text-base text-muted-foreground md:col-span-4 md:pt-8">{win.story}</p>
+                </article>
+              </Reveal>
+            </li>
+          )
+        })}
+      </ol>
 
-        <Reveal delay={80} className="min-w-0 lg:col-span-7">
-          <ul className="h-full rounded-2xl p-2 ring-1 ring-border">
-            {items.map((item) => (
-              <li
-                key={item.title}
-                className="flex items-center gap-4 rounded-lg p-4 transition-colors duration-300 ease-soft hover:bg-card"
-              >
-                <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-secondary text-muted-foreground">
-                  <Icon icon={item.icon} size={20} />
-                </span>
-                <div className="min-w-0 flex-1">
-                  <h3 className="text-base font-semibold">{item.title}</h3>
-                  <p className="mt-1 text-sm text-muted-foreground sm:truncate">
-                    {item.kind} · {item.issuer}
-                  </p>
-                </div>
-                <span className="shrink-0 text-sm text-muted-foreground tabular-nums">{item.year}</span>
-              </li>
-            ))}
-          </ul>
+      <div className="mt-16 grid gap-6 md:grid-cols-12 md:gap-8">
+        <Reveal className="md:col-span-3">
+          <h3 className="text-sm font-medium text-muted-foreground">
+            {mode === "backend" ? "Backend certifications" : "Web3 certifications"}
+          </h3>
         </Reveal>
+        <ul className="grid gap-4 sm:grid-cols-2 md:col-span-9 lg:grid-cols-3">
+          {modeCerts.map((cert, i) => (
+            <li key={cert.title}>
+              <Reveal delay={Math.min(i * 60, 240)} className="h-full">
+                <article className="flex h-full flex-col rounded-2xl bg-card p-6 transition-transform duration-500 ease-soft hover:-translate-y-1">
+                  <div className="flex items-center justify-between">
+                    <span className="flex size-10 items-center justify-center rounded-lg bg-background ring-1 ring-border">
+                      <Icon icon={Certificate01Icon} size={20} />
+                    </span>
+                    <span className="text-sm text-muted-foreground tabular-nums">{cert.year}</span>
+                  </div>
+                  <h4 className="mt-8 text-base font-semibold">{cert.title}</h4>
+                  <p className="mt-1 text-sm text-muted-foreground">{cert.issuer}</p>
+                </article>
+              </Reveal>
+            </li>
+          ))}
+        </ul>
       </div>
     </Section>
   )
