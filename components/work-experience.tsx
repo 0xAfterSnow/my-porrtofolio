@@ -1,7 +1,8 @@
 "use client"
 
 import { useState } from "react"
-import { Minus, Plus } from "@phosphor-icons/react"
+import { MinusSignIcon, PlusSignIcon } from "@hugeicons/core-free-icons"
+import { Icon } from "@/components/icon"
 import { cn } from "@/lib/utils"
 import { Reveal, Section, focusRing } from "@/components/section"
 
@@ -174,7 +175,7 @@ function ExperienceItem({ exp }: { exp: Experience }) {
               focusRing,
             )}
           >
-            {expanded ? <Minus size={14} weight="bold" /> : <Plus size={14} weight="bold" />}
+            <Icon icon={expanded ? MinusSignIcon : PlusSignIcon} size={14} />
             {expanded ? "Show less" : `${hidden} more highlights`}
           </button>
         )}

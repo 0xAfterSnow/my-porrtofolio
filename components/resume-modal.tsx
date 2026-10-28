@@ -1,7 +1,8 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { DownloadSimple } from "@phosphor-icons/react"
+import { Download04Icon } from "@hugeicons/core-free-icons"
+import { Icon } from "@/components/icon"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { createBrowserSupabaseClient } from "@/lib/supabase/client"
 import { buttonQuiet } from "@/components/section"
@@ -37,7 +38,7 @@ export function ResumeModal({ open, onOpenChange }: ResumeModalProps) {
             <DialogDescription className="text-sm">Shagbaor Agber, PDF</DialogDescription>
           </div>
           <a href={resumeUrl} download className={buttonQuiet + " text-sm"}>
-            <DownloadSimple size={16} weight="bold" />
+            <Icon icon={Download04Icon} size={16} />
             Download
           </a>
         </DialogHeader>

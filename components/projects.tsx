@@ -2,7 +2,8 @@
 
 import { useState } from "react"
 import Image from "next/image"
-import { ArrowUpRight, GithubLogo } from "@phosphor-icons/react"
+import { ArrowUpRight01Icon, GithubIcon } from "@hugeicons/core-free-icons"
+import { Icon } from "@/components/icon"
 import { cn } from "@/lib/utils"
 import { Reveal, Section, buttonQuiet, iconButton } from "@/components/section"
 
@@ -48,7 +49,7 @@ function ProjectCard({ project, featured }: { project: any; featured?: boolean }
                 aria-label={`Source code for ${project.title}`}
                 className={iconButton}
               >
-                <GithubLogo size={18} />
+                <Icon icon={GithubIcon} />
               </a>
             )}
             {project.demo && (
@@ -59,7 +60,7 @@ function ProjectCard({ project, featured }: { project: any; featured?: boolean }
                 aria-label={`Live version of ${project.title}`}
                 className={iconButton}
               >
-                <ArrowUpRight size={18} />
+                <Icon icon={ArrowUpRight01Icon} />
               </a>
             )}
           </div>
@@ -105,7 +106,7 @@ export function Projects({ mode, projects }: ProjectsProps) {
               className={cn(buttonQuiet, "-ml-3 mt-6")}
             >
               Browse my GitHub
-              <ArrowUpRight size={16} weight="bold" />
+              <Icon icon={ArrowUpRight01Icon} size={16} />
             </a>
           </div>
         </Reveal>

@@ -278,3 +278,29 @@
 .expand-in {
   animation: expand-in 500ms var(--ease-out-soft);
 }
+
+/* Hero code window: lines settle in one after another */
+@keyframes line-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.code-line {
+  animation: line-in 500ms var(--ease-out-soft) both;
+}
+
+/* Monochrome brand marks drawn from an SVG silhouette */
+.brand-mark {
+  display: inline-block;
+  flex-shrink: 0;
+  background-color: currentColor;
+  -webkit-mask: var(--mark) center / contain no-repeat;
+  mask: var(--mark) center / contain no-repeat;
+}

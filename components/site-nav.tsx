@@ -3,7 +3,8 @@
 import Link from "next/link"
 import { useEffect, useState } from "react"
 import { useTheme } from "next-themes"
-import { Moon, Sun } from "@phosphor-icons/react"
+import { Moon02Icon, Sun03Icon } from "@hugeicons/core-free-icons"
+import { Icon } from "@/components/icon"
 import { cn } from "@/lib/utils"
 import { focusRing, iconButton } from "@/components/section"
 
@@ -64,7 +65,7 @@ function ThemeButton() {
       className={iconButton}
       aria-label={isDark ? "Switch to light theme" : "Switch to dark theme"}
     >
-      {isDark ? <Sun size={18} /> : <Moon size={18} />}
+      <Icon icon={isDark ? Sun03Icon : Moon02Icon} />
     </button>
   )
 }

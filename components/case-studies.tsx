@@ -1,7 +1,8 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Plus } from "@phosphor-icons/react"
+import { PlusSignIcon } from "@hugeicons/core-free-icons"
+import { Icon } from "@/components/icon"
 import { cn } from "@/lib/utils"
 import { createClient } from "@/lib/supabase/client"
 import { Reveal, Section, focusRing } from "@/components/section"
@@ -89,9 +90,9 @@ export function CaseStudies({ mode }: CaseStudiesProps) {
                     >
                       <span className="text-xl font-semibold tracking-tight md:text-2xl">{study.title}</span>
                       <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-secondary transition-colors duration-300 ease-soft group-hover:bg-accent">
-                        <Plus
+                        <Icon
+                          icon={PlusSignIcon}
                           size={16}
-                          weight="bold"
                           className={cn("transition-transform duration-500 ease-soft", open && "rotate-45")}
                         />
                       </span>

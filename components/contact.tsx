@@ -2,11 +2,28 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
-import { ArrowUp, ArrowUpRight, Check, Copy, EnvelopeSimple } from "@phosphor-icons/react"
+import {
+  ArrowUp01Icon,
+  ArrowUpRight01Icon,
+  Copy01Icon,
+  GithubIcon,
+  Linkedin01Icon,
+  Mail01Icon,
+  NewTwitterIcon,
+  Tick02Icon,
+} from "@hugeicons/core-free-icons"
 import { cn } from "@/lib/utils"
+import { Icon } from "@/components/icon"
 import { ResumeModal } from "@/components/resume-modal"
 import { createBrowserSupabaseClient } from "@/lib/supabase/client"
 import { Reveal, buttonPrimary, buttonQuiet, focusRing, iconButton } from "@/components/section"
+
+const handle = (url: string) => "@" + url.replace(/\/+$/, "").split("/").pop()
+
+const footerLink = cn(
+  "inline-flex items-center gap-1 rounded-md px-2 py-1 transition-colors duration-300 ease-soft hover:text-foreground",
+  focusRing,
+)
 
 export function Contact({ mode }: { mode?: "backend" | "web3" }) {
   const [showResume, setShowResume] = useState(false)
@@ -23,10 +40,10 @@ export function Contact({ mode }: { mode?: "backend" | "web3" }) {
   }, [])
 
   const email = settings?.social_email || "snow@aftersnow.xyz"
-  const socials = [
-    { label: "GitHub", href: settings?.social_github || "https://github.com/CodeShagbaor/" },
-    { label: "LinkedIn", href: settings?.social_linkedin || "https://linkedin.com/in/shagbaoragber/" },
-    { label: "X", href: settings?.social_twitter || "https://x.com/CodeShagbaor" },
+  const channels = [
+    { label: "LinkedIn", icon: Linkedin01Icon, href: settings?.social_linkedin || "https://linkedin.com/in/shagbaoragber/" },
+    { label: "GitHub", icon: GithubIcon, href: settings?.social_github || "https://github.com/CodeShagbaor/" },
+    { label: "X", icon: NewTwitterIcon, href: settings?.social_twitter || "https://x.com/CodeShagbaor" },
   ]
 
   const copyEmail = async () => {
@@ -42,39 +59,77 @@ export function Contact({ mode }: { mode?: "backend" | "web3" }) {
   return (
     <>
       <section id="contact" className="scroll-mt-24 px-6 pt-24 pb-24">
-        <Reveal className="mx-auto max-w-6xl rounded-2xl bg-card px-6 py-16 md:px-16 md:py-24">
-          <h2 className="max-w-[680px] text-4xl font-semibold tracking-tight md:text-5xl">
-            Have something that needs building?
-          </h2>
-          <p className="mt-6 max-w-[560px] text-lg text-muted-foreground">
-            {mode === "web3"
-              ? "Tell me about the protocol, the chain, and what the contracts need to guarantee. I'll tell you honestly whether I'm the right fit."
-              : "Tell me about the product, the traffic you expect, and where things hurt today. I'll tell you honestly whether I'm the right fit."}
-          </p>
+        <Reveal className="mx-auto max-w-6xl">
+          <div className="grid gap-12 rounded-2xl bg-card p-6 md:p-12 lg:grid-cols-12 lg:gap-12 lg:p-16">
+            <div className="flex flex-col lg:col-span-7">
+              <p className="text-sm font-medium text-muted-foreground">Contact</p>
+              <h2 className="text-hero mt-4 max-w-[560px] pb-1 text-4xl font-semibold tracking-tighter md:text-5xl">
+                Have something that needs building?
+              </h2>
+              <p className="mt-6 max-w-[480px] text-lg text-muted-foreground">
+                {mode === "web3"
+                  ? "Tell me about the protocol, the chain, and what the contracts need to guarantee. I'll tell you honestly whether I'm the right fit."
+                  : "Tell me about the product, the traffic you expect, and where things hurt today. I'll tell you honestly whether I'm the right fit."}
+              </p>
+              <div className="mt-10 flex flex-wrap items-center gap-2 lg:mt-auto lg:pt-10">
+                <a href={`mailto:${email}`} className={buttonPrimary}>
+                  <Icon icon={Mail01Icon} size={18} />
+                  Email me
+                </a>
+                <button type="button" onClick={() => setShowResume(true)} className={buttonQuiet}>
+                  Read my resume
+                </button>
+              </div>
+            </div>
 
-          <div className="mt-10 flex flex-wrap items-center gap-2">
-            <a href={`mailto:${email}`} className={buttonPrimary}>
-              <EnvelopeSimple size={18} weight="bold" />
-              Email me
-            </a>
-            <button type="button" onClick={() => setShowResume(true)} className={buttonQuiet}>
-              Read my resume
-            </button>
-          </div>
-
-          <div className="mt-10 flex items-center gap-2 text-sm text-muted-foreground">
-            <span className="font-mono">{email}</span>
-            <button
-              type="button"
-              onClick={copyEmail}
-              className={cn(iconButton, "size-8")}
-              aria-label={copied ? "Email address copied" : "Copy email address"}
-            >
-              {copied ? <Check size={14} weight="bold" /> : <Copy size={14} />}
-            </button>
-            <span role="status" className="sr-only">
-              {copied ? "Email address copied" : ""}
-            </span>
+            <ul className="self-end rounded-xl bg-background p-2 ring-1 ring-border lg:col-span-5">
+              <li className="flex items-center gap-4 rounded p-4">
+                <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-secondary">
+                  <Icon icon={Mail01Icon} size={20} />
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block text-sm font-semibold">Email</span>
+                  <span className="block truncate font-mono text-sm text-muted-foreground">{email}</span>
+                </span>
+                <button
+                  type="button"
+                  onClick={copyEmail}
+                  className={iconButton}
+                  aria-label={copied ? "Email address copied" : "Copy email address"}
+                >
+                  <Icon icon={copied ? Tick02Icon : Copy01Icon} size={18} className={cn(copied && "text-emerald-500")} />
+                </button>
+                <span role="status" className="sr-only">
+                  {copied ? "Email address copied" : ""}
+                </span>
+              </li>
+              {channels.map(({ label, icon, href }) => (
+                <li key={label}>
+                  <a
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={cn(
+                      "group flex items-center gap-4 rounded p-4 transition-colors duration-300 ease-soft hover:bg-card",
+                      focusRing,
+                    )}
+                  >
+                    <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-secondary">
+                      <Icon icon={icon} size={20} />
+                    </span>
+                    <span className="min-w-0 flex-1">
+                      <span className="block text-sm font-semibold">{label}</span>
+                      <span className="block truncate text-sm text-muted-foreground">{handle(href)}</span>
+                    </span>
+                    <Icon
+                      icon={ArrowUpRight01Icon}
+                      size={18}
+                      className="mr-3 text-muted-foreground transition-transform duration-500 ease-soft group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-foreground"
+                    />
+                  </a>
+                </li>
+              ))}
+            </ul>
           </div>
         </Reveal>
       </section>
@@ -85,43 +140,15 @@ export function Contact({ mode }: { mode?: "backend" | "web3" }) {
             © {new Date().getFullYear()} {settings?.author_name || "Shagbaor Agber"}
           </p>
           <ul className="-ml-2 flex flex-wrap items-center gap-1">
-            {socials.map(({ label, href }) => (
-              <li key={label}>
-                <a
-                  href={href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={cn(
-                    "inline-flex items-center gap-1 rounded-md px-2 py-1 transition-colors duration-300 ease-soft hover:text-foreground",
-                    focusRing,
-                  )}
-                >
-                  {label}
-                  <ArrowUpRight size={12} />
-                </a>
-              </li>
-            ))}
             <li>
-              <Link
-                href="/blog"
-                className={cn(
-                  "inline-flex rounded-md px-2 py-1 transition-colors duration-300 ease-soft hover:text-foreground",
-                  focusRing,
-                )}
-              >
+              <Link href="/blog" className={footerLink}>
                 Blog
               </Link>
             </li>
             <li>
-              <a
-                href="#top"
-                className={cn(
-                  "inline-flex items-center gap-1 rounded-md px-2 py-1 transition-colors duration-300 ease-soft hover:text-foreground",
-                  focusRing,
-                )}
-              >
+              <a href="#top" className={footerLink}>
                 Back to top
-                <ArrowUp size={12} />
+                <Icon icon={ArrowUp01Icon} size={14} />
               </a>
             </li>
           </ul>
