@@ -1,251 +1,76 @@
 "use client"
 
-import React, { useState, useEffect, useRef } from "react"
-import { gsap } from "gsap"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
-import { ArrowRight } from "lucide-react"
 import Image from "next/image"
+import { Reveal, Section } from "@/components/section"
 
 interface SkillsProps {
   mode: "backend" | "web3"
 }
 
+type Skill = { name: string; icon?: string }
+
+const backendSkills: Skill[] = [
+  { name: "Python", icon: "/icons/python.svg" },
+  { name: "Django", icon: "/icons/django.svg" },
+  { name: "FastAPI", icon: "/icons/fastapi.svg" },
+  { name: "PostgreSQL", icon: "/icons/postgresql.svg" },
+  { name: "Redis", icon: "/icons/redis.svg" },
+  { name: "Docker", icon: "/icons/docker.svg" },
+  { name: "AWS", icon: "/icons/aws.svg" },
+  { name: "GraphQL", icon: "/icons/graphql.svg" },
+  { name: "Node.js" },
+  { name: "MongoDB" },
+  { name: "Kubernetes" },
+  { name: "System design" },
+]
+
+const web3Skills: Skill[] = [
+  { name: "Solidity", icon: "/icons/solidity.svg" },
+  { name: "Ethereum", icon: "/icons/ethereum.svg" },
+  { name: "Web3.js", icon: "/icons/web3js.svg" },
+  { name: "Hardhat", icon: "/icons/hardhat.svg" },
+  { name: "IPFS", icon: "/icons/ipfs-dark.svg" },
+  { name: "Smart contracts", icon: "/icons/file-type-solidity.svg" },
+  { name: "DeFi", icon: "/icons/defi.svg" },
+  { name: "NFTs", icon: "/icons/nfts.svg" },
+  { name: "Ethers.js" },
+  { name: "Chainlink" },
+  { name: "The Graph" },
+  { name: "Foundry" },
+]
+
 export function Skills({ mode }: SkillsProps) {
-  const backendSkills = [
-    { name: "Python", level: 95, icon: "/icons/python.svg" },
-    { name: "Django", level: 90, icon: "/icons/django.svg" },
-    { name: "FastAPI", level: 85, icon: "/icons/fastapi.svg" },
-    { name: "PostgreSQL", level: 88, icon: "/icons/postgresql.svg" },
-    { name: "Redis", level: 82, icon: "/icons/redis.svg" },
-    { name: "Docker", level: 87, icon: "/icons/docker.svg" },
-    { name: "AWS", level: 80, icon: "/icons/aws.svg" },
-    { name: "GraphQL", level: 83, icon: "/icons/graphql.svg" },
-    // Extended
-    { name: "Node.js", level: 85, icon: "/icons/nodejs.svg" },
-    { name: "MongoDB", level: 80, icon: "/icons/mongodb.svg" },
-    { name: "Kubernetes", level: 75, icon: "/icons/kubernetes.svg" },
-    { name: "System Design", level: 85, icon: "/icons/system-design.svg" },
-  ]
-
-  const web3Skills = [
-    { name: "Solidity", level: 92, icon: "/icons/solidity.svg" },
-    { name: "Ethereum", level: 90, icon: "/icons/ethereum.svg" },
-    { name: "Web3.js", level: 88, icon: "/icons/web3js.svg" },
-    { name: "Hardhat", level: 85, icon: "/icons/hardhat.svg" },
-    { name: "IPFS", level: 80, icon: "/icons/ipfs-dark.svg" },
-    { name: "Smart Contracts", level: 93, icon: "/icons/file-type-solidity.svg" },
-    { name: "DeFi", level: 87, icon: "/icons/defi.svg" },
-    { name: "NFTs", level: 84, icon: "/icons/nfts.svg" },
-    // Extended
-    { name: "Ethers.js", level: 86, icon: "/icons/ethers.svg" },
-    { name: "Chainlink", level: 82, icon: "/icons/chainlink.svg" },
-    { name: "The Graph", level: 78, icon: "/icons/thegraph.svg" },
-    { name: "Foundry", level: 80, icon: "/icons/foundry.svg" },
-  ]
-
-  const allSkills = mode === "backend" ? backendSkills : web3Skills
-  const displaySkills = allSkills.slice(0, 8)
-  const [hoveredSkill, setHoveredSkill] = useState<string | null>(null)
-  const floatingTextRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    if (!floatingTextRef.current) return
-
-    const texts = floatingTextRef.current.querySelectorAll(".floating-text")
-
-    texts.forEach((text, index) => {
-      gsap.to(text, {
-        y: "random(-30, 30)",
-        x: "random(-30, 30)",
-        rotation: "random(-15, 15)",
-        duration: "random(4, 6)",
-        repeat: -1,
-        yoyo: true,
-        ease: "sine.inOut",
-        delay: index * 0.3,
-      })
-    })
-  }, [mode])
+  const skills = mode === "backend" ? backendSkills : web3Skills
 
   return (
-    <section className="relative py-32 px-6 overflow-hidden">
-      {/* Animated background */}
-      <div className="absolute inset-0 cyber-grid opacity-20" />
-      <div className={`absolute inset-0 bg-gradient-to-b ${mode === "backend"
-        ? "from-primary/5 via-transparent to-muted/5"
-        : "from-muted/10 via-transparent to-muted/20"
-        }`}
-      />
-
-      <div ref={floatingTextRef} className="absolute inset-0 opacity-10 pointer-events-none overflow-hidden max-w-[100vw]">
-        <div
-          className="floating-text absolute text-3xl md:text-6xl font-bold text-primary/20"
-          style={{
-            left: "10%",
-            top: "20%",
-          }}
-        >
-          {mode === "backend" ? "API" : "WEB3"}
-        </div>
-        <div
-          className="floating-text absolute text-2xl md:text-5xl font-bold text-muted-foreground/20"
-          style={{
-            right: "15%",
-            top: "40%",
-          }}
-        >
-          {mode === "backend" ? "DB" : "DEFI"}
-        </div>
-        <div
-          className="floating-text absolute text-4xl md:text-7xl font-bold text-foreground/10"
-          style={{
-            left: "50%",
-            bottom: "25%",
-          }}
-        >
-          {mode === "backend" ? "OPS" : "NFT"}
-        </div>
-      </div>
-
-      <div className="max-w-7xl mx-auto relative z-10">
-        {/* Section Header */}
-        <div className="text-center mb-16">
-          <h2
-            className="text-5xl md:text-7xl font-bold mb-4 text-foreground"
-          >
-            {mode === "backend" ? "Backend Arsenal" : "Web3 Toolkit"}
-          </h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            {mode === "backend"
-              ? "Building scalable systems with cutting-edge backend technologies"
-              : "Crafting decentralized applications with blockchain expertise"}
-          </p>
-        </div>
-
-        {/* Skills Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {displaySkills.map((skill, index) => (
-            <div
-              key={skill.name}
-              className="group relative"
-              onMouseEnter={() => setHoveredSkill(skill.name)}
-              onMouseLeave={() => setHoveredSkill(null)}
-              style={{
-                animation: `fadeInUp 0.6s ease-out ${index * 0.1}s both`,
-              }}
-            >
-              <div
-                className={`glass-card p-6 rounded-2xl transition-all duration-500 ${hoveredSkill === skill.name ? "scale-110 -translate-y-2" : ""
-                  }`}
-                style={{
-                  boxShadow:
-                    hoveredSkill === skill.name
-                      ? mode === "backend"
-                        ? "0 20px 60px rgba(255, 255, 255, 0.2)"
-                        : "0 20px 60px rgba(161, 161, 170, 0.2)"
-                      : "none",
-                }}
-              >
-                <Image
-                  src={skill.icon}
-                  width={48}
-                  height={48}
-                  className="mb-4 transition-all duration-500 grayscale group-hover:grayscale-0 group-hover:scale-125 group-hover:rotate-12"
-                  alt={skill.name}
-                  onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
-                    const target = e.target as HTMLImageElement;
-                    if (target) target.src = "/icons/default.svg";
-                  }}
-                />
-
-                {/* Skill Name */}
-                <h3 className="text-xl font-bold mb-3 text-foreground">{skill.name}</h3>
-
-                {/* Progress Bar */}
-                <div className="relative h-2 bg-secondary rounded-full overflow-hidden">
-                  <div
-                    className={`absolute inset-y-0 left-0 rounded-full transition-all duration-1000 ${mode === "backend"
-                      ? "bg-gradient-to-r from-zinc-100 to-zinc-400"
-                      : "bg-gradient-to-r from-zinc-400 to-zinc-700"
-                      }`}
-                    style={{
-                      width: hoveredSkill === skill.name ? `${skill.level}%` : "0%",
-                      boxShadow:
-                        mode === "backend" ? "0 0 10px rgba(255, 255, 255, 0.5)" : "0 0 10px rgba(161, 161, 170, 0.5)",
-                    }}
-                  />
-                </div>
-
-                {/* Skill Level */}
-                <div className="mt-2 text-right">
-                  <span className="text-sm font-semibold text-muted-foreground">
-                    {skill.level}%
-                  </span>
-                </div>
+    <Section
+      id="stack"
+      label="Stack"
+      title={mode === "backend" ? "The tools I reach for on the server" : "The tools I reach for onchain"}
+      description={
+        mode === "backend"
+          ? "Python and Django first, with Postgres and Redis underneath and Docker on the way out."
+          : "Solidity first, tested in Hardhat and Foundry, wired to frontends with Ethers.js."
+      }
+    >
+      <ul className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4">
+        {skills.map((skill, i) => (
+          <li key={skill.name}>
+            <Reveal delay={Math.min(i * 40, 400)}>
+              <div className="flex items-center gap-3 rounded-2xl bg-card p-2 pr-4">
+                <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-white ring-1 ring-border">
+                  {skill.icon ? (
+                    <Image src={skill.icon} alt="" width={24} height={24} className="size-6 object-contain" />
+                  ) : (
+                    <span className="text-sm font-semibold text-neutral-900">{skill.name.charAt(0)}</span>
+                  )}
+                </span>
+                <span className="truncate text-sm font-medium">{skill.name}</span>
               </div>
-            </div>
-          ))}
-        </div>
-
-        {/* View More Button */}
-        <div className="mt-12 text-center">
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button size="lg" variant="outline" className="group rounded-full px-8 border-primary/20 hover:bg-primary/10 hover:border-primary/50 transition-all">
-                View Complete {mode === "backend" ? "Arsenal" : "Toolkit"}
-                <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-6xl w-full max-h-[85vh] overflow-y-auto glass-card border-primary/20">
-              <DialogHeader>
-                <DialogTitle className="text-3xl font-bold mb-6">
-                  Full {mode === "backend" ? "Backend Arsenal" : "Web3 Toolkit"}
-                </DialogTitle>
-              </DialogHeader>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {allSkills.map((skill) => (
-                  <div key={skill.name} className="flex items-center gap-4 p-4 rounded-xl border border-border bg-background/50 hover:bg-background/80 transition-colors">
-                    <Image
-                      src={skill.icon}
-                      alt={skill.name}
-                      width={40}
-                      height={40}
-                      className="grayscale hover:grayscale-0 transition-all duration-300"
-                      onError={(e: any) => { (e.target as HTMLImageElement).src = "/icons/default.svg" }}
-                    />
-                    <div className="flex-1">
-                      <h4 className="font-bold">{skill.name}</h4>
-                      <div className="w-full h-1.5 bg-secondary rounded-full mt-2 overflow-hidden">
-                        <div
-                          className="h-full bg-primary/70 rounded-full"
-                          style={{ width: `${skill.level}%` }}
-                        />
-                      </div>
-                    </div>
-                    <span className="text-xs font-mono font-bold">{skill.level}%</span>
-                  </div>
-                ))}
-              </div>
-            </DialogContent>
-          </Dialog>
-        </div>
-
-      </div>
-
-      <style jsx>{`
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-      `}</style>
-    </section >
+            </Reveal>
+          </li>
+        ))}
+      </ul>
+    </Section>
   )
 }

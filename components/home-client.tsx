@@ -6,8 +6,9 @@ import { Projects } from "@/components/projects"
 import { CaseStudies } from "@/components/case-studies"
 import { About } from "@/components/about"
 import { Contact } from "@/components/contact"
-import { ModeToggle } from "@/components/mode-toggle"
+import { SiteNav } from "@/components/site-nav"
 import { Skills } from "@/components/skills"
+import { Tagline } from "@/components/tagline"
 import { WorkExperience } from "@/components/work-experience"
 import { Testimonials } from "@/components/testimonials"
 import { Achievements } from "@/components/achievements"
@@ -18,38 +19,36 @@ interface HomeClientProps {
 
 export function HomeClient({ initialProjects }: HomeClientProps) {
     const [mode, setMode] = useState<"backend" | "web3">("backend")
-    const [isTransitioning, setIsTransitioning] = useState(false)
-    const [key, setKey] = useState(0)
+    const [fading, setFading] = useState(false)
 
+    // Fade the page out, swap content, then fade back in.
     const handleModeChange = (newMode: "backend" | "web3") => {
-        setIsTransitioning(true)
+        if (newMode === mode || fading) return
+        setFading(true)
         setTimeout(() => {
             setMode(newMode)
-            setKey((prev) => prev + 1)
-            setTimeout(() => setIsTransitioning(false), 100)
+            requestAnimationFrame(() => setFading(false))
         }, 300)
     }
 
     return (
         <>
-            <ModeToggle mode={mode} onModeChange={handleModeChange} />
-            <div
-                className={`min-h-screen transition-all duration-700 ${mode === "backend" ? "backend-mode" : "web3-mode"} ${isTransitioning ? "opacity-50 scale-[0.98]" : "opacity-100 scale-100"
-                    }`}
+            <SiteNav mode={mode} onModeChange={handleModeChange} />
+            <main
+                id="main"
+                className={`transition-opacity duration-300 ease-soft ${fading ? "opacity-0" : "opacity-100"}`}
             >
-
-                <main className="relative" key={key}>
-                    <Hero mode={mode} />
-                    <Skills mode={mode} />
-                    <Projects mode={mode} projects={initialProjects} />
-                    <WorkExperience mode={mode} />
-                    <Achievements mode={mode} />
-                    <CaseStudies mode={mode} />
-                    <Testimonials mode={mode} />
-                    <About mode={mode} />
-                    <Contact mode={mode} />
-                </main>
-            </div>
+                <Hero mode={mode} />
+                <Skills mode={mode} />
+                <Projects mode={mode} projects={initialProjects} />
+                <Tagline mode={mode} />
+                <WorkExperience mode={mode} />
+                <Achievements mode={mode} />
+                <CaseStudies mode={mode} />
+                <Testimonials mode={mode} />
+                <About mode={mode} />
+                <Contact mode={mode} />
+            </main>
         </>
     )
 }
