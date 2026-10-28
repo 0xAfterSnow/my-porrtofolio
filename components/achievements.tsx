@@ -1,8 +1,9 @@
 "use client"
 
+import { useEffect, useRef, useState } from "react"
+import Image from "next/image"
 import {
   Award01Icon,
-  Certificate01Icon,
   ChampionIcon,
   GitBranchIcon,
   PulseRectangle01Icon,
@@ -23,7 +24,7 @@ type Win = {
   story: string
   year: string
   mode: AchievementsProps["mode"]
-  featured?: boolean
+  image?: string
 }
 
 type Cert = { title: string; issuer: string; year: string; mode: AchievementsProps["mode"] }
@@ -37,7 +38,7 @@ const wins: Win[] = [
     story: "Won with Secuda, a peer to peer marketplace for trading smart insurance covers.",
     year: "2024",
     mode: "web3",
-    featured: true,
+    image: "/secuda.png",
   },
   {
     icon: Award01Icon,
@@ -54,8 +55,9 @@ const wins: Win[] = [
     title: "AmongFriends Protocol",
     org: "Open protocol",
     story: "Maintaining a protocol for peer to peer wagering without a middleman.",
-    year: "2025 – now",
+    year: "2025",
     mode: "web3",
+    image: "/web3-betting-dapp.jpg",
   },
   {
     icon: PulseRectangle01Icon,
@@ -63,9 +65,8 @@ const wins: Win[] = [
     title: "Critical production systems",
     org: "Backend operations",
     story: "Kept critical systems available for more than a year straight.",
-    year: "2023 – 2024",
+    year: "2024",
     mode: "backend",
-    featured: true,
   },
 ]
 
@@ -74,75 +75,145 @@ const certs: Cert[] = [
   { title: "Ethereum Developer Certification", issuer: "Alchemy University", year: "2024", mode: "web3" },
   { title: "Greenfield Certificate", issuer: "HackQuest", year: "2024", mode: "web3" },
   { title: "Automate with Python", issuer: "Udemy", year: "2024", mode: "backend" },
-  { title: "Python Web Scraping and Automation with BS4 and Selenium", issuer: "Udemy", year: "2024", mode: "backend" },
-  { title: "PyTorch Ultimate Bootcamp: Python Deep Learning", issuer: "Udemy", year: "2024", mode: "backend" },
+  { title: "Python Web Scraping and Automation", issuer: "Udemy", year: "2024", mode: "backend" },
+  { title: "PyTorch Ultimate Bootcamp", issuer: "Udemy", year: "2024", mode: "backend" },
   { title: "Django for Everybody Specialization", issuer: "University of Michigan", year: "2023", mode: "backend" },
-  { title: "GitHub Actions for CI/CD DevOps Pipelines", issuer: "Professional certification", year: "2023", mode: "backend" },
+  { title: "GitHub Actions for CI/CD Pipelines", issuer: "Professional certification", year: "2023", mode: "backend" },
 ]
 
+const pad = (n: number) => String(n + 1).padStart(2, "0")
+
+// Floating preview that trails the cursor while a row is hovered (mouse only).
+function HoverPreview({ win }: { win: Win | null }) {
+  const ref = useRef<HTMLDivElement>(null)
+  const target = useRef({ x: 0, y: 0 })
+  const pos = useRef({ x: 0, y: 0 })
+  const last = useRef<Win | null>(null)
+  if (win) last.current = win
+  const shown = last.current
+
+  useEffect(() => {
+    let frame = 0
+    const onMove = (e: PointerEvent) => {
+      target.current = { x: e.clientX, y: e.clientY }
+    }
+    const tick = () => {
+      pos.current.x += (target.current.x - pos.current.x) * 0.15
+      pos.current.y += (target.current.y - pos.current.y) * 0.15
+      if (ref.current) {
+        ref.current.style.transform = `translate3d(${pos.current.x + 24}px, ${pos.current.y - 120}px, 0)`
+      }
+      frame = requestAnimationFrame(tick)
+    }
+    window.addEventListener("pointermove", onMove)
+    frame = requestAnimationFrame(tick)
+    return () => {
+      window.removeEventListener("pointermove", onMove)
+      cancelAnimationFrame(frame)
+    }
+  }, [])
+
+  return (
+    <div ref={ref} aria-hidden className="pointer-events-none fixed top-0 left-0 z-40 hidden [@media(hover:hover)]:block">
+      <div
+        className={cn(
+          "w-72 rounded-2xl bg-card p-2 shadow-[0_24px_64px_-24px_rgb(0_0_0/0.5)] ring-1 ring-border transition-[opacity,transform] duration-500 ease-soft",
+          win ? "scale-100 opacity-100" : "scale-90 opacity-0",
+        )}
+      >
+        {shown && (
+          <>
+            <div className="relative flex aspect-[4/3] items-center justify-center overflow-hidden rounded-lg bg-background">
+              {shown.image ? (
+                <Image src={shown.image} alt="" fill sizes="288px" className="object-cover" />
+              ) : (
+                <Icon icon={shown.icon} size={48} className="text-muted-foreground" />
+              )}
+            </div>
+            <p className="px-2 pt-3 pb-2 text-sm text-muted-foreground">{shown.story}</p>
+          </>
+        )}
+      </div>
+    </div>
+  )
+}
+
 export function Achievements({ mode }: AchievementsProps) {
-  // Wins are shown in both modes, with the current mode's first.
-  const orderedWins = [...wins.filter((w) => w.mode === mode), ...wins.filter((w) => w.mode !== mode)]
+  const [active, setActive] = useState<number | null>(null)
+  // Wins show in both modes, with the current mode's first.
+  const ordered = [...wins.filter((w) => w.mode === mode), ...wins.filter((w) => w.mode !== mode)]
   const modeCerts = certs.filter((c) => c.mode === mode)
 
   return (
-    <Section id="recognition" label="Recognition" title="Wins, roles, and the work behind them">
-      <ol className="border-t border-border">
-        {orderedWins.map((win, i) => {
-          const lead = win.featured && win.mode === mode
-          return (
-            <li key={win.title}>
-              <Reveal delay={Math.min(i * 60, 240)}>
-                <article className="group grid gap-4 border-b border-border py-8 md:grid-cols-12 md:gap-8">
-                  <p className="text-sm text-muted-foreground tabular-nums md:col-span-3 md:pt-1">{win.year}</p>
-                  <div className="md:col-span-5">
-                    <p className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground">
-                      <Icon icon={win.icon} size={16} />
-                      {win.org}
-                    </p>
-                    <h3
-                      className={cn(
-                        "mt-2 font-semibold tracking-tight transition-transform duration-500 ease-soft group-hover:translate-x-1",
-                        lead ? "text-3xl md:text-4xl" : "text-2xl",
-                      )}
-                    >
-                      <span className={cn("block", lead && "text-hero")}>{win.kind}</span>
-                      <span className="block text-muted-foreground">{win.title}</span>
-                    </h3>
-                  </div>
-                  <p className="text-base text-muted-foreground md:col-span-4 md:pt-8">{win.story}</p>
-                </article>
-              </Reveal>
-            </li>
-          )
-        })}
+    <Section id="recognition" label="Recognition" title="Wins, roles, and certifications">
+      <ol className="border-t border-border" onMouseLeave={() => setActive(null)}>
+        {ordered.map((win, i) => (
+          <li key={win.title}>
+            <Reveal delay={Math.min(i * 60, 240)}>
+              <article
+                onMouseEnter={() => setActive(i)}
+                className={cn(
+                  "relative grid grid-cols-[auto_1fr_auto] gap-x-4 gap-y-1 border-b border-border py-6 transition-opacity duration-500 ease-soft md:grid-cols-12 md:items-baseline md:gap-8 md:py-8",
+                  active !== null && active !== i && "opacity-40",
+                )}
+              >
+                <span className="font-mono text-sm text-muted-foreground md:col-span-1">{pad(i)}</span>
+                <h3
+                  className={cn(
+                    "text-2xl font-semibold tracking-tight transition-transform duration-500 ease-soft md:col-span-6 md:text-3xl",
+                    active === i && "md:translate-x-2",
+                  )}
+                >
+                  {win.kind}
+                  <span className="text-muted-foreground"> · {win.title}</span>
+                </h3>
+                <span className="text-sm text-muted-foreground tabular-nums md:order-last md:col-span-2 md:text-right">
+                  {win.year}
+                </span>
+                <p className="col-start-2 col-end-4 inline-flex items-center gap-2 text-sm text-muted-foreground md:col-span-3">
+                  <Icon icon={win.icon} size={16} />
+                  {win.org}
+                </p>
+                <p className="col-start-2 col-end-4 mt-2 text-sm text-muted-foreground md:hidden">{win.story}</p>
+                <span
+                  aria-hidden
+                  className={cn(
+                    "absolute -bottom-px left-0 h-px w-full origin-left bg-foreground transition-transform duration-700 ease-soft",
+                    active === i ? "scale-x-100" : "scale-x-0",
+                  )}
+                />
+              </article>
+            </Reveal>
+          </li>
+        ))}
       </ol>
 
-      <div className="mt-16 grid gap-6 md:grid-cols-12 md:gap-8">
+      <div className="mt-20 grid gap-6 md:grid-cols-12 md:gap-8">
         <Reveal className="md:col-span-3">
-          <h3 className="text-sm font-medium text-muted-foreground">
-            {mode === "backend" ? "Backend certifications" : "Web3 certifications"}
-          </h3>
+          <h3 className="text-sm font-medium text-muted-foreground">Certifications</h3>
+          <p className="mt-1 text-sm text-muted-foreground">
+            {modeCerts.length} {mode === "backend" ? "backend" : "Web3"} courses and programs
+          </p>
         </Reveal>
-        <ul className="grid gap-4 sm:grid-cols-2 md:col-span-9 lg:grid-cols-3">
+        <ol className="grid gap-x-8 sm:grid-cols-2 md:col-span-9">
           {modeCerts.map((cert, i) => (
             <li key={cert.title}>
-              <Reveal delay={Math.min(i * 60, 240)} className="h-full">
-                <article className="flex h-full flex-col rounded-2xl bg-card p-6 transition-transform duration-500 ease-soft hover:-translate-y-1">
-                  <div className="flex items-center justify-between">
-                    <span className="flex size-10 items-center justify-center rounded-lg bg-background ring-1 ring-border">
-                      <Icon icon={Certificate01Icon} size={20} />
-                    </span>
-                    <span className="text-sm text-muted-foreground tabular-nums">{cert.year}</span>
+              <Reveal delay={(i % 2) * 60}>
+                <div className="flex items-baseline gap-4 border-b border-border py-4">
+                  <span className="font-mono text-xs text-muted-foreground">{pad(i)}</span>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-base font-medium">{cert.title}</p>
+                    <p className="text-sm text-muted-foreground">{cert.issuer}</p>
                   </div>
-                  <h4 className="mt-8 text-base font-semibold">{cert.title}</h4>
-                  <p className="mt-1 text-sm text-muted-foreground">{cert.issuer}</p>
-                </article>
+                  <span className="text-sm text-muted-foreground tabular-nums">{cert.year}</span>
+                </div>
               </Reveal>
             </li>
           ))}
-        </ul>
+        </ol>
       </div>
+
+      <HoverPreview win={active !== null ? ordered[active] : null} />
     </Section>
   )
 }

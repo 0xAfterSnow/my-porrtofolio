@@ -310,6 +310,27 @@
   }
 }
 
+/* Hero name: each word rises out of a mask */
+@keyframes name-rise {
+  from {
+    transform: translateY(105%);
+  }
+
+  to {
+    transform: none;
+  }
+}
+
+.name-rise {
+  animation: name-rise 1000ms var(--ease-out-soft) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .name-rise {
+    animation: none;
+  }
+}
+
 /* Monochrome brand marks drawn from an SVG silhouette */
 .brand-mark {
   display: inline-block;
