@@ -2,13 +2,8 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
-import {
-  ArrowUp01Icon,
-  GithubIcon,
-  Linkedin01Icon,
-  Mail01Icon,
-  NewTwitterIcon,
-} from "@hugeicons/core-free-icons"
+import { ArrowUp01Icon, Mail01Icon } from "@hugeicons/core-free-icons"
+import { GitHubLogo, LinkedInLogo, XLogo } from "@/components/brand-logos"
 import { cn } from "@/lib/utils"
 import { GITHUB_USERNAME, type Contributions } from "@/lib/github"
 import { Icon } from "@/components/icon"
@@ -43,9 +38,9 @@ export function Contact({ mode, contributions }: ContactProps) {
   }, [])
 
   const socials = [
-    { label: "GitHub", icon: GithubIcon, href: `https://github.com/${GITHUB_USERNAME}` },
-    { label: "LinkedIn", icon: Linkedin01Icon, href: settings?.social_linkedin || "https://linkedin.com/in/shagbaoragber/" },
-    { label: "X", icon: NewTwitterIcon, href: settings?.social_twitter || "https://x.com/0xAfterSnow" },
+    { label: "GitHub", logo: <GitHubLogo size={18} />, href: `https://github.com/${GITHUB_USERNAME}` },
+    { label: "LinkedIn", logo: <LinkedInLogo size={17} />, href: settings?.social_linkedin || "https://linkedin.com/in/shagbaoragber/" },
+    { label: "X", logo: <XLogo size={16} />, href: settings?.social_twitter || "https://x.com/0xAfterSnow" },
   ]
 
   return (
@@ -79,7 +74,7 @@ export function Contact({ mode, contributions }: ContactProps) {
                 <ContributionGraph data={contributions} username={GITHUB_USERNAME} />
               </div>
               <ul className="mt-3 flex items-center gap-2">
-                {socials.map(({ label, icon, href }) => (
+                {socials.map(({ label, logo, href }) => (
                   <li key={label}>
                     <a
                       href={href}
@@ -91,7 +86,7 @@ export function Contact({ mode, contributions }: ContactProps) {
                         focusRing,
                       )}
                     >
-                      <Icon icon={icon} size={18} />
+                      {logo}
                     </a>
                   </li>
                 ))}

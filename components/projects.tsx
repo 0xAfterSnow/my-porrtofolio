@@ -2,7 +2,8 @@
 
 import { useState } from "react"
 import Image from "next/image"
-import { ArrowUpRight01Icon, GithubIcon } from "@hugeicons/core-free-icons"
+import { ArrowUpRight01Icon } from "@hugeicons/core-free-icons"
+import { GitHubLogo } from "@/components/brand-logos"
 import { Icon } from "@/components/icon"
 import { cn } from "@/lib/utils"
 import { Reveal, Section, buttonQuiet, iconButton } from "@/components/section"
@@ -49,7 +50,7 @@ function ProjectCard({ project, featured }: { project: any; featured?: boolean }
                 aria-label={`Source code for ${project.title}`}
                 className={iconButton}
               >
-                <Icon icon={GithubIcon} />
+                <GitHubLogo size={18} />
               </a>
             )}
             {project.demo && (

@@ -2,14 +2,9 @@
 
 import { useEffect, useState } from "react"
 import Image from "next/image"
-import {
-  ArrowDown01Icon,
-  GithubIcon,
-  Linkedin01Icon,
-  Mail01Icon,
-  NewTwitterIcon,
-} from "@hugeicons/core-free-icons"
+import { ArrowDown01Icon, Mail01Icon } from "@hugeicons/core-free-icons"
 import { Icon } from "@/components/icon"
+import { GitHubLogo, LinkedInLogo, XLogo } from "@/components/brand-logos"
 import { ResumeModal } from "@/components/resume-modal"
 import { Reveal, buttonPrimary, buttonQuiet, iconButton } from "@/components/section"
 
@@ -53,10 +48,10 @@ const teams = [
 ]
 
 const socials = [
-  { href: "https://github.com/0xAfterSnow/", label: "GitHub", icon: GithubIcon },
-  { href: "https://linkedin.com/in/shagbaoragber/", label: "LinkedIn", icon: Linkedin01Icon },
-  { href: "https://x.com/0xAfterSnow", label: "X", icon: NewTwitterIcon },
-  { href: "mailto:snow@aftersnow.xyz", label: "Email", icon: Mail01Icon },
+  { href: "https://github.com/0xAfterSnow/", label: "GitHub", logo: <GitHubLogo size={18} /> },
+  { href: "https://linkedin.com/in/shagbaoragber/", label: "LinkedIn", logo: <LinkedInLogo size={17} /> },
+  { href: "https://x.com/0xAfterSnow", label: "X", logo: <XLogo size={16} /> },
+  { href: "mailto:snow@aftersnow.xyz", label: "Email", logo: <Icon icon={Mail01Icon} size={18} /> },
 ]
 
 function useLocalTime(timeZone: string) {
@@ -136,7 +131,7 @@ export function Hero({ mode, avatarUrl }: HeroProps) {
                 Read my resume
               </button>
               <ul className="flex items-center sm:ml-2 sm:border-l sm:border-border sm:pl-2">
-                {socials.map(({ href, label, icon }) => (
+                {socials.map(({ href, label, logo }) => (
                   <li key={label}>
                     <a
                       href={href}
@@ -144,7 +139,7 @@ export function Hero({ mode, avatarUrl }: HeroProps) {
                       className={iconButton}
                       {...(href.startsWith("http") ? { target: "_blank", rel: "noopener noreferrer" } : {})}
                     >
-                      <Icon icon={icon} size={18} />
+                      {logo}
                     </a>
                   </li>
                 ))}
