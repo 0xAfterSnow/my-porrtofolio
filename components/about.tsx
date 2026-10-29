@@ -36,7 +36,7 @@ export function About({ mode }: AboutProps) {
               <article
                 className={cn(
                   "h-full rounded-2xl bg-card p-6 ring-1 ring-border transition-opacity duration-500 ease-soft md:p-8",
-                  current ? "ring-foreground" : "opacity-60 hover:opacity-100",
+                  !current && "opacity-60 hover:opacity-100",
                 )}
               >
                 <div className="flex items-center justify-between gap-4">
