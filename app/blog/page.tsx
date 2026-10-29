@@ -107,7 +107,7 @@ export default async function BlogPage({ searchParams }: { searchParams: Promise
 
                     {posts.length === 0 ? (
                         <Reveal>
-                            <div className="mt-12 rounded-2xl bg-card p-8 md:p-12">
+                            <div className="mt-12 rounded-2xl bg-card p-8 ring-1 ring-border md:p-12">
                                 <h2 className="text-xl font-semibold">Nothing in this category yet</h2>
                                 <p className="mt-2 max-w-md text-muted-foreground">
                                     New posts land here first. In the meantime, the rest of the writing is one click away.

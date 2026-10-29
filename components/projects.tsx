@@ -19,7 +19,7 @@ function ProjectCard({ project, featured }: { project: any; featured?: boolean }
   return (
     <article
       className={cn(
-        "group flex h-full flex-col gap-2 rounded-2xl bg-card p-2",
+        "group flex h-full flex-col gap-2 rounded-2xl bg-card p-2 ring-1 ring-border transition-shadow duration-300 ease-soft hover:ring-foreground/40",
         featured && "md:grid md:grid-cols-5 md:gap-2",
       )}
     >
@@ -95,7 +95,7 @@ export function Projects({ mode, projects }: ProjectsProps) {
     >
       {filtered.length === 0 ? (
         <Reveal>
-          <div className="rounded-2xl bg-card p-8 md:p-12">
+          <div className="rounded-2xl bg-card p-8 ring-1 ring-border md:p-12">
             <h3 className="text-xl font-semibold">Write ups are on the way</h3>
             <p className="mt-2 max-w-md text-muted-foreground">
               I'm still documenting these projects. In the meantime, most of the code is public on GitHub.

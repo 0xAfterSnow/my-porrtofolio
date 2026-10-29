@@ -117,7 +117,7 @@ export function CaseStudies({ mode }: CaseStudiesProps) {
                       {study.metrics && Object.keys(study.metrics).length > 0 && (
                         <ul className="mt-8 flex flex-wrap gap-2">
                           {Object.entries(study.metrics).map(([key, value]) => (
-                            <li key={key} className="rounded-lg bg-card px-3 py-2 text-sm font-semibold tabular-nums">
+                            <li key={key} className="rounded-lg bg-card px-3 py-2 text-sm font-semibold tabular-nums ring-1 ring-border">
                               {value as string}
                             </li>
                           ))}

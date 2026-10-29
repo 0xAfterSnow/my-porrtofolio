@@ -35,14 +35,14 @@ export function About({ mode }: AboutProps) {
             <Reveal key={d.key} delay={i * 80} className="h-full">
               <article
                 className={cn(
-                  "h-full rounded-2xl bg-card p-6 transition-opacity duration-500 ease-soft md:p-8",
-                  !current && "opacity-60 hover:opacity-100",
+                  "h-full rounded-2xl bg-card p-6 ring-1 ring-border transition-opacity duration-500 ease-soft md:p-8",
+                  current ? "ring-foreground" : "opacity-60 hover:opacity-100",
                 )}
               >
                 <div className="flex items-center justify-between gap-4">
                   <h3 className="text-xl font-semibold tracking-tight">{d.title}</h3>
                   {current && (
-                    <span className="rounded-md bg-background px-2 py-1 text-xs font-medium text-muted-foreground">
+                    <span className="rounded-md bg-foreground px-2 py-1 text-xs font-medium text-background">
                       Viewing now
                     </span>
                   )}

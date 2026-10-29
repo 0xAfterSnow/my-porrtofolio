@@ -123,7 +123,7 @@ export function Skills({ mode }: SkillsProps) {
         {core.map((tool, i) => (
           <li key={tool.name}>
             <Reveal delay={i * 80} className="h-full">
-              <div className="group h-full rounded-2xl bg-card p-6 transition-transform duration-500 ease-soft hover:-translate-y-1">
+              <div className="group h-full rounded-2xl bg-card p-6 ring-1 ring-border transition-[transform,box-shadow] duration-500 ease-soft hover:-translate-y-1 hover:ring-foreground/40">
                 <span className="flex size-12 items-center justify-center rounded-xl bg-background text-foreground ring-1 ring-border">
                   <Mark tool={tool} size={24} />
                 </span>

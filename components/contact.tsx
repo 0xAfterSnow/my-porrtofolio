@@ -47,7 +47,7 @@ export function Contact({ mode, contributions }: ContactProps) {
     <>
       <section id="contact" className="scroll-mt-24 px-6 pt-24 pb-24">
         <Reveal className="mx-auto max-w-6xl">
-          <div className="grid gap-12 rounded-2xl bg-card p-6 md:p-12 lg:grid-cols-12 lg:gap-12 lg:p-16">
+          <div className="grid gap-12 rounded-2xl bg-card p-6 ring-1 ring-border md:p-12 lg:grid-cols-12 lg:gap-12 lg:p-16">
             <div className="flex flex-col lg:col-span-6">
               <p className="text-sm font-medium text-muted-foreground">Contact</p>
               <h2 className="text-hero mt-4 max-w-[560px] pb-1 text-4xl font-semibold tracking-tighter md:text-5xl">
