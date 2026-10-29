@@ -9,9 +9,9 @@ import { Icon } from "@/components/icon"
 import { focusRing, iconButton } from "@/components/section"
 
 const links = [
-  { href: "/#projects", label: "Work" },
-  { href: "/#about", label: "About" },
-  { href: "/#contact", label: "Contact" },
+  { href: "/#projects", label: "Work", key: "work" },
+  { href: "/#about", label: "About", key: "about" },
+  { href: "/#contact", label: "Contact", key: "contact" },
 ]
 
 const linkClass = cn(
@@ -19,7 +19,7 @@ const linkClass = cn(
   focusRing,
 )
 
-export function BlogNavbar() {
+export function BlogNavbar({ current = "blog" }: { current?: "blog" | "work" }) {
   const { resolvedTheme, setTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
   useEffect(() => setMounted(true), [])
@@ -35,15 +35,23 @@ export function BlogNavbar() {
           Shagbaor
         </Link>
         <ul className="flex items-center">
-          {links.map(({ href, label }) => (
+          {links.map(({ href, label, key }) => (
             <li key={href} className="hidden sm:block">
-              <Link href={href} className={cn(linkClass, "text-muted-foreground hover:text-foreground")}>
+              <Link
+                href={href}
+                aria-current={current === key ? "page" : undefined}
+                className={cn(linkClass, current === key ? "text-foreground" : "text-muted-foreground hover:text-foreground")}
+              >
                 {label}
               </Link>
             </li>
           ))}
           <li>
-            <Link href="/blog" aria-current="page" className={cn(linkClass, "text-foreground")}>
+            <Link
+              href="/blog"
+              aria-current={current === "blog" ? "page" : undefined}
+              className={cn(linkClass, current === "blog" ? "text-foreground" : "text-muted-foreground hover:text-foreground")}
+            >
               Blog
             </Link>
           </li>

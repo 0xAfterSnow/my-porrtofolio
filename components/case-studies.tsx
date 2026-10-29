@@ -1,24 +1,16 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { PlusSignIcon } from "@hugeicons/core-free-icons"
+import Link from "next/link"
+import { ArrowUpRight01Icon } from "@hugeicons/core-free-icons"
 import { Icon } from "@/components/icon"
 import { cn } from "@/lib/utils"
 import { createClient } from "@/lib/supabase/client"
+import { normalizeCaseStudy, readingTimeFor, type CaseStudy } from "@/lib/case-study"
 import { Reveal, Section, focusRing } from "@/components/section"
 
 interface CaseStudiesProps {
   mode: "backend" | "web3"
-}
-
-type CaseStudy = {
-  id: string
-  title: string
-  category: string
-  challenge: string
-  solution: string
-  results: string
-  metrics: Record<string, any>
 }
 
 function CaseStudySkeleton() {
@@ -35,7 +27,6 @@ function CaseStudySkeleton() {
 }
 
 export function CaseStudies({ mode }: CaseStudiesProps) {
-  const [openId, setOpenId] = useState<string | null>(null)
   const [caseStudies, setCaseStudies] = useState<CaseStudy[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -50,7 +41,7 @@ export function CaseStudies({ mode }: CaseStudiesProps) {
         .order("created_at", { ascending: false })
 
       if (data) {
-        setCaseStudies(data)
+        setCaseStudies(data.map(normalizeCaseStudy))
       }
       setLoading(false)
     }
@@ -66,65 +57,38 @@ export function CaseStudies({ mode }: CaseStudiesProps) {
       id="case-studies"
       label="Case studies"
       title="Problems worth writing up"
-      description="The challenge, what I built, and what changed afterwards."
+      description="The brief, how I approached it, and what I'd change next time."
     >
       {loading ? (
         <CaseStudySkeleton />
       ) : (
         <ul className="divide-y divide-border border-y border-border">
           {caseStudies.map((study) => {
-            const open = openId === study.id
+            const meta = [study.context, study.timeframe, `${readingTimeFor(study)} min read`].filter(Boolean)
             return (
-              <li key={study.id}>
+              <li key={study.id ?? study.slug}>
                 <Reveal>
-                  <h3>
-                    <button
-                      type="button"
-                      onClick={() => setOpenId(open ? null : study.id)}
-                      aria-expanded={open}
-                      aria-controls={`case-${study.id}`}
-                      className={cn(
-                        "group flex w-full items-center justify-between gap-6 rounded-lg py-8 text-left",
-                        focusRing,
-                      )}
-                    >
-                      <span className="text-xl font-semibold tracking-tight md:text-2xl">{study.title}</span>
-                      <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-secondary transition-colors duration-300 ease-soft group-hover:bg-accent">
-                        <Icon
-                          icon={PlusSignIcon}
-                          size={16}
-                          className={cn("transition-transform duration-500 ease-soft", open && "rotate-45")}
-                        />
+                  <Link
+                    href={`/case-studies/${study.slug}`}
+                    className={cn("group flex items-start justify-between gap-6 rounded-lg py-8", focusRing)}
+                  >
+                    <span className="min-w-0">
+                      <span className="block text-sm text-muted-foreground">{meta.join(" · ")}</span>
+                      <h3 className="mt-2 text-xl font-semibold tracking-tight decoration-1 underline-offset-4 group-hover:underline md:text-2xl">
+                        {study.title}
+                      </h3>
+                      <span className="mt-2 block max-w-[640px] text-base text-muted-foreground">
+                        {study.subtitle || study.description}
                       </span>
-                    </button>
-                  </h3>
-
-                  {open && (
-                    <div id={`case-${study.id}`} className="expand-in pb-10">
-                      <div className="grid gap-8 md:grid-cols-3">
-                        {[
-                          { label: "Challenge", text: study.challenge },
-                          { label: "Solution", text: study.solution },
-                          { label: "Results", text: study.results },
-                        ].map(({ label, text }) => (
-                          <div key={label}>
-                            <h4 className="text-sm font-medium text-muted-foreground">{label}</h4>
-                            <p className="mt-2 text-base">{text}</p>
-                          </div>
-                        ))}
-                      </div>
-
-                      {study.metrics && Object.keys(study.metrics).length > 0 && (
-                        <ul className="mt-8 flex flex-wrap gap-2">
-                          {Object.entries(study.metrics).map(([key, value]) => (
-                            <li key={key} className="rounded-lg bg-card px-3 py-2 text-sm font-semibold tabular-nums ring-1 ring-border">
-                              {value as string}
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-                    </div>
-                  )}
+                    </span>
+                    <span className="mt-1 flex size-10 shrink-0 items-center justify-center rounded-full ring-1 ring-border transition-[background-color,color,box-shadow] duration-300 ease-soft group-hover:bg-foreground group-hover:text-background group-hover:ring-foreground">
+                      <Icon
+                        icon={ArrowUpRight01Icon}
+                        size={16}
+                        className="transition-transform duration-500 ease-soft group-hover:rotate-45"
+                      />
+                    </span>
+                  </Link>
                 </Reveal>
               </li>
             )
