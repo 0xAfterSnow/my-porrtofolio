@@ -133,16 +133,6 @@ export default async function BlogPostPage({ params }: Props) {
                         </h1>
 
                         {post.excerpt && <p className="mt-6 text-xl text-muted-foreground">{post.excerpt}</p>}
-
-                        {post.tags && post.tags.length > 0 && (
-                            <ul className="mt-8 flex flex-wrap gap-2">
-                                {post.tags.map((tag: string) => (
-                                    <li key={tag} className="rounded-md bg-card px-2 py-1 text-xs font-medium text-muted-foreground ring-1 ring-border">
-                                        {tag}
-                                    </li>
-                                ))}
-                            </ul>
-                        )}
                     </header>
 
                     {post.cover_image && (
@@ -162,6 +152,22 @@ export default async function BlogPostPage({ params }: Props) {
 
                     <div className="mx-auto mt-16 max-w-3xl">
                         <BlogContent content={post.content} />
+
+                        {post.tags && post.tags.length > 0 && (
+                            <div className="mt-16 flex flex-wrap items-center gap-3">
+                                <p className="text-sm text-muted-foreground">Tagged</p>
+                                <ul className="flex flex-wrap gap-2">
+                                    {post.tags.map((tag: string) => (
+                                        <li
+                                            key={tag}
+                                            className="rounded-full px-3 py-1 text-sm font-medium ring-1 ring-border"
+                                        >
+                                            {tag}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
                     </div>
                 </article>
 

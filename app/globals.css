@@ -341,6 +341,47 @@
   }
 }
 
+/* Article code. Doubled class beats both the typography plugin and the Prism theme. */
+.blog-prose.blog-prose :not(pre) > code {
+  background: var(--secondary);
+  color: var(--foreground);
+  border-radius: 6px;
+  padding: 2px 6px;
+  font-size: 0.875em;
+  font-weight: 400;
+}
+
+.blog-prose.blog-prose :not(pre) > code::before,
+.blog-prose.blog-prose :not(pre) > code::after,
+.blog-prose.blog-prose pre code::before,
+.blog-prose.blog-prose pre code::after {
+  content: none;
+}
+
+/* Code blocks stay dark in both themes so the syntax colours read well. */
+.blog-prose.blog-prose pre {
+  background: #0a0a0a;
+  color: #e5e5e5;
+  border: 1px solid #272727;
+  border-radius: 12px;
+  margin: 32px 0;
+  padding: 20px 24px;
+  overflow-x: auto;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.blog-prose.blog-prose pre code {
+  background: transparent;
+  color: inherit;
+  border-radius: 0;
+  padding: 0;
+  font-size: inherit;
+  font-weight: 400;
+  text-shadow: none;
+  white-space: pre;
+}
+
 /* Monochrome brand marks drawn from an SVG silhouette */
 .brand-mark {
   display: inline-block;
