@@ -12,13 +12,15 @@ import { Tagline } from "@/components/tagline"
 import { WorkExperience } from "@/components/work-experience"
 import { Testimonials } from "@/components/testimonials"
 import { Achievements } from "@/components/achievements"
+import type { Contributions } from "@/lib/github"
 
 interface HomeClientProps {
     initialProjects: any[]
     avatarUrl?: string | null
+    contributions: Contributions | null
 }
 
-export function HomeClient({ initialProjects, avatarUrl }: HomeClientProps) {
+export function HomeClient({ initialProjects, avatarUrl, contributions }: HomeClientProps) {
     const [mode, setMode] = useState<"backend" | "web3">("backend")
     const [fading, setFading] = useState(false)
 
@@ -48,7 +50,7 @@ export function HomeClient({ initialProjects, avatarUrl }: HomeClientProps) {
                 <CaseStudies mode={mode} />
                 <Testimonials mode={mode} />
                 <About mode={mode} />
-                <Contact mode={mode} />
+                <Contact mode={mode} contributions={contributions} />
             </main>
         </>
     )

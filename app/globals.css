@@ -25,6 +25,11 @@
   --input: #e4e4e4;
   --ring: #0f0f0f;
   --radius: 0.5rem;
+  --contrib-0: #ebebeb;
+  --contrib-1: #fecaca;
+  --contrib-2: #f87171;
+  --contrib-3: #dc2626;
+  --contrib-4: #991b1b;
   --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
@@ -47,6 +52,11 @@
   --destructive-foreground: #000000;
   --border: #272727;
   --input: #313131;
+  --contrib-0: #1f1f1f;
+  --contrib-1: #3f1a1a;
+  --contrib-2: #6b1f1f;
+  --contrib-3: #a51d1d;
+  --contrib-4: #e5161b;
   --ring: #f5f5f5;
   --chart-1: #e5e5e5;
   --chart-2: #b3b3b3;
