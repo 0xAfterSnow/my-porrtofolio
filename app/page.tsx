@@ -12,5 +12,7 @@ export default async function Home() {
     .order("featured", { ascending: false })
     .order("created_at", { ascending: false })
 
-  return <HomeClient initialProjects={projects || []} />
+  const { data: settings } = await supabase.from("site_settings").select("author_avatar_url").single()
+
+  return <HomeClient initialProjects={projects || []} avatarUrl={settings?.author_avatar_url} />
 }

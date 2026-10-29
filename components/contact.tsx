@@ -39,7 +39,7 @@ export function Contact({ mode }: { mode?: "backend" | "web3" }) {
     fetchSettings()
   }, [])
 
-  const email = settings?.social_email || "snow@aftersnow.xyz"
+  const email = "snow@aftersnow.xyz"
   const channels = [
     { label: "LinkedIn", icon: Linkedin01Icon, href: settings?.social_linkedin || "https://linkedin.com/in/shagbaoragber/" },
     { label: "GitHub", icon: GithubIcon, href: settings?.social_github || "https://github.com/CodeShagbaor/" },

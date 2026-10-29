@@ -1,6 +1,7 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useState } from "react"
+import Image from "next/image"
 import {
   ArrowDown01Icon,
   GithubIcon,
@@ -14,16 +15,14 @@ import { Reveal, buttonPrimary, buttonQuiet, iconButton } from "@/components/sec
 
 interface HeroProps {
   mode: "backend" | "web3"
+  avatarUrl?: string | null
 }
-
-type Stat = { value: number; suffix: string; label: string; decimals?: number }
 
 const content: Record<HeroProps["mode"], {
   role: string
   statement: string
   intro: string
   status: { live: boolean; text: string }
-  stats: Stat[]
 }> = {
   backend: {
     role: "Backend engineer",
@@ -31,11 +30,6 @@ const content: Record<HeroProps["mode"], {
     intro:
       "I design the APIs, data models, and infrastructure behind products that need to grow without falling over. Mostly Python and Django, on Postgres.",
     status: { live: true, text: "Now senior backend developer at Asterverse" },
-    stats: [
-      { value: 5, suffix: "+", label: "Years shipping production backends" },
-      { value: 5, suffix: "", label: "Backend teams since 2019" },
-      { value: 99.99, suffix: "%", decimals: 2, label: "Uptime held on critical systems" },
-    ],
   },
   web3: {
     role: "Smart contract developer",
@@ -43,11 +37,6 @@ const content: Record<HeroProps["mode"], {
     intro:
       "I write, test, and audit Solidity for marketplaces, wagering protocols, and onchain ad networks, across EVM chains and Algorand.",
     status: { live: false, text: "Latest: smart contract developer at AdChain" },
-    stats: [
-      { value: 1, suffix: "st", label: "Place at Algorand Global Hackathon" },
-      { value: 90, suffix: "%+", label: "Test coverage on contract suites" },
-      { value: 6, suffix: "", label: "Contracts shipped for Secuda" },
-    ],
   },
 }
 
@@ -82,52 +71,13 @@ function useLocalTime(timeZone: string) {
   return time
 }
 
-// Counts up from zero the first time the number scrolls into view.
-function CountUp({ value, suffix, decimals = 0 }: { value: number; suffix: string; decimals?: number }) {
-  const ref = useRef<HTMLSpanElement>(null)
-  const [display, setDisplay] = useState(value.toFixed(decimals))
-
-  useEffect(() => {
-    const el = ref.current
-    if (!el || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return
-    setDisplay((0).toFixed(decimals))
-
-    let frame = 0
-    const observer = new IntersectionObserver(([entry]) => {
-      if (!entry.isIntersecting) return
-      observer.disconnect()
-      const start = performance.now()
-      const duration = 1400
-      const tick = (now: number) => {
-        const t = Math.min((now - start) / duration, 1)
-        const eased = 1 - Math.pow(1 - t, 4)
-        setDisplay((value * eased).toFixed(decimals))
-        if (t < 1) frame = requestAnimationFrame(tick)
-      }
-      frame = requestAnimationFrame(tick)
-    })
-    observer.observe(el)
-    return () => {
-      observer.disconnect()
-      cancelAnimationFrame(frame)
-    }
-  }, [value, decimals])
-
-  return (
-    <span ref={ref} className="tabular-nums">
-      {display}
-      {suffix}
-    </span>
-  )
-}
-
-export function Hero({ mode }: HeroProps) {
+export function Hero({ mode, avatarUrl }: HeroProps) {
   const [showResume, setShowResume] = useState(false)
   const copy = content[mode]
   const time = useLocalTime("Africa/Lagos")
 
   return (
-    <section id="top" className="flex min-h-[100dvh] flex-col justify-end pt-32 pb-12">
+    <section id="top" className="flex min-h-[100dvh] flex-col justify-center pt-32 pb-12">
       <div className="mx-auto w-full max-w-6xl px-6">
         <Reveal>
           <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted-foreground">
@@ -147,13 +97,25 @@ export function Hero({ mode }: HeroProps) {
         </Reveal>
 
         <h1 aria-label={`Shagbaor Agber, ${copy.role}`} className="mt-8">
-          <span aria-hidden className="block pb-2 text-6xl font-semibold leading-none tracking-tighter sm:text-8xl lg:text-9xl">
+          <span
+            aria-hidden
+            className="flex flex-wrap items-center gap-x-4 pb-2 text-6xl font-semibold leading-none tracking-tighter sm:gap-x-6 sm:text-8xl lg:text-9xl"
+          >
+            {avatarUrl && (
+              <span className="inline-block overflow-hidden">
+                <span className="name-rise relative block size-14 overflow-hidden rounded-2xl bg-card ring-1 ring-border sm:size-20 lg:size-28">
+                  <Image src={avatarUrl} alt="" fill priority sizes="112px" className="object-cover" />
+                </span>
+              </span>
+            )}
             {["Shagbaor", "Agber"].map((word, i) => (
-              <span key={word} className="inline-block overflow-hidden pr-[0.08em] align-bottom">
-                <span className="name-rise text-hero inline-block pb-[0.06em]" style={{ animationDelay: `${i * 120}ms` }}>
+              <span key={word} className="inline-block overflow-hidden pr-[0.04em]">
+                <span
+                  className="name-rise text-hero inline-block pb-[0.06em]"
+                  style={{ animationDelay: `${(i + 1) * 120}ms` }}
+                >
                   {word}
                 </span>
-                {i === 0 && " "}
               </span>
             ))}
           </span>
@@ -191,18 +153,6 @@ export function Hero({ mode }: HeroProps) {
           </Reveal>
         </div>
 
-        <Reveal delay={400}>
-          <dl className="mt-16 grid grid-cols-3 divide-x divide-border rounded-2xl bg-card ring-1 ring-border">
-            {copy.stats.map((stat) => (
-              <div key={stat.label} className="flex flex-col-reverse justify-end p-4 md:p-6">
-                <dt className="mt-2 text-xs text-muted-foreground md:text-sm">{stat.label}</dt>
-                <dd className="text-3xl font-semibold tracking-tight md:text-5xl">
-                  <CountUp value={stat.value} suffix={stat.suffix} decimals={stat.decimals} />
-                </dd>
-              </div>
-            ))}
-          </dl>
-        </Reveal>
       </div>
 
       <Reveal delay={500} className="mt-12">

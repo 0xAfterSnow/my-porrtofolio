@@ -15,9 +15,10 @@ import { Achievements } from "@/components/achievements"
 
 interface HomeClientProps {
     initialProjects: any[]
+    avatarUrl?: string | null
 }
 
-export function HomeClient({ initialProjects }: HomeClientProps) {
+export function HomeClient({ initialProjects, avatarUrl }: HomeClientProps) {
     const [mode, setMode] = useState<"backend" | "web3">("backend")
     const [fading, setFading] = useState(false)
 
@@ -38,7 +39,7 @@ export function HomeClient({ initialProjects }: HomeClientProps) {
                 id="main"
                 className={`transition-opacity duration-300 ease-soft ${fading ? "opacity-0" : "opacity-100"}`}
             >
-                <Hero mode={mode} />
+                <Hero mode={mode} avatarUrl={avatarUrl} />
                 <Skills mode={mode} />
                 <Projects mode={mode} projects={initialProjects} />
                 <Tagline mode={mode} />
