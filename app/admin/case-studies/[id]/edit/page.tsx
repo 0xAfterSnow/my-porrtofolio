@@ -15,8 +15,8 @@ export default async function EditCaseStudyPage({ params }: { params: Promise<{ 
   return (
     <div className="space-y-6 max-w-4xl">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Edit Case Study</h1>
-        <p className="text-muted-foreground">Update case study details</p>
+        <h1 className="text-3xl font-bold tracking-tight">Edit case study</h1>
+        <p className="text-muted-foreground">Sections left empty are hidden on the public page.</p>
       </div>
 
       <CaseStudyForm study={study} />

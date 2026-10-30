@@ -1,60 +1,76 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Card, CardContent } from "@/components/ui/card"
-import { Github, Linkedin, Twitter } from "lucide-react"
+import Image from "next/image"
 import Link from "next/link"
+import { ArrowRight02Icon } from "@hugeicons/core-free-icons"
+import { cn } from "@/lib/utils"
+import { focusRing } from "@/lib/styles"
+import { Icon } from "@/components/icon"
+import { GitHubLogo, LinkedInLogo, XLogo } from "@/components/brand-logos"
 
 interface AuthorCardProps {
     settings: any // Typing 'any' for now as we don't have a strict type for settings yet
 }
 
+const pill = cn(
+    "inline-flex items-center gap-2 rounded-full px-3 py-2 text-sm font-semibold ring-1 ring-border transition-[background-color,color,box-shadow] duration-300 ease-soft hover:bg-foreground hover:text-background hover:ring-foreground active:scale-[0.98]",
+    focusRing,
+)
+
 export function AuthorCard({ settings }: AuthorCardProps) {
     const authorName = settings?.author_name || "Shagbaor Agber"
-    const authorBio = settings?.author_bio || settings?.site_description || "Backend Engineer & Web3 Enthusiast. Building scalable systems and decentralized applications."
-    const avatarUrl = settings?.author_avatar_url || "/placeholder-avatar.jpg" // Fallback
-    const github = settings?.social_github
-    const linkedin = settings?.social_linkedin
-    const twitter = settings?.social_twitter
+    const rawBio =
+        settings?.author_bio ||
+        settings?.site_description ||
+        "Backend engineer and smart contract developer. I build APIs that stay up and contracts that hold real value."
+    // The saved bio often opens with the name, which already sits right above it.
+    const escapedName = authorName.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+    const authorBio = rawBio.replace(new RegExp(`^${escapedName}\\s*[—–-]\\s*`), "")
+    const avatarUrl = settings?.author_avatar_url
+    const socials = [
+        { href: settings?.social_github || "https://github.com/0xAfterSnow/", label: "GitHub", logo: <GitHubLogo size={16} /> },
+        { href: settings?.social_linkedin || "https://linkedin.com/in/shagbaoragber/", label: "LinkedIn", logo: <LinkedInLogo size={15} /> },
+        { href: settings?.social_twitter || "https://x.com/0xAfterSnow", label: "X", logo: <XLogo size={14} /> },
+    ]
 
     return (
-        <Card className="bg-zinc-50/50 dark:bg-zinc-900/50 border-zinc-200 dark:border-zinc-800 backdrop-blur-sm">
-            <CardContent className="p-8 flex flex-col sm:flex-row items-center sm:items-start gap-6 text-center sm:text-left">
-                <Avatar className="h-24 w-24 border-2 border-background shadow-xl">
-                    <AvatarImage src={avatarUrl} alt={authorName} className="object-cover" />
-                    <AvatarFallback className="text-2xl font-bold bg-primary/10 text-primary">
-                        {authorName.charAt(0)}
-                    </AvatarFallback>
-                </Avatar>
-
-                <div className="flex-1 space-y-3">
+        <section aria-label="About the author" className="border-y border-border py-10">
+            <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex items-center gap-4">
+                    <span className="relative flex size-16 shrink-0 items-center justify-center overflow-hidden rounded-full bg-foreground text-lg font-semibold text-background ring-1 ring-border">
+                        {avatarUrl ? (
+                            <Image src={avatarUrl} alt={authorName} fill sizes="64px" className="object-cover" />
+                        ) : (
+                            "SA"
+                        )}
+                    </span>
                     <div>
-                        <h3 className="text-xl font-bold mb-1">{authorName}</h3>
-                        <p className="text-muted-foreground text-sm leading-relaxed max-w-2xl">
-                            {authorBio}
-                        </p>
-                    </div>
-
-                    <div className="flex items-center justify-center sm:justify-start gap-4">
-                        {twitter && (
-                            <Link href={twitter} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
-                                <Twitter className="h-5 w-5" />
-                                <span className="sr-only">Twitter</span>
-                            </Link>
-                        )}
-                        {github && (
-                            <Link href={github} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
-                                <Github className="h-5 w-5" />
-                                <span className="sr-only">GitHub</span>
-                            </Link>
-                        )}
-                        {linkedin && (
-                            <Link href={linkedin} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
-                                <Linkedin className="h-5 w-5" />
-                                <span className="sr-only">LinkedIn</span>
-                            </Link>
-                        )}
+                        <p className="text-sm text-muted-foreground">Written by</p>
+                        <h2 className="text-2xl font-semibold tracking-tight">{authorName}</h2>
                     </div>
                 </div>
-            </CardContent>
-        </Card>
+                <Link
+                    href="/"
+                    className={cn(
+                        "group inline-flex items-center gap-2 self-start rounded-lg px-3 py-2 text-sm font-semibold transition-colors duration-300 ease-soft hover:bg-secondary sm:self-auto",
+                        focusRing,
+                    )}
+                >
+                    View portfolio
+                    <Icon icon={ArrowRight02Icon} size={16} className="transition-transform duration-500 ease-soft group-hover:translate-x-1" />
+                </Link>
+            </div>
+
+            <p className="mt-6 max-w-[640px] text-base text-foreground/80">{authorBio}</p>
+
+            <ul className="mt-6 flex flex-wrap gap-2">
+                {socials.map(({ href, label, logo }) => (
+                    <li key={label}>
+                        <a href={href} target="_blank" rel="noopener noreferrer" className={pill}>
+                            {logo}
+                            {label}
+                        </a>
+                    </li>
+                ))}
+            </ul>
+        </section>
     )
 }

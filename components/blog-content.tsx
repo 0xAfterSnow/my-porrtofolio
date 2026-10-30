@@ -26,18 +26,17 @@ export function BlogContent({ content }: { content: string }) {
     return (
         <div
             ref={contentRef}
-            className="prose prose-lg dark:prose-invert max-w-none
-        prose-headings:font-bold 
-        prose-h1:text-4xl prose-h2:text-3xl prose-h3:text-2xl
-        prose-p:text-muted-foreground prose-p:leading-relaxed
-        prose-a:text-primary prose-a:no-underline hover:prose-a:underline
-        prose-strong:font-semibold
-        prose-code:text-accent prose-code:bg-secondary prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:before:content-none prose-code:after:content-none
-        prose-pre:bg-secondary prose-pre:border prose-pre:border-border
-        prose-blockquote:border-l-primary prose-blockquote:text-muted-foreground
-        prose-ul:text-muted-foreground prose-ol:text-muted-foreground
-        prose-li:marker:text-primary
-        prose-img:rounded-lg prose-img:shadow-lg"
+            className="blog-prose prose prose-lg max-w-none dark:prose-invert
+        prose-headings:scroll-mt-28 prose-headings:font-semibold prose-headings:tracking-tight
+        prose-h2:mt-16 prose-h2:text-3xl prose-h3:mt-10 prose-h3:text-2xl
+        prose-p:text-foreground/80 prose-li:text-foreground/80 prose-li:marker:text-muted-foreground
+        prose-a:font-medium prose-a:text-foreground prose-a:underline prose-a:decoration-border prose-a:underline-offset-4 hover:prose-a:decoration-foreground
+        prose-strong:font-semibold prose-strong:text-foreground
+        prose-blockquote:border-l-2 prose-blockquote:border-foreground prose-blockquote:font-normal prose-blockquote:not-italic prose-blockquote:text-foreground
+        prose-img:rounded-xl prose-hr:border-border
+        prose-table:text-base prose-th:text-foreground"
+            // Prism highlights code blocks on page load, before hydration, so the markup differs on purpose.
+            suppressHydrationWarning
             dangerouslySetInnerHTML={{ __html: content }}
         />
     )

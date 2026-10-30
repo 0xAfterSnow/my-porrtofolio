@@ -58,6 +58,13 @@ export default async function CaseStudiesPage() {
                 <Button asChild variant="outline" size="sm" className="flex-1 bg-transparent">
                   <Link href={`/admin/case-studies/${study.id}/edit`}>Edit</Link>
                 </Button>
+                {study.published && (
+                  <Button asChild variant="ghost" size="sm">
+                    <Link href={`/case-studies/${study.slug}`} target="_blank">
+                      View
+                    </Link>
+                  </Button>
+                )}
                 <CaseStudyActions studyId={study.id} />
               </div>
             </CardContent>

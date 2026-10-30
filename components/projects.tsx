@@ -1,192 +1,142 @@
 "use client"
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { ExternalLink, Sparkles, Github, ArrowRight } from "lucide-react"
-import Link from "next/link"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
+import { useState } from "react"
 import Image from "next/image"
+import { ArrowUpRight01Icon } from "@hugeicons/core-free-icons"
+import { GitHubLogo } from "@/components/brand-logos"
+import { Icon } from "@/components/icon"
+import { cn } from "@/lib/utils"
+import { Reveal, Section, buttonQuiet, iconButton } from "@/components/section"
 
 interface ProjectsProps {
   mode: "backend" | "web3"
   projects: any[]
 }
 
+const PREVIEW_COUNT = 5
 
-export function Projects({ mode, projects }: ProjectsProps) {
-  // Filter projects based on mode
-  const filteredProjects = projects.filter(
-    (project) => project.category === mode || project.category === "both"
-  )
-
-  // Sort by featured then created_at (assuming passed projects might not be perfectly sorted for the filter subset)
-  // Actually, if we sort the main list, the subset remains sorted.
-  // But let's be safe or just rely on server sort. Server sort is better.
-
-  // Limit to 6 for preview
-  const displayedProjects = filteredProjects.slice(0, 6)
-
+function ProjectCard({ project, featured }: { project: any; featured?: boolean }) {
   return (
-    <section id="projects" className="relative py-32 px-6 overflow-hidden">
-      <div className="absolute inset-0 cyber-grid opacity-30" />
+    <article
+      className={cn(
+        "group flex h-full flex-col gap-2 rounded-2xl bg-card p-2 ring-1 ring-border transition-shadow duration-300 ease-soft hover:ring-foreground/40",
+        featured && "md:grid md:grid-cols-5 md:gap-2",
+      )}
+    >
+      <div
+        className={cn(
+          "relative aspect-[16/10] overflow-hidden rounded-lg bg-secondary",
+          featured && "md:col-span-3 md:aspect-auto md:min-h-80",
+        )}
+      >
+        <Image
+          src={project.image || "/placeholder.svg"}
+          alt={`Screenshot of ${project.title}`}
+          fill
+          sizes={featured ? "(min-width: 768px) 60vw, 100vw" : "(min-width: 768px) 50vw, 100vw"}
+          className="object-cover transition-transform duration-500 ease-soft group-hover:scale-[1.03]"
+        />
+      </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto">
-        <div className="text-center mb-20">
-          <div className="flex items-center justify-center gap-3 mb-6">
-            <Sparkles className="h-8 w-8 text-primary animate-glow-pulse" />
-            <h2 className="text-5xl md:text-6xl font-bold">
-              Featured{" "}
-              <span className="text-foreground animate-glow-pulse">{mode === "backend" ? "Backend" : "Web3"}</span>{" "}
-              Projects
-            </h2>
+      <div className={cn("flex flex-1 flex-col p-4", featured && "md:col-span-2 md:p-6")}>
+        <div className="flex items-start justify-between gap-4">
+          <h3 className={cn("text-lg font-semibold tracking-tight", featured && "md:text-2xl")}>{project.title}</h3>
+          <div className="-mt-2 -mr-2 flex shrink-0">
+            {project.github && (
+              <a
+                href={project.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`Source code for ${project.title}`}
+                className={iconButton}
+              >
+                <GitHubLogo size={18} />
+              </a>
+            )}
+            {project.demo && (
+              <a
+                href={project.demo}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`Live version of ${project.title}`}
+                className={iconButton}
+              >
+                <Icon icon={ArrowUpRight01Icon} />
+              </a>
+            )}
           </div>
-          <p className="text-xl md:text-2xl text-muted-foreground font-light">
-            Building scalable systems that power real-world applications
-          </p>
         </div>
 
-        {filteredProjects.length === 0 ? (
-          <div className="text-center py-12">
-            <p className="text-muted-foreground text-lg">No projects available yet.</p>
-          </div>
-        ) : (
-          <>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {displayedProjects.map((project) => (
-                <Card
-                  key={project.id}
-                  className="group relative glass-card hover:border-primary transition-all duration-500 hover:scale-[1.02] overflow-hidden p-0 pb-3"
-                >
-                  <div className="absolute inset-0 bg-gradient-to-br from-primary/0 via-primary/0 to-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+        <p className={cn("mt-2 text-sm text-muted-foreground", featured ? "line-clamp-6" : "line-clamp-3")}>
+          {project.description}
+        </p>
 
-                  <div className="relative overflow-hidden rounded-t-lg h-56 w-full">
-                    <Image
-                      src={project.image || "/placeholder.svg"}
-                      alt={project.title}
-                      fill
-                      className="object-cover grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-card via-card/50 to-transparent pointer-events-none" />
+        {project.impact && <p className="mt-4 text-sm font-medium">{project.impact}</p>}
 
-                    <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-primary/30 to-transparent" />
-                  </div>
-
-                  <CardHeader>
-                    <CardTitle className="flex items-center justify-between text-xl">
-                      <span className="font-bold">{project.title}</span>
-                      <div className="flex gap-2">
-                        {project.github && (
-                          <Link href={project.github} target="_blank" rel="noopener noreferrer">
-                            <Github className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors duration-300" />
-                          </Link>
-                        )}
-                        {project.demo && (
-                          <Link href={project.demo} target="_blank" rel="noopener noreferrer">
-                            <ExternalLink className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors duration-300" />
-                          </Link>
-                        )}
-                      </div>
-                    </CardTitle>
-                    <CardDescription className="text-base text-justify line-clamp-3">{project.description}</CardDescription>
-                  </CardHeader>
-
-                  <CardContent className="space-y-5">
-                    {project.impact && project.impact !== "" ? (
-                      <div className="flex items-start gap-2">
-                        <Sparkles className="h-4 w-4 text-accent mt-0.5 flex-shrink-0" />
-                        <p className="text-sm text-accent font-medium leading-relaxed line-clamp-2">{project.impact}</p>
-                      </div>
-                    ) : (
-                      <div className="flex items-start gap-2 h-5">
-                        {/* Spacer to align cards */}
-                      </div>
-                    )}
-
-                    <div className="flex flex-wrap gap-2">
-                      {project.tech.map((tech: string, i: number) => (
-                        <Badge
-                          key={i}
-                          variant="secondary"
-                          className="text-xs font-semibold px-3 py-1 bg-secondary/80 hover:bg-primary hover:text-primary-foreground transition-colors"
-                        >
-                          {tech}
-                        </Badge>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-
-            {/* View More Button */}
-            <div className="mt-16 text-center">
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button size="lg" variant="outline" className="group rounded-full px-8 border-primary/20 hover:bg-primary/10 hover:border-primary/50 transition-all">
-                    View All Projects
-                    <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="sm:max-w-[95vw] w-full max-h-[95vh] overflow-y-auto glass-card border-primary/20 p-8">
-                  <DialogHeader>
-                    <DialogTitle className="text-3xl font-bold mb-8 text-center">
-                      All {mode === "backend" ? "Backend" : "Web3"} Projects
-                    </DialogTitle>
-                  </DialogHeader>
-
-                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {filteredProjects.map((project) => (
-                      <Card
-                        key={project.id}
-                        className="group relative glass-card hover:border-primary transition-all duration-500 overflow-hidden p-0 pb-3"
-                      >
-                        <div className="relative overflow-hidden rounded-t-lg h-48 w-full">
-                          <Image
-                            src={project.image || "/placeholder.svg"}
-                            alt={project.title}
-                            fill
-                            className="object-cover grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700"
-                          />
-                          <div className="absolute inset-0 bg-gradient-to-t from-card via-card/50 to-transparent pointer-events-none" />
-                        </div>
-
-                        <CardHeader>
-                          <CardTitle className="flex items-center justify-between text-lg">
-                            <span className="font-bold">{project.title}</span>
-                            <div className="flex gap-2">
-                              {project.github && (
-                                <Link href={project.github} target="_blank" rel="noopener noreferrer">
-                                  <Github className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
-                                </Link>
-                              )}
-                              {project.demo && (
-                                <Link href={project.demo} target="_blank" rel="noopener noreferrer">
-                                  <ExternalLink className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
-                                </Link>
-                              )}
-                            </div>
-                          </CardTitle>
-                          <CardDescription className="text-sm line-clamp-3">{project.description}</CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                          <div className="flex flex-wrap gap-2">
-                            {project.tech.map((tech: string, i: number) => (
-                              <Badge key={i} variant="secondary" className="text-[10px] px-2 py-0.5">
-                                {tech}
-                              </Badge>
-                            ))}
-                          </div>
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
-                </DialogContent>
-              </Dialog>
-            </div>
-          </>
+        {project.tech?.length > 0 && (
+          <p className="mt-auto pt-6 text-xs text-muted-foreground">{project.tech.join(" · ")}</p>
         )}
       </div>
-    </section>
+    </article>
+  )
+}
+
+export function Projects({ mode, projects }: ProjectsProps) {
+  const [showAll, setShowAll] = useState(false)
+  const filtered = projects.filter((project) => project.category === mode || project.category === "both")
+  const visible = showAll ? filtered : filtered.slice(0, PREVIEW_COUNT)
+
+  return (
+    <Section
+      id="projects"
+      label="Selected work"
+      title={mode === "backend" ? "Backends I've designed and shipped" : "Contracts and dapps I've shipped"}
+      description="What each project does and what it changed. Source and live links sit on each card where they exist."
+    >
+      {filtered.length === 0 ? (
+        <Reveal>
+          <div className="rounded-2xl bg-card p-8 ring-1 ring-border md:p-12">
+            <h3 className="text-xl font-semibold">Write ups are on the way</h3>
+            <p className="mt-2 max-w-md text-muted-foreground">
+              I'm still documenting these projects. In the meantime, most of the code is public on GitHub.
+            </p>
+            <a
+              href="https://github.com/0xAfterSnow/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={cn(buttonQuiet, "-ml-3 mt-6")}
+            >
+              Browse my GitHub
+              <Icon icon={ArrowUpRight01Icon} size={16} />
+            </a>
+          </div>
+        </Reveal>
+      ) : (
+        <>
+          <ul className="grid gap-4 md:grid-cols-2">
+            {visible.map((project, i) => (
+              <li key={project.id} className={cn(i === 0 && "md:col-span-2")}>
+                <Reveal delay={i === 0 ? 0 : (i % 2) * 80} className="h-full">
+                  <ProjectCard project={project} featured={i === 0} />
+                </Reveal>
+              </li>
+            ))}
+          </ul>
+
+          {filtered.length > PREVIEW_COUNT && (
+            <div className="mt-8 flex justify-center">
+              <button
+                type="button"
+                onClick={() => setShowAll((v) => !v)}
+                aria-expanded={showAll}
+                className={buttonQuiet}
+              >
+                {showAll ? "Show fewer projects" : `Show all ${filtered.length} projects`}
+              </button>
+            </div>
+          )}
+        </>
+      )}
+    </Section>
   )
 }

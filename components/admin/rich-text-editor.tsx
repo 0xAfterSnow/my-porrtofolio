@@ -1,6 +1,6 @@
 "use client"
 
-import { useEditor, EditorContent, BubbleMenu, FloatingMenu } from "@tiptap/react"
+import { useEditor, EditorContent, BubbleMenu, FloatingMenu, mergeAttributes } from "@tiptap/react"
 import StarterKit from "@tiptap/starter-kit"
 import Image from "@tiptap/extension-image"
 import Link from "@tiptap/extension-link"
@@ -55,16 +55,84 @@ import { cn } from "@/lib/utils"
 
 const lowlight = createLowlight(common)
 
+// Values match Prism language names, which highlight the public pages.
+const CODE_LANGUAGES = [
+  { value: "", label: "Plain text" },
+  { value: "bash", label: "Bash" },
+  { value: "python", label: "Python" },
+  { value: "typescript", label: "TypeScript" },
+  { value: "tsx", label: "TSX" },
+  { value: "javascript", label: "JavaScript" },
+  { value: "json", label: "JSON" },
+  { value: "sql", label: "SQL" },
+  { value: "solidity", label: "Solidity" },
+  { value: "rust", label: "Rust" },
+  { value: "go", label: "Go" },
+  { value: "yaml", label: "YAML" },
+  { value: "docker", label: "Dockerfile" },
+]
+
+// Images with an optional caption, stored as <figure><img><figcaption>. Plain <img> still parses.
+const FigureImage = Image.extend({
+  addAttributes() {
+    return {
+      ...this.parent?.(),
+      caption: {
+        default: null,
+        parseHTML: (element) => element.closest("figure")?.querySelector("figcaption")?.textContent || null,
+        renderHTML: () => ({}),
+      },
+    }
+  },
+  parseHTML() {
+    return [
+      {
+        tag: "figure",
+        getAttrs: (node) => {
+          const img = (node as HTMLElement).querySelector("img")
+          if (!img) return false
+          return {
+            src: img.getAttribute("src"),
+            alt: img.getAttribute("alt"),
+            title: img.getAttribute("title"),
+            caption: (node as HTMLElement).querySelector("figcaption")?.textContent || null,
+          }
+        },
+      },
+      { tag: "img[src]" },
+    ]
+  },
+  renderHTML({ node, HTMLAttributes }) {
+    const img: [string, Record<string, unknown>] = ["img", mergeAttributes(this.options.HTMLAttributes, HTMLAttributes)]
+    return node.attrs.caption ? ["figure", {}, img, ["figcaption", {}, node.attrs.caption]] : img
+  },
+})
+
 interface RichTextEditorProps {
   content: string
   onChange: (content: string) => void
   placeholder?: string
+  // Storage folder inside the blog-images bucket for uploaded images.
+  uploadFolder?: string
+  // Shorter editing area, for forms with many editors.
+  compact?: boolean
+  id?: string
 }
 
-export function RichTextEditor({ content, onChange, placeholder = "Start writing..." }: RichTextEditorProps) {
+export function RichTextEditor({
+  content,
+  onChange,
+  placeholder = "Start writing...",
+  uploadFolder = "blog",
+  compact = false,
+  id,
+}: RichTextEditorProps) {
   const { toast } = useToast()
   const [uploading, setUploading] = useState(false)
   const [imageUrl, setImageUrl] = useState("")
+  const [imageAlt, setImageAlt] = useState("")
+  const [imageCaption, setImageCaption] = useState("")
+  const [editingImage, setEditingImage] = useState(false)
   const [linkUrl, setLinkUrl] = useState("")
   const [showImageDialog, setShowImageDialog] = useState(false)
   const [showLinkDialog, setShowLinkDialog] = useState(false)
@@ -74,7 +142,7 @@ export function RichTextEditor({ content, onChange, placeholder = "Start writing
       StarterKit.configure({
         codeBlock: false,
       }),
-      Image.configure({
+      FigureImage.configure({
         HTMLAttributes: {
           class: "rounded-lg max-w-full h-auto",
         },
@@ -108,7 +176,12 @@ export function RichTextEditor({ content, onChange, placeholder = "Start writing
     editorProps: {
       attributes: {
         class:
-          "prose prose-sm sm:prose lg:prose-lg xl:prose-xl dark:prose-invert max-w-none focus:outline-none min-h-[300px] p-4 bg-background text-foreground rounded-lg border",
+          cn(
+            "prose prose-sm sm:prose lg:prose-lg dark:prose-invert max-w-none focus:outline-none p-4 bg-background text-foreground rounded-lg border",
+            "prose-figcaption:text-center prose-figcaption:text-sm",
+            compact ? "min-h-[160px]" : "min-h-[300px]",
+          ),
+        ...(id ? { id } : {}),
       },
     },
   })
@@ -119,7 +192,7 @@ export function RichTextEditor({ content, onChange, placeholder = "Start writing
       const supabase = createBrowserSupabaseClient()
       const fileExt = file.name.split(".").pop()
       const fileName = `${Math.random()}.${fileExt}`
-      const filePath = `blog/${fileName}`
+      const filePath = `${uploadFolder}/${fileName}`
 
       const { error: uploadError } = await supabase.storage.from("blog-images").upload(filePath, file)
 
@@ -129,12 +202,10 @@ export function RichTextEditor({ content, onChange, placeholder = "Start writing
         data: { publicUrl },
       } = supabase.storage.from("blog-images").getPublicUrl(filePath)
 
-      editor?.chain().focus().setImage({ src: publicUrl }).run()
-      setShowImageDialog(false)
-
+      setImageUrl(publicUrl)
       toast({
-        title: "Success",
-        description: "Image uploaded successfully",
+        title: "Image uploaded",
+        description: "Add alt text, then insert it.",
       })
     } catch (error: any) {
       toast({
@@ -147,12 +218,29 @@ export function RichTextEditor({ content, onChange, placeholder = "Start writing
     }
   }
 
-  const addImageFromUrl = () => {
-    if (imageUrl) {
-      editor?.chain().focus().setImage({ src: imageUrl }).run()
-      setImageUrl("")
-      setShowImageDialog(false)
+  // Opens the image dialog, prefilled when an image is selected so its details can be edited.
+  const openImageDialog = () => {
+    const selected = editor?.isActive("image")
+    const attrs = selected ? editor!.getAttributes("image") : {}
+    setEditingImage(Boolean(selected))
+    setImageUrl(attrs.src ?? "")
+    setImageAlt(attrs.alt ?? "")
+    setImageCaption(attrs.caption ?? "")
+    setShowImageDialog(true)
+  }
+
+  const saveImage = () => {
+    if (!imageUrl || !imageAlt.trim()) return
+    const attrs = { src: imageUrl, alt: imageAlt.trim(), caption: imageCaption.trim() || null }
+    if (editingImage) {
+      editor?.chain().focus().updateAttributes("image", attrs).run()
+    } else {
+      editor?.chain().focus().insertContent({ type: "image", attrs }).run()
     }
+    setImageUrl("")
+    setImageAlt("")
+    setImageCaption("")
+    setShowImageDialog(false)
   }
 
   const addLink = () => {
@@ -221,6 +309,23 @@ export function RichTextEditor({ content, onChange, placeholder = "Start writing
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+
+        {editor.isActive("codeBlock") && (
+          <select
+            aria-label="Code language"
+            className="h-8 rounded-md border bg-background px-2 text-sm"
+            value={editor.getAttributes("codeBlock").language ?? ""}
+            onChange={(e) =>
+              editor.chain().focus().updateAttributes("codeBlock", { language: e.target.value || null }).run()
+            }
+          >
+            {CODE_LANGUAGES.map((lang) => (
+              <option key={lang.value} value={lang.value}>
+                {lang.label}
+              </option>
+            ))}
+          </select>
+        )}
 
         <Separator orientation="vertical" className="h-6 mx-1" />
 
@@ -430,50 +535,81 @@ export function RichTextEditor({ content, onChange, placeholder = "Start writing
           </PopoverContent>
         </Popover>
 
+        <Button
+          type="button"
+          variant="ghost"
+          size="sm"
+          className={cn("h-8 w-8 p-0", editor.isActive("image") && "bg-muted")}
+          onClick={openImageDialog}
+          aria-label={editor.isActive("image") ? "Edit image details" : "Insert image"}
+        >
+          <ImageIcon className="h-4 w-4" />
+        </Button>
         <Dialog open={showImageDialog} onOpenChange={setShowImageDialog}>
-          <DialogTrigger asChild>
-            <Button type="button" variant="ghost" size="sm" className="h-8 w-8 p-0">
-              <ImageIcon className="h-4 w-4" />
-            </Button>
-          </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Add Image</DialogTitle>
+              <DialogTitle>{editingImage ? "Edit image" : "Add image"}</DialogTitle>
             </DialogHeader>
             <div className="space-y-4">
+              {!editingImage && (
+                <>
+                  <div className="space-y-2">
+                    <Label htmlFor="rte-image-file">Upload image</Label>
+                    <Input
+                      id="rte-image-file"
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0]
+                        if (file) handleImageUpload(file)
+                      }}
+                      disabled={uploading}
+                    />
+                  </div>
+                  <div className="relative">
+                    <div className="absolute inset-0 flex items-center">
+                      <span className="w-full border-t" />
+                    </div>
+                    <div className="relative flex justify-center text-xs uppercase">
+                      <span className="bg-background px-2 text-muted-foreground">Or</span>
+                    </div>
+                  </div>
+                </>
+              )}
               <div className="space-y-2">
-                <Label>Upload Image</Label>
+                <Label htmlFor="rte-image-url">Image URL</Label>
                 <Input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => {
-                    const file = e.target.files?.[0]
-                    if (file) handleImageUpload(file)
-                  }}
-                  disabled={uploading}
+                  id="rte-image-url"
+                  value={imageUrl}
+                  onChange={(e) => setImageUrl(e.target.value)}
+                  placeholder="https://example.com/image.jpg"
                 />
               </div>
-              <div className="relative">
-                <div className="absolute inset-0 flex items-center">
-                  <span className="w-full border-t" />
-                </div>
-                <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-background px-2 text-muted-foreground">Or</span>
-                </div>
+              {imageUrl && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={imageUrl} alt="" className="max-h-40 rounded-md border object-contain" />
+              )}
+              <div className="space-y-2">
+                <Label htmlFor="rte-image-alt">Alt text (required)</Label>
+                <Input
+                  id="rte-image-alt"
+                  value={imageAlt}
+                  onChange={(e) => setImageAlt(e.target.value)}
+                  placeholder="What the image shows, for screen readers"
+                />
               </div>
               <div className="space-y-2">
-                <Label>Image URL</Label>
-                <div className="flex gap-2">
-                  <Input
-                    value={imageUrl}
-                    onChange={(e) => setImageUrl(e.target.value)}
-                    placeholder="https://example.com/image.jpg"
-                  />
-                  <Button type="button" onClick={addImageFromUrl} disabled={!imageUrl}>
-                    Add
-                  </Button>
-                </div>
+                <Label htmlFor="rte-image-caption">Caption (optional)</Label>
+                <Input
+                  id="rte-image-caption"
+                  value={imageCaption}
+                  onChange={(e) => setImageCaption(e.target.value)}
+                  placeholder="Shown under the image"
+                />
               </div>
+              <Button type="button" onClick={saveImage} disabled={!imageUrl || !imageAlt.trim() || uploading}>
+                {uploading ? "Uploading..." : editingImage ? "Update image" : "Insert image"}
+              </Button>
             </div>
           </DialogContent>
         </Dialog>
@@ -611,7 +747,7 @@ export function RichTextEditor({ content, onChange, placeholder = "Start writing
             type="button"
             variant="ghost"
             size="sm"
-            onClick={() => setShowImageDialog(true)}
+            onClick={openImageDialog}
             className={cn("h-8 w-8 p-0")}
           >
             <ImageIcon className="h-4 w-4" />

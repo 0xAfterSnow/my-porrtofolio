@@ -1,12 +1,13 @@
 import { createServerClient } from "@/lib/supabase/server"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Calendar, Clock, ArrowRight, Newspaper } from "lucide-react"
 import Link from "next/link"
-import Image from "next/image"
 import type { Metadata } from "next"
 import { trackPageView } from "@/lib/analytics-server"
+import { cn } from "@/lib/utils"
+import { focusRing } from "@/lib/styles"
 import { BlogNavbar } from "@/components/blog-navbar"
+import { BlogFooter } from "@/components/blog-footer"
+import { BlogPostCard, type BlogPost } from "@/components/blog-post-card"
+import { Reveal } from "@/components/section"
 import { getSiteSettings } from "@/lib/get-settings"
 
 export const revalidate = 3600 // Revalidate every hour
@@ -36,143 +37,118 @@ export async function generateMetadata(): Promise<Metadata> {
     }
 }
 
+const categories = [
+    { value: "all", label: "All posts" },
+    { value: "backend", label: "Backend" },
+    { value: "web3", label: "Web3" },
+    { value: "tips", label: "Tips" },
+]
+
 export default async function BlogPage({ searchParams }: { searchParams: Promise<{ category?: string }> }) {
     const supabase = await createServerClient()
-    const settings = await getSiteSettings()
     const { category } = await searchParams
+    const active = category && category !== "all" ? category : "all"
 
     let query = supabase.from("blog_posts").select("*").eq("published", true).order("created_at", { ascending: false })
 
-    if (category && category !== "all") {
-        query = query.eq("category", category)
+    if (active !== "all") {
+        query = query.eq("category", active)
     }
 
-    const { data: posts } = await query
+    const { data } = await query
+    const posts = (data ?? []) as BlogPost[]
+    // The newest post leads the unfiltered view.
+    const [featured, ...rest] = active === "all" ? posts : [undefined, ...posts]
 
     await trackPageView("blog")
 
     return (
-        <main className="min-h-screen bg-background flex flex-col">
+        <>
             <BlogNavbar />
 
-            <section className="flex-1 py-16 px-6">
-                <div className="max-w-7xl mx-auto">
-                    {/* Header */}
-                    <header className="text-center mb-16">
-                        <h1 className="text-5xl md:text-6xl font-bold mb-6 tracking-tight">
-                            {settings?.site_title ? `${settings.site_title} Blog` : "Developer Blog"}
-                        </h1>
-                        <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-                            Technical articles, deep dives, and insights on backend engineering, tips and Web3 development.
-                        </p>
-                    </header>
+            <main id="main" className="px-6 pt-40 pb-12">
+                <div className="mx-auto max-w-6xl">
+                    <Reveal>
+                        <header className="grid gap-4 md:grid-cols-12 md:gap-8">
+                            <p className="text-sm font-medium text-muted-foreground md:col-span-3 md:pt-4">Blog</p>
+                            <div className="md:col-span-9">
+                                <h1 className="text-hero max-w-[680px] pb-1 text-5xl font-semibold tracking-tighter md:text-6xl">
+                                    Notes from the backend and onchain
+                                </h1>
+                                <p className="mt-6 max-w-[560px] text-lg text-muted-foreground">
+                                    Deep dives, lessons from production, and small tips on backend engineering and Web3
+                                    development.
+                                </p>
+                            </div>
+                        </header>
+                    </Reveal>
 
-
-                    {/* Category Filter */}
-                    <nav className="flex flex-wrap justify-center gap-4 mb-12" aria-label="Blog categories">
-                        <Link href="/blog">
-                            <Badge
-                                variant={!category || category === "all" ? "default" : "outline"}
-                                className="cursor-pointer px-6 py-2 text-sm transition-all hover:scale-105"
-                            >
-                                All Posts
-                            </Badge>
-                        </Link>
-                        <Link href="/blog?category=backend">
-                            <Badge
-                                variant={category === "backend" ? "default" : "outline"}
-                                className="cursor-pointer px-6 py-2 text-sm transition-all hover:scale-105"
-                            >
-                                Backend
-                            </Badge>
-                        </Link>
-                        <Link href="/blog?category=web3">
-                            <Badge
-                                variant={category === "web3" ? "default" : "outline"}
-                                className="cursor-pointer px-6 py-2 text-sm transition-all hover:scale-105"
-                            >
-                                Web3
-                            </Badge>
-                        </Link>
-                        <Link href="/blog?category=tips">
-                            <Badge
-                                variant={category === "tips" ? "default" : "outline"}
-                                className="cursor-pointer px-6 py-2 text-sm transition-all hover:scale-105"
-                            >
-                                Tips
-                            </Badge>
-                        </Link>
+                    <nav aria-label="Blog categories" className="mt-16 flex flex-wrap gap-2 border-b border-border pb-6">
+                        {categories.map(({ value, label }) => {
+                            const current = active === value
+                            return (
+                                <Link
+                                    key={value}
+                                    href={value === "all" ? "/blog" : `/blog?category=${value}`}
+                                    aria-current={current ? "page" : undefined}
+                                    className={cn(
+                                        "rounded-full px-3 py-2 text-sm font-semibold transition-colors duration-300 ease-soft",
+                                        current
+                                            ? "bg-foreground text-background"
+                                            : "text-muted-foreground ring-1 ring-border hover:text-foreground hover:ring-foreground/30",
+                                        focusRing,
+                                    )}
+                                >
+                                    {label}
+                                </Link>
+                            )
+                        })}
                     </nav>
 
-                    {/* Blog Posts Grid */}
-                    {posts && posts.length > 0 ? (
-                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                            {posts.map((post) => (
-                                <article key={post.id} className="h-full">
-                                    <Link href={`/blog/${post.slug}`}>
-                                        <Card className="group glass-card border-border hover:border-foreground/30 transition-all duration-500 hover:shadow-2xl hover:shadow-foreground/5 flex flex-col h-full overflow-hidden p-0">
-                                            {post.cover_image && (
-                                                <div className="relative overflow-hidden h-56 w-full">
-                                                    <Image
-                                                        src={post.cover_image}
-                                                        alt={post.title}
-                                                        fill
-                                                        className="object-cover object-center group-hover:scale-110 transition-transform duration-700"
-                                                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                                                    />
-                                                </div>
-                                            )}
-                                            <div className="p-6 flex flex-col flex-1">
-                                                <div className="flex-1">
-                                                    <div className="flex items-center gap-2 mb-3">
-                                                        <Badge variant="secondary" className="text-[10px] uppercase tracking-wider font-bold">
-                                                            {post.category}
-                                                        </Badge>
-                                                        {post.tags?.slice(0, 2).map((tag: string) => (
-                                                            <span key={tag} className="text-[10px] text-muted-foreground font-medium border-l border-border pl-2">
-                                                                #{tag}
-                                                            </span>
-                                                        ))}
-                                                    </div>
-                                                    <h3 className="text-xl font-semibold group-hover:text-foreground transition-colors line-clamp-2 leading-tight mb-2">{post.title}</h3>
-                                                    <p className="text-muted-foreground line-clamp-2 text-sm">{post.excerpt}</p>
-                                                </div>
-
-                                                <div className="mt-6">
-                                                    <div className="flex items-center gap-4 text-xs text-muted-foreground mb-6">
-                                                        <div className="flex items-center gap-1">
-                                                            <Calendar className="h-3.5 w-3.5" />
-                                                            {new Date(post.created_at).toLocaleDateString("en-US", {
-                                                                month: "short",
-                                                                day: "numeric",
-                                                                year: "numeric",
-                                                            })}
-                                                        </div>
-                                                        <div className="flex items-center gap-1">
-                                                            <Clock className="h-3.5 w-3.5" />
-                                                            {Math.ceil(post.content.split(" ").length / 200)} min read
-                                                        </div>
-                                                    </div>
-                                                    <div className="flex items-center text-foreground text-sm font-bold group-hover:gap-2 transition-all">
-                                                        Read Deep Dive
-                                                        <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </Card>
-                                    </Link>
-                                </article>
-                            ))}
-                        </div>
+                    {posts.length === 0 ? (
+                        <Reveal>
+                            <div className="mt-12 rounded-2xl bg-card p-8 ring-1 ring-border md:p-12">
+                                <h2 className="text-xl font-semibold">Nothing in this category yet</h2>
+                                <p className="mt-2 max-w-md text-muted-foreground">
+                                    New posts land here first. In the meantime, the rest of the writing is one click away.
+                                </p>
+                                <Link
+                                    href="/blog"
+                                    className={cn(
+                                        "mt-6 inline-flex rounded-lg bg-foreground px-3 py-2 text-sm font-semibold text-background transition-[transform,background-color] duration-300 ease-soft hover:bg-foreground/85 active:scale-[0.98]",
+                                        focusRing,
+                                    )}
+                                >
+                                    See all posts
+                                </Link>
+                            </div>
+                        </Reveal>
                     ) : (
-                        <div className="text-center py-20 bg-secondary/20 rounded-2xl border border-dashed border-border">
-                            <Newspaper className="h-12 w-12 text-muted-foreground mx-auto mb-4 opacity-20" />
-                            <p className="text-xl text-muted-foreground">No articles found in this category yet.</p>
-                            <Link href="/blog" className="text-primary mt-4 inline-block hover:underline">View all articles</Link>
+                        <div className="mt-12 space-y-4">
+                            {featured && (
+                                <Reveal>
+                                    <BlogPostCard post={featured} featured />
+                                </Reveal>
+                            )}
+                            {rest.length > 0 && (
+                                <ul className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                                    {rest.map((post, i) =>
+                                        post ? (
+                                            <li key={post.id}>
+                                                <Reveal delay={(i % 3) * 80} className="h-full">
+                                                    <BlogPostCard post={post} />
+                                                </Reveal>
+                                            </li>
+                                        ) : null,
+                                    )}
+                                </ul>
+                            )}
                         </div>
                     )}
                 </div>
-            </section>
-        </main>
+            </main>
+
+            <BlogFooter />
+        </>
     )
 }

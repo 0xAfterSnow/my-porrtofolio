@@ -1,251 +1,160 @@
 "use client"
 
-import React, { useState, useEffect, useRef } from "react"
-import { gsap } from "gsap"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
-import { ArrowRight } from "lucide-react"
-import Image from "next/image"
+import {
+  ChartRelationshipIcon,
+  ContractsIcon,
+  Exchange01Icon,
+  Hammer01Icon,
+  HierarchyIcon,
+  Image01Icon,
+  SecurityCheckIcon,
+} from "@hugeicons/core-free-icons"
+import { Icon, type IconType } from "@/components/icon"
+import { Reveal, Section } from "@/components/section"
 
 interface SkillsProps {
   mode: "backend" | "web3"
 }
 
+type Tool = { name: string; mark?: string; icon?: IconType; note?: string }
+type Group = { label: string; tools: Tool[] }
+
+const stacks: Record<SkillsProps["mode"], { core: Tool[]; groups: Group[] }> = {
+  backend: {
+    core: [
+      { name: "Python", mark: "/brands/python.svg", note: "The language behind most of what I ship" },
+      { name: "Django", mark: "/brands/django.svg", note: "APIs, admin tooling, and background jobs" },
+      { name: "PostgreSQL", mark: "/brands/postgresql.svg", note: "Primary datastore, tuned query by query" },
+    ],
+    groups: [
+      {
+        label: "Frameworks and APIs",
+        tools: [
+          { name: "FastAPI", mark: "/brands/fastapi.svg" },
+          { name: "GraphQL", mark: "/brands/graphql.svg" },
+          { name: "Node.js", mark: "/brands/nodedotjs.svg" },
+          { name: "Celery", mark: "/brands/celery.svg" },
+        ],
+      },
+      {
+        label: "Data and caching",
+        tools: [
+          { name: "Redis", mark: "/brands/redis.svg" },
+          { name: "MongoDB", mark: "/brands/mongodb.svg" },
+        ],
+      },
+      {
+        label: "Infrastructure",
+        tools: [
+          { name: "Docker", mark: "/brands/docker.svg" },
+          { name: "Kubernetes", mark: "/brands/kubernetes.svg" },
+          { name: "AWS", mark: "/brands/amazonwebservices.svg" },
+          { name: "System design", icon: HierarchyIcon },
+        ],
+      },
+    ],
+  },
+  web3: {
+    core: [
+      { name: "Solidity", mark: "/brands/solidity.svg", note: "Contracts for marketplaces and protocols" },
+      { name: "Hardhat", mark: "/icons/hardhat.svg", note: "Testing, scripting, and deployments" },
+      { name: "Ethers.js", mark: "/brands/ethers.svg", note: "Wiring contracts into real apps" },
+    ],
+    groups: [
+      {
+        label: "Chains",
+        tools: [
+          { name: "Ethereum", mark: "/brands/ethereum.svg" },
+          { name: "Algorand", mark: "/brands/algorand.svg" },
+        ],
+      },
+      {
+        label: "Tooling",
+        tools: [
+          { name: "Foundry", icon: Hammer01Icon },
+          { name: "OpenZeppelin", mark: "/brands/openzeppelin.svg" },
+          { name: "Chainlink", mark: "/brands/chainlink.svg" },
+          { name: "The Graph", icon: ChartRelationshipIcon },
+          { name: "Web3.js", mark: "/brands/web3dotjs.svg" },
+          { name: "IPFS", mark: "/brands/ipfs.svg" },
+        ],
+      },
+      {
+        label: "Domains",
+        tools: [
+          { name: "DeFi", icon: Exchange01Icon },
+          { name: "NFTs", icon: Image01Icon },
+          { name: "Smart contracts", icon: ContractsIcon },
+          { name: "Security reviews", icon: SecurityCheckIcon },
+        ],
+      },
+    ],
+  },
+}
+
+function Mark({ tool, size }: { tool: Tool; size: number }) {
+  if (tool.mark) {
+    return (
+      <span
+        aria-hidden
+        className="brand-mark"
+        style={{ width: size, height: size, ["--mark" as string]: `url(${tool.mark})` }}
+      />
+    )
+  }
+  return tool.icon ? <Icon icon={tool.icon} size={size} /> : null
+}
+
 export function Skills({ mode }: SkillsProps) {
-  const backendSkills = [
-    { name: "Python", level: 95, icon: "/icons/python.svg" },
-    { name: "Django", level: 90, icon: "/icons/django.svg" },
-    { name: "FastAPI", level: 85, icon: "/icons/fastapi.svg" },
-    { name: "PostgreSQL", level: 88, icon: "/icons/postgresql.svg" },
-    { name: "Redis", level: 82, icon: "/icons/redis.svg" },
-    { name: "Docker", level: 87, icon: "/icons/docker.svg" },
-    { name: "AWS", level: 80, icon: "/icons/aws.svg" },
-    { name: "GraphQL", level: 83, icon: "/icons/graphql.svg" },
-    // Extended
-    { name: "Node.js", level: 85, icon: "/icons/nodejs.svg" },
-    { name: "MongoDB", level: 80, icon: "/icons/mongodb.svg" },
-    { name: "Kubernetes", level: 75, icon: "/icons/kubernetes.svg" },
-    { name: "System Design", level: 85, icon: "/icons/system-design.svg" },
-  ]
-
-  const web3Skills = [
-    { name: "Solidity", level: 92, icon: "/icons/solidity.svg" },
-    { name: "Ethereum", level: 90, icon: "/icons/ethereum.svg" },
-    { name: "Web3.js", level: 88, icon: "/icons/web3js.svg" },
-    { name: "Hardhat", level: 85, icon: "/icons/hardhat.svg" },
-    { name: "IPFS", level: 80, icon: "/icons/ipfs-dark.svg" },
-    { name: "Smart Contracts", level: 93, icon: "/icons/file-type-solidity.svg" },
-    { name: "DeFi", level: 87, icon: "/icons/defi.svg" },
-    { name: "NFTs", level: 84, icon: "/icons/nfts.svg" },
-    // Extended
-    { name: "Ethers.js", level: 86, icon: "/icons/ethers.svg" },
-    { name: "Chainlink", level: 82, icon: "/icons/chainlink.svg" },
-    { name: "The Graph", level: 78, icon: "/icons/thegraph.svg" },
-    { name: "Foundry", level: 80, icon: "/icons/foundry.svg" },
-  ]
-
-  const allSkills = mode === "backend" ? backendSkills : web3Skills
-  const displaySkills = allSkills.slice(0, 8)
-  const [hoveredSkill, setHoveredSkill] = useState<string | null>(null)
-  const floatingTextRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    if (!floatingTextRef.current) return
-
-    const texts = floatingTextRef.current.querySelectorAll(".floating-text")
-
-    texts.forEach((text, index) => {
-      gsap.to(text, {
-        y: "random(-30, 30)",
-        x: "random(-30, 30)",
-        rotation: "random(-15, 15)",
-        duration: "random(4, 6)",
-        repeat: -1,
-        yoyo: true,
-        ease: "sine.inOut",
-        delay: index * 0.3,
-      })
-    })
-  }, [mode])
+  const { core, groups } = stacks[mode]
 
   return (
-    <section className="relative py-32 px-6 overflow-hidden">
-      {/* Animated background */}
-      <div className="absolute inset-0 cyber-grid opacity-20" />
-      <div className={`absolute inset-0 bg-gradient-to-b ${mode === "backend"
-        ? "from-primary/5 via-transparent to-muted/5"
-        : "from-muted/10 via-transparent to-muted/20"
-        }`}
-      />
-
-      <div ref={floatingTextRef} className="absolute inset-0 opacity-10 pointer-events-none overflow-hidden max-w-[100vw]">
-        <div
-          className="floating-text absolute text-3xl md:text-6xl font-bold text-primary/20"
-          style={{
-            left: "10%",
-            top: "20%",
-          }}
-        >
-          {mode === "backend" ? "API" : "WEB3"}
-        </div>
-        <div
-          className="floating-text absolute text-2xl md:text-5xl font-bold text-muted-foreground/20"
-          style={{
-            right: "15%",
-            top: "40%",
-          }}
-        >
-          {mode === "backend" ? "DB" : "DEFI"}
-        </div>
-        <div
-          className="floating-text absolute text-4xl md:text-7xl font-bold text-foreground/10"
-          style={{
-            left: "50%",
-            bottom: "25%",
-          }}
-        >
-          {mode === "backend" ? "OPS" : "NFT"}
-        </div>
-      </div>
-
-      <div className="max-w-7xl mx-auto relative z-10">
-        {/* Section Header */}
-        <div className="text-center mb-16">
-          <h2
-            className="text-5xl md:text-7xl font-bold mb-4 text-foreground"
-          >
-            {mode === "backend" ? "Backend Arsenal" : "Web3 Toolkit"}
-          </h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            {mode === "backend"
-              ? "Building scalable systems with cutting-edge backend technologies"
-              : "Crafting decentralized applications with blockchain expertise"}
-          </p>
-        </div>
-
-        {/* Skills Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {displaySkills.map((skill, index) => (
-            <div
-              key={skill.name}
-              className="group relative"
-              onMouseEnter={() => setHoveredSkill(skill.name)}
-              onMouseLeave={() => setHoveredSkill(null)}
-              style={{
-                animation: `fadeInUp 0.6s ease-out ${index * 0.1}s both`,
-              }}
-            >
-              <div
-                className={`glass-card p-6 rounded-2xl transition-all duration-500 ${hoveredSkill === skill.name ? "scale-110 -translate-y-2" : ""
-                  }`}
-                style={{
-                  boxShadow:
-                    hoveredSkill === skill.name
-                      ? mode === "backend"
-                        ? "0 20px 60px rgba(255, 255, 255, 0.2)"
-                        : "0 20px 60px rgba(161, 161, 170, 0.2)"
-                      : "none",
-                }}
-              >
-                <Image
-                  src={skill.icon}
-                  width={48}
-                  height={48}
-                  className="mb-4 transition-all duration-500 grayscale group-hover:grayscale-0 group-hover:scale-125 group-hover:rotate-12"
-                  alt={skill.name}
-                  onError={(e: React.SyntheticEvent<HTMLImageElement, Event>) => {
-                    const target = e.target as HTMLImageElement;
-                    if (target) target.src = "/icons/default.svg";
-                  }}
-                />
-
-                {/* Skill Name */}
-                <h3 className="text-xl font-bold mb-3 text-foreground">{skill.name}</h3>
-
-                {/* Progress Bar */}
-                <div className="relative h-2 bg-secondary rounded-full overflow-hidden">
-                  <div
-                    className={`absolute inset-y-0 left-0 rounded-full transition-all duration-1000 ${mode === "backend"
-                      ? "bg-gradient-to-r from-zinc-100 to-zinc-400"
-                      : "bg-gradient-to-r from-zinc-400 to-zinc-700"
-                      }`}
-                    style={{
-                      width: hoveredSkill === skill.name ? `${skill.level}%` : "0%",
-                      boxShadow:
-                        mode === "backend" ? "0 0 10px rgba(255, 255, 255, 0.5)" : "0 0 10px rgba(161, 161, 170, 0.5)",
-                    }}
-                  />
-                </div>
-
-                {/* Skill Level */}
-                <div className="mt-2 text-right">
-                  <span className="text-sm font-semibold text-muted-foreground">
-                    {skill.level}%
-                  </span>
-                </div>
+    <Section
+      id="stack"
+      label="Stack"
+      title={mode === "backend" ? "The tools I reach for on the server" : "The tools I reach for onchain"}
+      description={
+        mode === "backend"
+          ? "Three I use every day, and the rest I bring in when a project calls for them."
+          : "Three I use on every contract, and the rest I bring in when a protocol calls for them."
+      }
+    >
+      <ul className="grid gap-4 md:grid-cols-3">
+        {core.map((tool, i) => (
+          <li key={tool.name}>
+            <Reveal delay={i * 80} className="h-full">
+              <div className="group h-full rounded-2xl bg-card p-6 ring-1 ring-border transition-[transform,box-shadow] duration-500 ease-soft hover:-translate-y-1 hover:ring-foreground/40">
+                <span className="flex size-12 items-center justify-center rounded-xl bg-background text-foreground ring-1 ring-border">
+                  <Mark tool={tool} size={24} />
+                </span>
+                <h3 className="mt-8 text-lg font-semibold tracking-tight">{tool.name}</h3>
+                <p className="mt-1 text-sm text-muted-foreground">{tool.note}</p>
               </div>
-            </div>
-          ))}
-        </div>
+            </Reveal>
+          </li>
+        ))}
+      </ul>
 
-        {/* View More Button */}
-        <div className="mt-12 text-center">
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button size="lg" variant="outline" className="group rounded-full px-8 border-primary/20 hover:bg-primary/10 hover:border-primary/50 transition-all">
-                View Complete {mode === "backend" ? "Arsenal" : "Toolkit"}
-                <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-6xl w-full max-h-[85vh] overflow-y-auto glass-card border-primary/20">
-              <DialogHeader>
-                <DialogTitle className="text-3xl font-bold mb-6">
-                  Full {mode === "backend" ? "Backend Arsenal" : "Web3 Toolkit"}
-                </DialogTitle>
-              </DialogHeader>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {allSkills.map((skill) => (
-                  <div key={skill.name} className="flex items-center gap-4 p-4 rounded-xl border border-border bg-background/50 hover:bg-background/80 transition-colors">
-                    <Image
-                      src={skill.icon}
-                      alt={skill.name}
-                      width={40}
-                      height={40}
-                      className="grayscale hover:grayscale-0 transition-all duration-300"
-                      onError={(e: any) => { (e.target as HTMLImageElement).src = "/icons/default.svg" }}
-                    />
-                    <div className="flex-1">
-                      <h4 className="font-bold">{skill.name}</h4>
-                      <div className="w-full h-1.5 bg-secondary rounded-full mt-2 overflow-hidden">
-                        <div
-                          className="h-full bg-primary/70 rounded-full"
-                          style={{ width: `${skill.level}%` }}
-                        />
-                      </div>
-                    </div>
-                    <span className="text-xs font-mono font-bold">{skill.level}%</span>
-                  </div>
+      <div className="mt-12 divide-y divide-border border-y border-border">
+        {groups.map((group) => (
+          <Reveal key={group.label}>
+            <div className="grid gap-4 py-6 md:grid-cols-12 md:items-center md:gap-8">
+              <h3 className="text-sm font-medium text-muted-foreground md:col-span-3">{group.label}</h3>
+              <ul className="flex flex-wrap gap-2 md:col-span-9">
+                {group.tools.map((tool) => (
+                  <li
+                    key={tool.name}
+                    className="inline-flex items-center gap-2 rounded-full bg-card px-3 py-2 text-sm font-medium text-foreground/90 ring-1 ring-border transition-colors duration-300 ease-soft hover:text-foreground hover:ring-foreground/30"
+                  >
+                    <Mark tool={tool} size={16} />
+                    {tool.name}
+                  </li>
                 ))}
-              </div>
-            </DialogContent>
-          </Dialog>
-        </div>
-
+              </ul>
+            </div>
+          </Reveal>
+        ))}
       </div>
-
-      <style jsx>{`
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-      `}</style>
-    </section >
+    </Section>
   )
 }

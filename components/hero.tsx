@@ -1,259 +1,170 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
-import { ArrowRight, FileText, Code2, Blocks, Github, Linkedin, Mail, X } from "lucide-react"
+import { useEffect, useState } from "react"
+import Image from "next/image"
+import { ArrowDown01Icon, Mail01Icon } from "@hugeicons/core-free-icons"
+import { Icon } from "@/components/icon"
+import { GitHubLogo, LinkedInLogo, XLogo } from "@/components/brand-logos"
 import { ResumeModal } from "@/components/resume-modal"
-import { useState, useEffect, useRef } from "react"
-import { gsap } from "gsap"
-import PixelBlast from './PixelBlast';
-import Aurora from './Aurora';
-import { useTheme } from "next-themes"
+import { Reveal, buttonPrimary, buttonQuiet, iconButton } from "@/components/section"
 
 interface HeroProps {
   mode: "backend" | "web3"
+  avatarUrl?: string | null
 }
 
-export function Hero({ mode }: HeroProps) {
+const content: Record<HeroProps["mode"], {
+  role: string
+  statement: string
+  intro: string
+  status: { live: boolean; text: string }
+}> = {
+  backend: {
+    role: "Backend engineer",
+    statement: "Backend systems for products that can't afford downtime.",
+    intro:
+      "I design the APIs, data models, and infrastructure behind products that need to grow without falling over. Mostly Python and Django, on Postgres.",
+    status: { live: true, text: "Now senior backend developer at Asterverse" },
+  },
+  web3: {
+    role: "Smart contract developer",
+    statement: "Smart contracts for protocols that hold real money.",
+    intro:
+      "I write, test, and audit Solidity for marketplaces, wagering protocols, and onchain ad networks, across EVM chains and Algorand.",
+    status: { live: false, text: "Latest: smart contract developer at AdChain" },
+  },
+}
+
+const teams = [
+  "Asterverse",
+  "AdChain",
+  "Secuda",
+  "Claadme",
+  "AmongFriends",
+  "Mediconnect",
+  "Sandlip Oasis",
+  "Ceto Data Works",
+  "Better Life Nija",
+]
+
+const socials = [
+  { href: "https://github.com/0xAfterSnow/", label: "GitHub", logo: <GitHubLogo size={18} /> },
+  { href: "https://linkedin.com/in/shagbaoragber/", label: "LinkedIn", logo: <LinkedInLogo size={17} /> },
+  { href: "https://x.com/0xAfterSnow", label: "X", logo: <XLogo size={16} /> },
+  { href: "mailto:snow@aftersnow.xyz", label: "Email", logo: <Icon icon={Mail01Icon} size={18} /> },
+]
+
+function useLocalTime(timeZone: string) {
+  const [time, setTime] = useState<string | null>(null)
+  useEffect(() => {
+    const format = () =>
+      new Intl.DateTimeFormat("en-GB", { hour: "2-digit", minute: "2-digit", timeZone }).format(new Date())
+    setTime(format())
+    const id = setInterval(() => setTime(format()), 30_000)
+    return () => clearInterval(id)
+  }, [timeZone])
+  return time
+}
+
+export function Hero({ mode, avatarUrl }: HeroProps) {
   const [showResume, setShowResume] = useState(false)
-  const [displayedText, setDisplayedText] = useState("")
-  const fullText = mode === "backend" ? "scalable systems" : "decentralized apps"
-  const heroRef = useRef<HTMLDivElement>(null)
-  const backendRef = useRef<HTMLDivElement>(null);
-  const web3Ref = useRef<HTMLDivElement>(null);
-  const { theme } = useTheme()
-  const [mounted, setMounted] = useState(false)
-
-  useEffect(() => {
-    setMounted(true)
-  }, [])
-
-  useEffect(() => {
-    let index = 0
-    setDisplayedText("")
-    const interval = setInterval(() => {
-      if (index <= fullText.length) {
-        setDisplayedText(fullText.slice(0, index))
-        index++
-      } else {
-        clearInterval(interval)
-      }
-    }, 80)
-    return () => clearInterval(interval)
-  }, [mode, fullText])
-
-  /* Responsive Logic: Mobile Optimization */
-  const [isDesktop, setIsDesktop] = useState(false)
-
-  // Only render heavy visual effects on desktop (>1024px)
-  useEffect(() => {
-    const checkDesktop = () => {
-      setIsDesktop(window.matchMedia("(min-width: 1024px)").matches)
-    }
-
-    // Initial check
-    checkDesktop()
-
-    const mql = window.matchMedia("(min-width: 1024px)")
-    mql.addEventListener("change", checkDesktop)
-
-    return () => mql.removeEventListener("change", checkDesktop)
-  }, [])
-
-  // GSAP fade transition between backend ↔ web3
-  useEffect(() => {
-    if (!isDesktop) return; // Skip GSAP animations on mobile for performance
-
-    const backend = backendRef.current;
-    const web3 = web3Ref.current;
-    if (!backend || !web3) return;
-
-    if (mode === "backend") {
-      gsap.to(web3, { opacity: 0, duration: 0.6, ease: "power2.out" });
-      gsap.to(backend, { opacity: 1, duration: 0.8, ease: "power2.inOut" });
-    } else if (mode === "web3") {
-      gsap.to(backend, { opacity: 0, duration: 0.6, ease: "power2.out" });
-      gsap.to(web3, { opacity: 1, duration: 0.8, ease: "power2.inOut" });
-    }
-  }, [mode, isDesktop]);
-
-
-  const scrollToSection = (id: string) => {
-    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" })
-  }
+  const copy = content[mode]
+  const time = useLocalTime("Africa/Lagos")
 
   return (
-    <section
-      ref={heroRef}
-      className="relative min-h-screen flex items-center justify-center px-6 py-20 overflow-hidden"
-    >
-      {/* Desktop Visuals: PixelBlast & Aurora */}
-      {isDesktop ? (
-        <>
-          {/* Backend Beams */}
-          <div
-            ref={backendRef}
-            className="absolute inset-0 opacity-0 pointer-events-none transition-opacity duration-700"
-          >
-            <PixelBlast
-              variant="circle"
-              pixelSize={6}
-              color={mounted && theme === "light" ? "#000000" : "#ffffff"}
-              patternDensity={1.2}
-              pixelSizeJitter={0.5}
-              enableRipples
-              rippleSpeed={0.4}
-              rippleThickness={0.12}
-              rippleIntensityScale={1.5}
-              liquid
-              liquidStrength={0.12}
-              liquidRadius={1.2}
-              liquidWobbleSpeed={5}
-              speed={0.6}
-              edgeFade={0.25}
-              transparent
-              patternScale={3}
-              className=""
-              style={{}}
-            />
-          </div>
-
-          {/* Web3 FaultyTerminal */}
-          <div
-            ref={web3Ref}
-            className="absolute inset-0 opacity-0 pointer-events-none transition-opacity duration-700"
-          >
-            <Aurora
-              colorStops={mounted && theme === "dark" ? ["#000000", "#333333", "#1a1a1a"] : ["#ffffff", "#f5f5f5", "#e5e5e5"]}
-              blend={0.5}
-              amplitude={1.0}
-              speed={1}
-            />
-          </div>
-        </>
-      ) : (
-        /* Mobile Fallback: Lightweight Gradient */
-        <div className="absolute inset-0 pointer-events-none">
-          <div className={`absolute inset-0 transition-opacity duration-1000 ${mode === 'backend' ? 'opacity-100' : 'opacity-0'}`}>
-            <div className="absolute inset-0 bg-gradient-to-b from-background via-background/90 to-background" />
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(var(--foreground-rgb),0.1)_0%,transparent_70%)] opacity-30" />
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-primary/20 blur-[100px] rounded-full opacity-30" />
-          </div>
-          <div className={`absolute inset-0 transition-opacity duration-1000 ${mode === 'web3' ? 'opacity-100' : 'opacity-0'}`}>
-            <div className="absolute inset-0 bg-gradient-to-b from-background via-background/90 to-background" />
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(var(--foreground-rgb),0.1)_0%,transparent_70%)] opacity-40" />
-            <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-purple-500/20 blur-[120px] rounded-full opacity-30" />
-            <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-blue-500/20 blur-[100px] rounded-full opacity-30" />
-          </div>
-        </div>
-      )}
-
-      <div className="absolute inset-0 cyber-grid opacity-40" />
-
-      <div className="relative z-10 max-w-6xl mx-auto text-center space-y-12">
-        <div className="flex items-center justify-center gap-3 mb-4 animate-fade-in-up">
-          <div className="relative">
-            <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full animate-pulse" />
-            {mode === "backend" ? (
-              <Code2 className="h-5 w-5 text-foreground animate-glow-pulse relative z-10" />
-            ) : (
-              <Blocks className="h-5 w-5 text-foreground animate-glow-pulse relative z-10" />
-            )}
-          </div>
-          <span className="text-sm font-bold tracking-widest uppercase text-foreground">
-            {mode === "backend" ? "Backend Engineer" : "Web3 Developer"}
-          </span>
-        </div>
-
-        <div className="space-y-6 animate-fade-in-up" style={{ animationDelay: "0.1s" }}>
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold leading-tight tracking-tight text-foreground">
-            Building{" "}
-            <span className="relative inline-block">
-              <span className="text-foreground">
-                {displayedText}
-                <span className="animate-blink">|</span>
+    <section id="top" className="flex min-h-[100dvh] flex-col justify-center pt-32 pb-12">
+      <div className="mx-auto w-full max-w-6xl px-6">
+        <Reveal>
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted-foreground">
+            <span className="inline-flex items-center gap-2 rounded-full bg-card py-1 pr-3 pl-2 text-foreground ring-1 ring-border">
+              <span className="relative flex size-2">
+                {copy.status.live && (
+                  <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-500/60 motion-reduce:hidden" />
+                )}
+                <span
+                  className={`relative inline-flex size-2 rounded-full ${copy.status.live ? "bg-emerald-500" : "bg-muted-foreground"}`}
+                />
               </span>
-              <div
-                className="absolute -inset-2 blur-2xl opacity-10 dark:opacity-20 animate-pulse bg-foreground"
-              />
+              {copy.status.text}
             </span>
-            <br />
-            that solve real problems
-          </h1>
+            <span className="tabular-nums">Nigeria · {time ? `${time} WAT` : "UTC+1"}</span>
+          </div>
+        </Reveal>
 
-          <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto font-light leading-relaxed">
-            {mode === "backend"
-              ? "Architecting robust APIs and microservices with Python, Django, and cloud infrastructure"
-              : "Crafting smart contracts and DeFi protocols on Ethereum, Solana, and beyond"}
-          </p>
+        <h1 aria-label={`Shagbaor Agber, ${copy.role}`} className="mt-8">
+          <span
+            aria-hidden
+            className="flex flex-wrap items-center gap-x-4 pb-2 text-6xl font-semibold leading-none tracking-tighter sm:gap-x-6 sm:text-8xl lg:text-9xl"
+          >
+            {avatarUrl && (
+              <span className="inline-block overflow-hidden">
+                <span className="name-rise relative block size-14 overflow-hidden rounded-2xl bg-card ring-1 ring-border sm:size-20 lg:size-28">
+                  <Image src={avatarUrl} alt="" fill priority sizes="112px" className="object-cover" />
+                </span>
+              </span>
+            )}
+            {["Shagbaor", "Agber"].map((word, i) => (
+              <span key={word} className="inline-block overflow-hidden pr-[0.04em]">
+                <span
+                  className="name-rise text-hero inline-block pb-[0.06em]"
+                  style={{ animationDelay: `${(i + 1) * 120}ms` }}
+                >
+                  {word}
+                </span>
+              </span>
+            ))}
+          </span>
+        </h1>
+
+        <div className="mt-12 grid gap-8 border-t border-border pt-8 lg:grid-cols-12 lg:gap-12">
+          <Reveal delay={200} className="lg:col-span-5">
+            <p className="max-w-[440px] text-2xl font-semibold tracking-tight md:text-3xl">{copy.statement}</p>
+          </Reveal>
+          <Reveal delay={300} className="lg:col-span-7">
+            <p className="max-w-[560px] text-lg text-muted-foreground">{copy.intro}</p>
+            <div className="mt-8 flex flex-wrap items-center gap-2">
+              <a href="#projects" className={buttonPrimary}>
+                See selected work
+                <Icon icon={ArrowDown01Icon} size={16} />
+              </a>
+              <button type="button" onClick={() => setShowResume(true)} className={buttonQuiet}>
+                Read my resume
+              </button>
+              <ul className="flex items-center sm:ml-2 sm:border-l sm:border-border sm:pl-2">
+                {socials.map(({ href, label, logo }) => (
+                  <li key={label}>
+                    <a
+                      href={href}
+                      aria-label={label}
+                      className={iconButton}
+                      {...(href.startsWith("http") ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                    >
+                      {logo}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </Reveal>
         </div>
-
-        <div
-          className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-8 animate-fade-in-up"
-          style={{ animationDelay: "0.2s" }}
-        >
-          <Button
-            size="lg"
-            className="group relative text-base px-8 py-6 bg-foreground text-background hover:bg-foreground/90 font-semibold overflow-hidden rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
-            onClick={() => scrollToSection("projects")}
-          >
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-background/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
-            <span className="relative z-10 flex items-center gap-2">
-              View Projects
-              <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
-            </span>
-          </Button>
-
-          <Button
-            size="lg"
-            variant="outline"
-            className="group relative text-base px-8 py-6 border-2 border-foreground/20 font-semibold overflow-hidden rounded-xl bg-transparent hover:bg-foreground/5 transition-all duration-300"
-            onClick={() => setShowResume(true)}
-          >
-            <span className="relative z-10 flex items-center gap-2">
-              <FileText className="h-5 w-5" />
-              View Resume
-            </span>
-          </Button>
-        </div>
-
-        <div
-          className="flex gap-4 justify-center items-center pt-4 animate-fade-in-up"
-          style={{ animationDelay: "0.3s" }}
-        >
-          <a
-            href="https://x.com/0xAfterSnow"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="p-3 rounded-full border border-border/50 hover:border-primary/50 hover:bg-primary/10 transition-all duration-300 group"
-          >
-            <X className="h-5 w-5 group-hover:scale-110 transition-transform" />
-          </a>
-          <a
-            href="https://linkedin.com/in/shagbaoragber/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="p-3 rounded-full border border-border/50 hover:border-primary/50 hover:bg-primary/10 transition-all duration-300 group"
-          >
-            <Linkedin className="h-5 w-5 group-hover:scale-110 transition-transform" />
-          </a>
-          <a
-            href="https://github.com/0xAfterSnow/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="p-3 rounded-full border border-border/50 hover:border-primary/50 hover:bg-primary/10 transition-all duration-300 group"
-          >
-            <Github className="h-5 w-5 group-hover:scale-110 transition-transform" />
-          </a>
-          <a
-            href="mailto:snow@aftersnow.xyz"
-            className="p-3 rounded-full border border-border/50 hover:border-primary/50 hover:bg-primary/10 transition-all duration-300 group"
-          >
-            <Mail className="h-5 w-5 group-hover:scale-110 transition-transform" />
-          </a>
-        </div>
-
 
       </div>
+
+      <Reveal delay={500} className="mt-12">
+        <div className="mx-auto flex max-w-6xl items-center gap-8 px-6">
+          <p className="hidden shrink-0 text-sm text-muted-foreground md:block">Built with</p>
+          <div className="marquee min-w-0 flex-1">
+            <p className="sr-only">Teams and clients: {teams.join(", ")}</p>
+            <ul className="marquee-track" aria-hidden>
+              {[...teams, ...teams].map((team, i) => (
+                <li key={i} className="shrink-0 px-6 text-lg font-semibold tracking-tight text-muted-foreground/70">
+                  {team}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </Reveal>
 
       <ResumeModal open={showResume} onOpenChange={setShowResume} mode={mode} />
     </section>

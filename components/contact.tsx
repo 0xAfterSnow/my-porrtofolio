@@ -1,118 +1,123 @@
+"use client"
+
 import { useState, useEffect } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Github, Linkedin, X, Mail, Send } from "lucide-react"
+import Link from "next/link"
+import { ArrowUp01Icon, Mail01Icon } from "@hugeicons/core-free-icons"
+import { GitHubLogo, LinkedInLogo, XLogo } from "@/components/brand-logos"
+import { cn } from "@/lib/utils"
+import { GITHUB_USERNAME, type Contributions } from "@/lib/github"
+import { Icon } from "@/components/icon"
+import { ContributionGraph } from "@/components/contribution-graph"
 import { ResumeModal } from "@/components/resume-modal"
 import { createBrowserSupabaseClient } from "@/lib/supabase/client"
+import { Reveal, buttonPrimary, buttonQuiet, focusRing } from "@/components/section"
 
-export function Contact({ mode }: { mode?: "backend" | "web3" }) {
+const EMAIL = "snow@aftersnow.xyz"
+
+const footerLink = cn(
+  "inline-flex items-center gap-1 rounded-md px-2 py-1 transition-colors duration-300 ease-soft hover:text-foreground",
+  focusRing,
+)
+
+interface ContactProps {
+  mode?: "backend" | "web3"
+  contributions: Contributions | null
+}
+
+export function Contact({ mode, contributions }: ContactProps) {
   const [showResume, setShowResume] = useState(false)
   const [settings, setSettings] = useState<any>(null)
-  const supabase = createBrowserSupabaseClient()
 
   useEffect(() => {
     async function fetchSettings() {
+      const supabase = createBrowserSupabaseClient()
       const { data } = await supabase.from("site_settings").select("*").single()
       if (data) setSettings(data)
     }
     fetchSettings()
   }, [])
 
-  const email = settings?.social_email || "snow@aftersnow.xyz"
-  const github = settings?.social_github || "https://github.com/CodeShagbaor/"
-  const linkedin = settings?.social_linkedin || "https://linkedin.com/in/shagbaoragber/"
-  const twitter = settings?.social_twitter || "https://x.com/CodeShagbaor"
-  const resumeUrl = settings?.resume_url
-
-  const handleResumeClick = () => {
-    setShowResume(true)
-  }
+  const socials = [
+    { label: "GitHub", logo: <GitHubLogo size={18} />, href: `https://github.com/${GITHUB_USERNAME}` },
+    { label: "LinkedIn", logo: <LinkedInLogo size={17} />, href: settings?.social_linkedin || "https://linkedin.com/in/shagbaoragber/" },
+    { label: "X", logo: <XLogo size={16} />, href: settings?.social_twitter || "https://x.com/0xAfterSnow" },
+  ]
 
   return (
-    <section id="contact" className="relative py-32 px-6 overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-t from-background via-zinc-500/10 to-background" />
-      <div className="absolute inset-0 cyber-grid opacity-20" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-white/5 rounded-full blur-[150px] animate-pulse" />
-
-      <div className="relative z-10 max-w-4xl mx-auto text-center">
-        <h2 className="text-5xl md:text-6xl font-bold mb-8">Let's Build Together</h2>
-        <p className="text-xl md:text-2xl text-muted-foreground mb-16 text-balance font-light max-w-3xl mx-auto">
-          Whether you need scalable backend systems or innovative Web3 solutions, I'm here to help bring your ideas to life.
-        </p>
-
-        <Card className="relative neon-border glass-card overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-zinc-500/5" />
-
-          <CardContent className="pt-12 pb-12 relative">
-            <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-10">
-              <Button
-                size="lg"
-                className="group relative text-lg px-10 py-7 bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 hover:bg-zinc-200 dark:hover:bg-zinc-700 font-semibold overflow-hidden"
-                onClick={() => (window.location.href = `mailto:${email}`)}
-              >
-                <span className="relative z-10 flex items-center">
-                  <Mail className="mr-2 h-5 w-5" />
-                  Get In Touch
-                  <Send className="ml-2 h-4 w-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300" />
-                </span>
-                <div className="absolute inset-0 bg-gradient-to-r from-zinc-200 via-zinc-300 to-zinc-200 dark:from-zinc-700 dark:via-zinc-600 dark:to-zinc-700 opacity-0 group-hover:opacity-100 transition-opacity" />
-              </Button>
-
-              <Button
-                size="lg"
-                variant="outline"
-                className="text-lg px-10 py-7 border-2 border-zinc-200 dark:border-zinc-700 text-foreground hover:bg-zinc-100 dark:hover:bg-zinc-800 font-semibold transition-all duration-300 bg-transparent"
-                onClick={handleResumeClick}
-              >
-                View Resume
-              </Button>
+    <>
+      <section id="contact" className="scroll-mt-24 px-6 pt-24 pb-24">
+        <Reveal className="mx-auto max-w-6xl">
+          <div className="grid gap-12 rounded-2xl bg-card p-6 ring-1 ring-border md:p-12 lg:grid-cols-12 lg:gap-12 lg:p-16">
+            <div className="flex flex-col lg:col-span-6">
+              <p className="text-sm font-medium text-muted-foreground">Contact</p>
+              <h2 className="text-hero mt-4 max-w-[560px] pb-1 text-4xl font-semibold tracking-tighter md:text-5xl">
+                Have something that needs building?
+              </h2>
+              <p className="mt-6 max-w-[480px] text-lg text-muted-foreground">
+                {mode === "web3"
+                  ? "Tell me about the protocol, the chain, and what the contracts need to guarantee. I'll tell you honestly whether I'm the right fit."
+                  : "Tell me about the product, the traffic you expect, and where things hurt today. I'll tell you honestly whether I'm the right fit."}
+              </p>
+              <div className="mt-10 flex flex-wrap items-center gap-2 lg:mt-auto lg:pt-10">
+                <a href={`mailto:${EMAIL}`} className={buttonPrimary}>
+                  <Icon icon={Mail01Icon} size={18} />
+                  Email me
+                </a>
+                <button type="button" onClick={() => setShowResume(true)} className={buttonQuiet}>
+                  Read my resume
+                </button>
+              </div>
             </div>
 
-            <div className="flex justify-center gap-8">
-              <a
-                href={twitter}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group relative text-muted-foreground hover:text-primary transition-colors duration-300"
-              >
-                <X className="h-7 w-7" />
-                <div className="absolute inset-0 bg-primary/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
-                <span className="sr-only">X</span>
-              </a>
-
-              <a
-                href={linkedin}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group relative text-muted-foreground hover:text-primary transition-colors duration-300"
-              >
-                <Linkedin className="h-7 w-7" />
-                <div className="absolute inset-0 bg-primary/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
-                <span className="sr-only">LinkedIn</span>
-              </a>
-
-              <a
-                href={github}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group relative text-muted-foreground hover:text-primary transition-colors duration-300"
-              >
-                <Github className="h-7 w-7" />
-                <div className="absolute inset-0 bg-primary/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
-                <span className="sr-only">GitHub</span>
-              </a>
-
+            <div className="min-w-0 self-end lg:col-span-6">
+              <div className="rounded-xl bg-background ring-1 ring-border">
+                <ContributionGraph data={contributions} username={GITHUB_USERNAME} />
+              </div>
+              <ul className="mt-3 flex items-center gap-2">
+                {socials.map(({ label, logo, href }) => (
+                  <li key={label}>
+                    <a
+                      href={href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={label}
+                      className={cn(
+                        "flex size-9 items-center justify-center rounded-lg bg-background text-muted-foreground ring-1 ring-border transition-[transform,background-color,color] duration-300 ease-soft hover:bg-secondary hover:text-foreground active:scale-[0.98]",
+                        focusRing,
+                      )}
+                    >
+                      {logo}
+                    </a>
+                  </li>
+                ))}
+              </ul>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </Reveal>
+      </section>
 
-        <p className="mt-16 text-sm text-muted-foreground font-light">
-          © {new Date().getFullYear()} {settings?.author_name || "Shagbaor Agber"}. Built with Next.js and deployed on Vercel.
-        </p>
-      </div>
+      <footer className="px-6 pb-24 md:pb-12">
+        <div className="mx-auto flex max-w-6xl flex-col gap-6 border-t border-border pt-8 text-sm text-muted-foreground md:flex-row md:items-center md:justify-between">
+          <p>
+            © {new Date().getFullYear()} {settings?.author_name || "Shagbaor Agber"}
+          </p>
+          <ul className="-ml-2 flex flex-wrap items-center gap-1">
+            <li>
+              <Link href="/blog" className={footerLink}>
+                Blog
+              </Link>
+            </li>
+            <li>
+              <a href="#top" className={footerLink}>
+                Back to top
+                <Icon icon={ArrowUp01Icon} size={14} />
+              </a>
+            </li>
+          </ul>
+        </div>
+      </footer>
 
       <ResumeModal open={showResume} onOpenChange={setShowResume} mode={mode || "backend"} />
-
-    </section>
+    </>
   )
 }
