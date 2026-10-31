@@ -11,7 +11,7 @@ interface RevealProps {
   delay?: number
 }
 
-// Rises 32px and fades in the first time it enters the viewport.
+// Rises 8px and fades in the first time it enters the viewport.
 export function Reveal({ children, className, delay = 0 }: RevealProps) {
   const ref = useRef<HTMLDivElement>(null)
   const [visible, setVisible] = useState(false)
@@ -60,7 +60,7 @@ export function Section({ id, label, title, description, children, className }: 
         <Reveal className="mb-12 grid gap-4 md:mb-16 md:grid-cols-12 md:gap-8">
           <p className="text-sm font-medium text-muted-foreground md:col-span-3 md:pt-2">{label}</p>
           <div className="max-w-[680px] space-y-4 md:col-span-9">
-            <h2 className="text-3xl font-semibold tracking-tight md:text-4xl">{title}</h2>
+            <h2 className="text-3xl font-medium tracking-tight md:text-4xl">{title}</h2>
             {description && <p className="text-lg text-muted-foreground">{description}</p>}
           </div>
         </Reveal>

@@ -149,12 +149,12 @@ function ExperienceItem({ exp }: { exp: Experience }) {
 
   return (
     <article className="grid gap-4 py-10 md:grid-cols-12 md:gap-8">
-      <div className="text-sm text-muted-foreground tabular-nums md:col-span-3">
+      <div className="font-mono text-xs text-muted-foreground tabular-nums md:col-span-3 md:pt-1.5">
         <p>{exp.period}</p>
         <p>{exp.location}</p>
       </div>
       <div className="max-w-[680px] md:col-span-9">
-        <h3 className="text-xl font-semibold tracking-tight">{exp.title}</h3>
+        <h3 className="text-xl font-medium tracking-tight">{exp.title}</h3>
         <p className="mt-1 text-base text-muted-foreground">{exp.company}</p>
         <p className="mt-4 text-base">{exp.description}</p>
         <ul className="mt-4 space-y-2">
@@ -171,7 +171,7 @@ function ExperienceItem({ exp }: { exp: Experience }) {
             onClick={() => setExpanded((v) => !v)}
             aria-expanded={expanded}
             className={cn(
-              "mt-4 -ml-2 inline-flex items-center gap-2 rounded-lg px-2 py-1 text-sm font-semibold transition-colors duration-300 ease-soft hover:bg-secondary",
+              "mt-4 -ml-2 inline-flex items-center gap-2 rounded-lg px-2 py-1 text-sm font-medium transition-colors duration-150 ease-soft hover:bg-secondary",
               focusRing,
             )}
           >
@@ -194,8 +194,8 @@ export function WorkExperience({ mode }: WorkExperienceProps) {
       title={mode === "backend" ? "Where I've built backends" : "Where I've shipped onchain"}
       description={
         mode === "backend"
-          ? "Five teams since 2019, from data services to healthcare and social platforms."
-          : "Protocols and marketplaces where the contracts carry real value."
+          ? "Five teams since 2019, from data services to healthcare and social platforms"
+          : "Protocols and marketplaces where the contracts carry real value"
       }
     >
       <ol className="divide-y divide-border border-y border-border">

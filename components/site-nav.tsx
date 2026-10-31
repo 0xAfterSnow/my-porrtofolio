@@ -40,7 +40,7 @@ function ModeSwitch({ mode, onModeChange }: SiteNavProps) {
           aria-checked={mode === value}
           onClick={() => onModeChange(value)}
           className={cn(
-            "relative rounded-full px-3 py-1 text-sm font-semibold transition-colors duration-300 ease-soft",
+            "relative rounded-full px-3 py-1 text-sm font-medium transition-colors duration-150 ease-soft",
             mode === value ? "text-foreground" : "text-muted-foreground hover:text-foreground",
             focusRing,
           )}
@@ -107,7 +107,7 @@ export function SiteNav({ mode, onModeChange }: SiteNavProps) {
           aria-label="Main"
           className="flex w-full items-center justify-between gap-2 rounded-full border border-border/60 bg-background/70 py-1 pr-1 pl-4 backdrop-blur-xl md:w-auto md:gap-4"
         >
-          <a href="#top" className={cn("rounded-md text-sm font-semibold tracking-tight", focusRing)}>
+          <a href="#top" className={cn("rounded-md text-sm font-medium", focusRing)}>
             Shagbaor
           </a>
 
@@ -118,7 +118,7 @@ export function SiteNav({ mode, onModeChange }: SiteNavProps) {
                   href={href}
                   aria-current={active === id ? "location" : undefined}
                   className={cn(
-                    "rounded-full px-3 py-2 text-sm font-semibold transition-colors duration-300 ease-soft",
+                    "rounded-full px-3 py-2 text-sm font-medium transition-colors duration-150 ease-soft",
                     active === id ? "text-foreground" : "text-muted-foreground hover:text-foreground",
                     focusRing,
                   )}
@@ -131,7 +131,7 @@ export function SiteNav({ mode, onModeChange }: SiteNavProps) {
               <Link
                 href="/blog"
                 className={cn(
-                  "rounded-full px-3 py-2 text-sm font-semibold text-muted-foreground transition-colors duration-300 ease-soft hover:text-foreground",
+                  "rounded-full px-3 py-2 text-sm font-medium text-muted-foreground transition-colors duration-150 ease-soft hover:text-foreground",
                   focusRing,
                 )}
               >
@@ -174,7 +174,7 @@ export function SiteNav({ mode, onModeChange }: SiteNavProps) {
         id="mobile-menu"
         aria-hidden={!open}
         className={cn(
-          "fixed inset-0 z-40 flex flex-col bg-background/95 px-6 pt-24 pb-12 backdrop-blur-2xl transition-opacity duration-300 ease-soft md:hidden",
+          "fixed inset-0 z-40 flex flex-col bg-background/95 px-6 pt-24 pb-12 backdrop-blur-2xl transition-opacity duration-150 ease-soft md:hidden",
           open ? "opacity-100" : "pointer-events-none opacity-0",
         )}
       >
@@ -193,7 +193,7 @@ export function SiteNav({ mode, onModeChange }: SiteNavProps) {
                   href={href}
                   tabIndex={open ? 0 : -1}
                   onClick={() => setOpen(false)}
-                  className={cn("block rounded-lg py-2 text-3xl font-semibold tracking-tight", focusRing)}
+                  className={cn("block rounded-lg py-2 text-3xl font-medium tracking-tight", focusRing)}
                 >
                   {label}
                 </a>

@@ -97,7 +97,7 @@ export const RichText = memo(function RichText({ html, className, onImageClick }
       ref={ref}
       className={cn(
         "case-prose blog-prose prose prose-lg max-w-none dark:prose-invert",
-        "prose-headings:scroll-mt-28 prose-headings:font-semibold prose-headings:tracking-tight",
+        "prose-headings:scroll-mt-28 prose-headings:font-medium prose-headings:tracking-tight",
         "prose-h3:mt-12 prose-h3:text-2xl prose-h4:mt-8 prose-h4:text-xl",
         "prose-p:text-foreground/80 prose-li:text-foreground/80 prose-li:marker:text-muted-foreground",
         "prose-a:font-medium prose-a:text-foreground prose-a:underline prose-a:decoration-border prose-a:underline-offset-4 hover:prose-a:decoration-foreground",

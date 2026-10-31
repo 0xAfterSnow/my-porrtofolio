@@ -54,7 +54,7 @@ export function Testimonials({ mode }: TestimonialsProps) {
                   className="size-12 rounded-xl object-cover"
                 />
                 <div>
-                  <p className="text-base font-semibold">{t.name}</p>
+                  <p className="text-base font-medium">{t.name}</p>
                   <p className="text-sm text-muted-foreground">{t.role}</p>
                 </div>
               </figcaption>

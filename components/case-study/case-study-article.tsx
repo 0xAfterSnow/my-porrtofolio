@@ -24,8 +24,8 @@ interface CaseStudyArticleProps {
 type ZoomImage = { src: string; alt: string } | null
 
 const secondaryButton = cn(
-  "inline-flex items-center justify-center gap-2 rounded-lg px-3 py-2 text-base font-semibold ring-1 ring-border",
-  "transition-[transform,background-color] duration-300 ease-soft hover:bg-secondary active:scale-[0.98]",
+  "inline-flex items-center justify-center gap-2 rounded-lg px-3 py-2 text-base font-medium ring-1 ring-border",
+  "transition-[transform,background-color] duration-150 ease-soft hover:bg-secondary active:scale-[0.98]",
   focusRing,
 )
 
@@ -75,7 +75,7 @@ function TableOfContents({ sections, active }: { sections: { id: string; title: 
               href={`#${s.id}`}
               aria-current={active === s.id ? "location" : undefined}
               className={cn(
-                "-ml-px block border-l py-1 pl-4 text-sm transition-colors duration-300 ease-soft",
+                "-ml-px block border-l py-1 pl-4 text-sm transition-colors duration-150 ease-soft",
                 active === s.id
                   ? "border-foreground font-medium text-foreground"
                   : "border-transparent text-muted-foreground hover:text-foreground",
@@ -104,7 +104,7 @@ function SectionBlock({
 }) {
   return (
     <section id={id} aria-labelledby={`${id}-heading`} className={cn("scroll-mt-28 pt-16 first:pt-0", className)}>
-      <h2 id={`${id}-heading`} className="text-2xl font-semibold tracking-tight md:text-3xl">
+      <h2 id={`${id}-heading`} className="text-2xl font-medium tracking-tight md:text-3xl">
         {title}
       </h2>
       <div className="mt-6">{children}</div>
@@ -128,7 +128,7 @@ export function CaseStudyArticle({ study, html, readingTime, prev, next }: CaseS
         <Link
           href="/#case-studies"
           className={cn(
-            "-ml-2 inline-flex items-center gap-2 rounded-lg px-2 py-1 text-sm font-medium text-muted-foreground transition-colors duration-300 ease-soft hover:text-foreground",
+            "-ml-2 inline-flex items-center gap-2 rounded-lg px-2 py-1 text-sm font-medium text-muted-foreground transition-colors duration-150 ease-soft hover:text-foreground",
             focusRing,
           )}
         >
@@ -147,16 +147,16 @@ export function CaseStudyArticle({ study, html, readingTime, prev, next }: CaseS
               ))}
             </p>
           )}
-          <h1 className="text-hero mt-4 pb-1 text-4xl font-semibold tracking-tighter md:text-6xl">{study.title}</h1>
+          <h1 className="mt-4 pb-1 text-4xl font-medium tracking-tighter md:text-6xl">{study.title}</h1>
           {study.subtitle && <p className="mt-6 text-xl text-muted-foreground">{study.subtitle}</p>}
 
           <div className="mt-8 flex flex-wrap items-center gap-2">
             {study.tech.map((tag) => (
-              <span key={tag} className="rounded-full px-3 py-1 text-sm font-medium ring-1 ring-border">
+              <span key={tag} className="rounded-md px-2 py-1 text-sm font-medium ring-1 ring-border">
                 {tag}
               </span>
             ))}
-            <span className="text-sm text-muted-foreground sm:ml-2">{readingTime} min read</span>
+            <span className="font-mono text-xs text-muted-foreground sm:ml-2">{readingTime} min read</span>
           </div>
         </div>
 
@@ -183,7 +183,7 @@ export function CaseStudyArticle({ study, html, readingTime, prev, next }: CaseS
             {study.metrics.map((metric, i) => (
               <div key={`${metric.label}-${i}`} className="flex flex-col-reverse rounded-2xl bg-card p-6 ring-1 ring-border">
                 <dt className="mt-2 text-sm text-muted-foreground">{metric.label}</dt>
-                <dd className="text-4xl font-semibold tracking-tight tabular-nums md:text-5xl">{metric.value}</dd>
+                <dd className="text-4xl font-medium tracking-tight tabular-nums md:text-5xl">{metric.value}</dd>
               </div>
             ))}
           </dl>
@@ -269,7 +269,7 @@ export function CaseStudyArticle({ study, html, readingTime, prev, next }: CaseS
               >
                 <div className="rounded-2xl bg-secondary/60 p-6 ring-1 ring-border md:p-8">
                   <p className="text-sm font-medium text-muted-foreground">Honest review</p>
-                  <h2 id="honest-review-heading" className="mt-1 text-2xl font-semibold tracking-tight md:text-3xl">
+                  <h2 id="honest-review-heading" className="mt-1 text-2xl font-medium tracking-tight md:text-3xl">
                     {title("honest-review")}
                   </h2>
                   <RichText html={html.honest_review} onImageClick={openZoom} className="mt-6" />
@@ -312,7 +312,7 @@ export function CaseStudyArticle({ study, html, readingTime, prev, next }: CaseS
             <Link
               href={`/case-studies/${prev.slug}`}
               className={cn(
-                "group rounded-2xl bg-card p-6 ring-1 ring-border transition-shadow duration-300 ease-soft hover:ring-foreground",
+                "group rounded-2xl bg-card p-6 ring-1 ring-border transition-shadow duration-150 ease-soft hover:ring-foreground",
                 focusRing,
               )}
             >
@@ -320,7 +320,7 @@ export function CaseStudyArticle({ study, html, readingTime, prev, next }: CaseS
                 <Icon icon={ArrowLeft01Icon} size={16} />
                 Previous case study
               </span>
-              <span className="mt-2 block text-lg font-semibold tracking-tight">{prev.title}</span>
+              <span className="mt-2 block text-lg font-medium tracking-tight">{prev.title}</span>
             </Link>
           ) : (
             <span className="hidden sm:block" />
@@ -329,7 +329,7 @@ export function CaseStudyArticle({ study, html, readingTime, prev, next }: CaseS
             <Link
               href={`/case-studies/${next.slug}`}
               className={cn(
-                "group rounded-2xl bg-card p-6 text-right ring-1 ring-border transition-shadow duration-300 ease-soft hover:ring-foreground",
+                "group rounded-2xl bg-card p-6 text-right ring-1 ring-border transition-shadow duration-150 ease-soft hover:ring-foreground",
                 focusRing,
               )}
             >
@@ -337,7 +337,7 @@ export function CaseStudyArticle({ study, html, readingTime, prev, next }: CaseS
                 Next case study
                 <Icon icon={ArrowRight01Icon} size={16} />
               </span>
-              <span className="mt-2 block text-lg font-semibold tracking-tight">{next.title}</span>
+              <span className="mt-2 block text-lg font-medium tracking-tight">{next.title}</span>
             </Link>
           )}
         </nav>

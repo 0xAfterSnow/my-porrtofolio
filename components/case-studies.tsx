@@ -57,7 +57,7 @@ export function CaseStudies({ mode }: CaseStudiesProps) {
       id="case-studies"
       label="Case studies"
       title="Problems worth writing up"
-      description="The brief, how I approached it, and what I'd change next time."
+      description="The brief, how I approached it, and what I'd change next time"
     >
       {loading ? (
         <CaseStudySkeleton />
@@ -73,15 +73,15 @@ export function CaseStudies({ mode }: CaseStudiesProps) {
                     className={cn("group flex items-start justify-between gap-6 rounded-lg py-8", focusRing)}
                   >
                     <span className="min-w-0">
-                      <span className="block text-sm text-muted-foreground">{meta.join(" · ")}</span>
-                      <h3 className="mt-2 text-xl font-semibold tracking-tight decoration-1 underline-offset-4 group-hover:underline md:text-2xl">
+                      <span className="block font-mono text-xs text-muted-foreground">{meta.join(" · ")}</span>
+                      <h3 className="mt-2 text-xl font-medium tracking-tight decoration-1 underline-offset-4 group-hover:underline md:text-2xl">
                         {study.title}
                       </h3>
                       <span className="mt-2 block max-w-[640px] text-base text-muted-foreground">
                         {study.subtitle || study.description}
                       </span>
                     </span>
-                    <span className="mt-1 flex size-10 shrink-0 items-center justify-center rounded-full ring-1 ring-border transition-[background-color,color,box-shadow] duration-300 ease-soft group-hover:bg-foreground group-hover:text-background group-hover:ring-foreground">
+                    <span className="mt-1 flex size-10 shrink-0 items-center justify-center rounded-full ring-1 ring-border transition-[background-color,color,box-shadow] duration-150 ease-soft group-hover:bg-foreground group-hover:text-background group-hover:ring-foreground">
                       <Icon
                         icon={ArrowUpRight01Icon}
                         size={16}

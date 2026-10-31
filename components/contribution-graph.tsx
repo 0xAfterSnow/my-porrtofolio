@@ -108,7 +108,7 @@ export function ContributionGraph({ data, username }: { data: Contributions | nu
         )}
       </div>
       <figcaption className="mt-4 flex flex-wrap items-center justify-between gap-2 text-sm text-muted-foreground">
-        <span className="tabular-nums">
+        <span className="font-mono text-xs tabular-nums">
           {data.total.toLocaleString("en-US")} contributions in {data.year}
         </span>
         <span aria-hidden className="flex items-center gap-1">

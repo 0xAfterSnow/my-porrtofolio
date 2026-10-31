@@ -11,7 +11,7 @@ interface AuthorCardProps {
 }
 
 const pill = cn(
-    "inline-flex items-center gap-2 rounded-full px-3 py-2 text-sm font-semibold ring-1 ring-border transition-[background-color,color,box-shadow] duration-300 ease-soft hover:bg-foreground hover:text-background hover:ring-foreground active:scale-[0.98]",
+    "inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium ring-1 ring-border transition-[background-color,color,box-shadow] duration-150 ease-soft hover:bg-foreground hover:text-background hover:ring-foreground active:scale-[0.98]",
     focusRing,
 )
 
@@ -35,7 +35,7 @@ export function AuthorCard({ settings }: AuthorCardProps) {
         <section aria-label="About the author" className="border-y border-border py-10">
             <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
                 <div className="flex items-center gap-4">
-                    <span className="relative flex size-16 shrink-0 items-center justify-center overflow-hidden rounded-full bg-foreground text-lg font-semibold text-background ring-1 ring-border">
+                    <span className="relative flex size-16 shrink-0 items-center justify-center overflow-hidden rounded-full bg-foreground text-lg font-medium text-background ring-1 ring-border">
                         {avatarUrl ? (
                             <Image src={avatarUrl} alt={authorName} fill sizes="64px" className="object-cover" />
                         ) : (
@@ -44,13 +44,13 @@ export function AuthorCard({ settings }: AuthorCardProps) {
                     </span>
                     <div>
                         <p className="text-sm text-muted-foreground">Written by</p>
-                        <h2 className="text-2xl font-semibold tracking-tight">{authorName}</h2>
+                        <h2 className="text-2xl font-medium tracking-tight">{authorName}</h2>
                     </div>
                 </div>
                 <Link
                     href="/"
                     className={cn(
-                        "group inline-flex items-center gap-2 self-start rounded-lg px-3 py-2 text-sm font-semibold transition-colors duration-300 ease-soft hover:bg-secondary sm:self-auto",
+                        "group inline-flex items-center gap-2 self-start rounded-lg px-3 py-2 text-sm font-medium transition-colors duration-150 ease-soft hover:bg-secondary sm:self-auto",
                         focusRing,
                     )}
                 >

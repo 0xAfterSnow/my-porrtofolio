@@ -15,7 +15,7 @@ const links = [
 ]
 
 const linkClass = cn(
-  "rounded-full px-3 py-2 text-sm font-semibold transition-colors duration-300 ease-soft",
+  "rounded-full px-3 py-2 text-sm font-medium transition-colors duration-150 ease-soft",
   focusRing,
 )
 
@@ -31,7 +31,7 @@ export function BlogNavbar({ current = "blog" }: { current?: "blog" | "work" }) 
         aria-label="Main"
         className="flex w-full items-center justify-between gap-2 rounded-full border border-border/60 bg-background/70 py-1 pr-1 pl-4 backdrop-blur-xl md:w-auto md:gap-4"
       >
-        <Link href="/" className={cn("rounded-md text-sm font-semibold tracking-tight", focusRing)}>
+        <Link href="/" className={cn("rounded-md text-sm font-medium", focusRing)}>
           Shagbaor
         </Link>
         <ul className="flex items-center">

@@ -160,14 +160,14 @@ export function Achievements({ mode }: AchievementsProps) {
                 <span className="font-mono text-sm text-muted-foreground md:col-span-1">{pad(i)}</span>
                 <h3
                   className={cn(
-                    "text-2xl font-semibold tracking-tight transition-transform duration-500 ease-soft md:col-span-6 md:text-3xl",
+                    "text-2xl font-medium tracking-tight transition-transform duration-500 ease-soft md:col-span-6 md:text-3xl",
                     active === i && "md:translate-x-2",
                   )}
                 >
                   {win.kind}
                   <span className="text-muted-foreground"> · {win.title}</span>
                 </h3>
-                <span className="text-sm text-muted-foreground tabular-nums md:order-last md:col-span-2 md:text-right">
+                <span className="font-mono text-xs text-muted-foreground tabular-nums md:order-last md:col-span-2 md:text-right">
                   {win.year}
                 </span>
                 <p className="col-start-2 col-end-4 inline-flex items-center gap-2 text-sm text-muted-foreground md:col-span-3">
@@ -205,7 +205,7 @@ export function Achievements({ mode }: AchievementsProps) {
                     <p className="text-base font-medium">{cert.title}</p>
                     <p className="text-sm text-muted-foreground">{cert.issuer}</p>
                   </div>
-                  <span className="text-sm text-muted-foreground tabular-nums">{cert.year}</span>
+                  <span className="font-mono text-xs text-muted-foreground tabular-nums">{cert.year}</span>
                 </div>
               </Reveal>
             </li>
