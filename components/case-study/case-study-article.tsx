@@ -1,16 +1,16 @@
 "use client"
 
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useState } from "react"
 import Link from "next/link"
-import { ArrowLeft01Icon, ArrowRight01Icon, ArrowUpRight01Icon } from "@hugeicons/core-free-icons"
+import { ArrowLeft01Icon, ArrowUpRight01Icon } from "@hugeicons/core-free-icons"
 import { cn } from "@/lib/utils"
 import { buttonPrimary, focusRing } from "@/lib/styles"
 import { Icon } from "@/components/icon"
 import { RichText } from "@/components/case-study/rich-text"
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"
+import { ImageZoom, PrevNextNav, TableOfContents, useActiveSection, type ArticleNeighbour, type ZoomImage } from "@/components/article-kit"
 import { SECTIONS, type CaseStudy, type RichTextField, type SectionId } from "@/lib/case-study"
 
-export type CaseStudyNeighbour = { slug: string; title: string } | null
+export type CaseStudyNeighbour = ArticleNeighbour
 
 interface CaseStudyArticleProps {
   study: CaseStudy
@@ -21,7 +21,6 @@ interface CaseStudyArticleProps {
   next?: CaseStudyNeighbour
 }
 
-type ZoomImage = { src: string; alt: string } | null
 
 const secondaryButton = cn(
   "inline-flex items-center justify-center gap-2 rounded-lg px-3 py-2 text-base font-medium ring-1 ring-border",
@@ -43,53 +42,6 @@ function presentSections(study: CaseStudy, html: CaseStudyArticleProps["html"]) 
   return SECTIONS.filter((s) => has[s.id])
 }
 
-// Highlights the section whose heading most recently crossed the upper third of the screen.
-function useActiveSection(ids: string[]) {
-  const [active, setActive] = useState<string | null>(ids[0] ?? null)
-  const key = ids.join(",")
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries.filter((e) => e.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)
-        if (visible[0]) setActive(visible[0].target.id)
-      },
-      { rootMargin: "-20% 0px -70% 0px" },
-    )
-    key.split(",").forEach((id) => {
-      const el = id && document.getElementById(id)
-      if (el) observer.observe(el)
-    })
-    return () => observer.disconnect()
-  }, [key])
-  return active
-}
-
-function TableOfContents({ sections, active }: { sections: { id: string; title: string }[]; active: string | null }) {
-  return (
-    <nav aria-label="On this page" className="sticky top-28">
-      <p className="text-sm font-medium text-muted-foreground">On this page</p>
-      <ol className="mt-4 space-y-1 border-l border-border">
-        {sections.map((s) => (
-          <li key={s.id}>
-            <a
-              href={`#${s.id}`}
-              aria-current={active === s.id ? "location" : undefined}
-              className={cn(
-                "-ml-px block border-l py-1 pl-4 text-sm transition-colors duration-150 ease-soft",
-                active === s.id
-                  ? "border-foreground font-medium text-foreground"
-                  : "border-transparent text-muted-foreground hover:text-foreground",
-                focusRing,
-              )}
-            >
-              {s.title}
-            </a>
-          </li>
-        ))}
-      </ol>
-    </nav>
-  )
-}
 
 function SectionBlock({
   id,
@@ -207,7 +159,7 @@ export function CaseStudyArticle({ study, html, readingTime, prev, next }: CaseS
       {sections.length > 0 && (
         <div className="mx-auto mt-20 grid max-w-6xl gap-12 lg:grid-cols-12">
           <aside className="hidden lg:col-span-3 lg:block">
-            <TableOfContents sections={sections} active={active} />
+            <TableOfContents items={sections} active={active} />
           </aside>
 
           <div className="min-w-0 lg:col-span-9 lg:max-w-3xl">
@@ -306,52 +258,9 @@ export function CaseStudyArticle({ study, html, readingTime, prev, next }: CaseS
         </div>
       )}
 
-      {(prev || next) && (
-        <nav aria-label="More case studies" className="mx-auto mt-24 grid max-w-6xl gap-4 sm:grid-cols-2">
-          {prev ? (
-            <Link
-              href={`/case-studies/${prev.slug}`}
-              className={cn(
-                "group rounded-2xl bg-card p-6 ring-1 ring-border transition-shadow duration-150 ease-soft hover:ring-foreground",
-                focusRing,
-              )}
-            >
-              <span className="inline-flex items-center gap-2 text-sm text-muted-foreground">
-                <Icon icon={ArrowLeft01Icon} size={16} />
-                Previous case study
-              </span>
-              <span className="mt-2 block text-lg font-medium tracking-tight">{prev.title}</span>
-            </Link>
-          ) : (
-            <span className="hidden sm:block" />
-          )}
-          {next && (
-            <Link
-              href={`/case-studies/${next.slug}`}
-              className={cn(
-                "group rounded-2xl bg-card p-6 text-right ring-1 ring-border transition-shadow duration-150 ease-soft hover:ring-foreground",
-                focusRing,
-              )}
-            >
-              <span className="inline-flex items-center gap-2 text-sm text-muted-foreground">
-                Next case study
-                <Icon icon={ArrowRight01Icon} size={16} />
-              </span>
-              <span className="mt-2 block text-lg font-medium tracking-tight">{next.title}</span>
-            </Link>
-          )}
-        </nav>
-      )}
+      <PrevNextNav prev={prev} next={next} basePath="/case-studies" noun="case study" className="mx-auto mt-24 max-w-6xl" />
 
-      <Dialog open={zoom !== null} onOpenChange={(open) => !open && setZoom(null)}>
-        <DialogContent className="max-w-[95vw] border-0 bg-transparent p-0 shadow-none sm:max-w-[95vw]">
-          <DialogTitle className="sr-only">{zoom?.alt || "Enlarged image"}</DialogTitle>
-          {zoom && (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={zoom.src} alt={zoom.alt} className="max-h-[85dvh] w-full rounded-xl bg-white object-contain" />
-          )}
-        </DialogContent>
-      </Dialog>
+      <ImageZoom image={zoom} onClose={() => setZoom(null)} />
     </article>
   )
 }
