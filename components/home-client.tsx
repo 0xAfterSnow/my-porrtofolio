@@ -16,11 +16,12 @@ import type { Contributions } from "@/lib/github"
 
 interface HomeClientProps {
     initialProjects: any[]
+    initialCaseStudies: any[]
     avatarUrl?: string | null
     contributions: Contributions | null
 }
 
-export function HomeClient({ initialProjects, avatarUrl, contributions }: HomeClientProps) {
+export function HomeClient({ initialProjects, initialCaseStudies, avatarUrl, contributions }: HomeClientProps) {
     const [mode, setMode] = useState<"backend" | "web3">("backend")
     const [fading, setFading] = useState(false)
 
@@ -39,18 +40,18 @@ export function HomeClient({ initialProjects, avatarUrl, contributions }: HomeCl
             <SiteNav mode={mode} onModeChange={handleModeChange} />
             <main
                 id="main"
-                className={`transition-opacity duration-300 ease-soft ${fading ? "opacity-0" : "opacity-100"}`}
+                className={`transition-opacity duration-150 ease-soft ${fading ? "opacity-0" : "opacity-100"}`}
             >
-                <Hero mode={mode} avatarUrl={avatarUrl} />
+                <Hero mode={mode} avatarUrl={avatarUrl} contributions={contributions} />
                 <Skills mode={mode} />
                 <Projects mode={mode} projects={initialProjects} />
                 <Tagline mode={mode} />
                 <WorkExperience mode={mode} />
                 <Achievements mode={mode} />
-                <CaseStudies mode={mode} />
+                <CaseStudies mode={mode} studies={initialCaseStudies} />
                 <Testimonials mode={mode} />
                 <About mode={mode} />
-                <Contact mode={mode} contributions={contributions} />
+                <Contact mode={mode} />
             </main>
         </>
     )

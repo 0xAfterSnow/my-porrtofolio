@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation"
 import type { Metadata } from "next"
-import { createServerClient } from "@/lib/supabase/server"
+import { createPublicClient } from "@/lib/supabase/public"
 import { renderRichText } from "@/lib/sanitize"
 import {
   RICH_TEXT_FIELDS,
@@ -19,8 +19,14 @@ export const revalidate = 3600 // Revalidate every hour
 
 type Props = { params: Promise<{ slug: string }> }
 
+// Published case studies are built ahead of time; new ones are built on first visit and cached.
+export async function generateStaticParams() {
+  const { data } = await createPublicClient().from("case_studies").select("slug").eq("published", true)
+  return (data ?? []).map(({ slug }) => ({ slug }))
+}
+
 async function getCaseStudy(slug: string) {
-  const supabase = await createServerClient()
+  const supabase = createPublicClient()
   const { data } = await supabase.from("case_studies").select("*").eq("slug", slug).eq("published", true).maybeSingle()
   return data ? normalizeCaseStudy(data) : null
 }
@@ -33,7 +39,7 @@ function renderFields(study: CaseStudy) {
 
 // Newest first, matching the homepage list.
 async function getNeighbours(slug: string): Promise<{ prev: CaseStudyNeighbour; next: CaseStudyNeighbour }> {
-  const supabase = await createServerClient()
+  const supabase = createPublicClient()
   const { data } = await supabase
     .from("case_studies")
     .select("slug, title")

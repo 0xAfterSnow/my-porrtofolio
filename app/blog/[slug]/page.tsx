@@ -107,7 +107,7 @@ export default async function BlogPostPage({ params }: Props) {
                         <Link
                             href="/blog"
                             className={cn(
-                                "-ml-2 inline-flex items-center gap-2 rounded-lg px-2 py-1 text-sm font-medium text-muted-foreground transition-colors duration-300 ease-soft hover:text-foreground",
+                                "-ml-2 inline-flex items-center gap-2 rounded-lg px-2 py-1 text-sm font-medium text-muted-foreground transition-colors duration-150 ease-soft hover:text-foreground",
                                 focusRing,
                             )}
                         >
@@ -123,12 +123,12 @@ export default async function BlogPostPage({ params }: Props) {
                                 {labelFor(post.category)}
                             </Link>
                             <span aria-hidden>·</span>
-                            <time dateTime={post.created_at}>{formatDate(post.created_at, "long")}</time>
+                            <time dateTime={post.created_at} className="font-mono text-xs tabular-nums">{formatDate(post.created_at, "long")}</time>
                             <span aria-hidden>·</span>
-                            <span>{minutes} min read</span>
+                            <span className="font-mono text-xs">{minutes} min read</span>
                         </p>
 
-                        <h1 className="text-hero mt-4 pb-1 text-4xl font-semibold tracking-tighter md:text-6xl">
+                        <h1 className="mt-4 pb-1 text-4xl font-medium tracking-tighter md:text-6xl">
                             {post.title}
                         </h1>
 
@@ -160,7 +160,7 @@ export default async function BlogPostPage({ params }: Props) {
                                     {post.tags.map((tag: string) => (
                                         <li
                                             key={tag}
-                                            className="rounded-full px-3 py-1 text-sm font-medium ring-1 ring-border"
+                                            className="rounded-md px-2 py-1 text-sm font-medium ring-1 ring-border"
                                         >
                                             {tag}
                                         </li>
@@ -197,7 +197,7 @@ async function RelatedPosts({ currentPostId, category }: { currentPostId: string
 
     return (
         <aside aria-labelledby="related-heading" className="mx-auto mt-24 max-w-6xl">
-            <h2 id="related-heading" className="text-2xl font-semibold tracking-tight">
+            <h2 id="related-heading" className="text-2xl font-medium tracking-tight">
                 Keep reading
             </h2>
             <ul className="mt-8 grid gap-4 md:grid-cols-3">

@@ -34,7 +34,7 @@ export function ResumeModal({ open, onOpenChange }: ResumeModalProps) {
       <DialogContent className="flex h-[90dvh] max-w-[95vw] flex-col gap-0 overflow-hidden rounded-2xl p-0 sm:max-w-5xl">
         <DialogHeader className="flex-row items-center justify-between gap-4 border-b border-border py-3 pr-12 pl-6 text-left">
           <div>
-            <DialogTitle className="text-base font-semibold">Resume</DialogTitle>
+            <DialogTitle className="text-base font-medium">Resume</DialogTitle>
             <DialogDescription className="text-sm">Shagbaor Agber, PDF</DialogDescription>
           </div>
           <a href={resumeUrl} download className={buttonQuiet + " text-sm"}>

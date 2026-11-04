@@ -33,10 +33,10 @@ export const labelFor = (category: string) => categoryLabel[category] ?? categor
 export function PostMeta({ post, className }: { post: BlogPost; className?: string }) {
   return (
     <p className={cn("flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted-foreground", className)}>
-      <span className="rounded-full px-2 py-0.5 text-xs font-semibold text-foreground ring-1 ring-border">
+      <span className="rounded-md px-2 py-0.5 text-xs font-medium text-foreground ring-1 ring-border">
         {labelFor(post.category)}
       </span>
-      <time dateTime={post.created_at}>{formatDate(post.created_at)}</time>
+      <time dateTime={post.created_at} className="font-mono text-xs tabular-nums">{formatDate(post.created_at)}</time>
     </p>
   )
 }
@@ -49,7 +49,7 @@ function Cover({ post, featured }: { post: BlogPost; featured: boolean }) {
         alt=""
         fill
         sizes={featured ? "(min-width: 768px) 50vw, 100vw" : "(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"}
-        className="object-cover transition-transform duration-700 ease-soft group-hover:scale-[1.04]"
+        className="object-cover"
       />
     )
   }
@@ -57,7 +57,7 @@ function Cover({ post, featured }: { post: BlogPost; featured: boolean }) {
   return (
     <div className="absolute inset-0 flex flex-col justify-between bg-foreground p-6 text-background">
       <span className="text-sm font-medium opacity-70">Notes</span>
-      <span className="text-5xl font-semibold tracking-tighter">{labelFor(post.category)}</span>
+      <span className="text-5xl font-medium tracking-tighter">{labelFor(post.category)}</span>
     </div>
   )
 }
@@ -67,7 +67,7 @@ export function BlogPostCard({ post, featured = false }: { post: BlogPost; featu
     <Link
       href={`/blog/${post.slug}`}
       className={cn(
-        "group flex h-full flex-col overflow-hidden rounded-2xl bg-card ring-1 ring-border transition-shadow duration-300 ease-soft hover:ring-foreground",
+        "group flex h-full flex-col overflow-hidden rounded-2xl bg-card ring-1 ring-border transition-shadow duration-150 ease-soft hover:ring-foreground",
         featured && "md:grid md:grid-cols-2",
         focusRing,
       )}
@@ -85,7 +85,7 @@ export function BlogPostCard({ post, featured = false }: { post: BlogPost; featu
         <PostMeta post={post} />
         <h3
           className={cn(
-            "mt-4 font-semibold tracking-tight decoration-1 underline-offset-4 group-hover:underline",
+            "mt-4 font-medium tracking-tight decoration-1 underline-offset-4 group-hover:underline",
             featured ? "text-3xl md:text-4xl" : "text-xl",
           )}
         >
@@ -97,8 +97,8 @@ export function BlogPostCard({ post, featured = false }: { post: BlogPost; featu
           </p>
         )}
         <div className="mt-auto flex items-center justify-between pt-8">
-          <span className="text-sm text-muted-foreground">{readingTime(post.content)} min read</span>
-          <span className="flex size-9 items-center justify-center rounded-full ring-1 ring-border transition-[background-color,color,box-shadow] duration-300 ease-soft group-hover:bg-foreground group-hover:text-background group-hover:ring-foreground">
+          <span className="font-mono text-xs text-muted-foreground">{readingTime(post.content)} min read</span>
+          <span className="flex size-9 items-center justify-center rounded-full ring-1 ring-border transition-[background-color,color,box-shadow] duration-150 ease-soft group-hover:bg-foreground group-hover:text-background group-hover:ring-foreground">
             <Icon
               icon={ArrowUpRight01Icon}
               size={16}

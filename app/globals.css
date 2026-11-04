@@ -193,36 +193,32 @@
   }
 }
 
-/* Hero heading: the only gradient on the site, text only */
-.text-hero {
-  background-image: linear-gradient(90deg, #000000, #666666);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
-.dark .text-hero {
-  background-image: linear-gradient(90deg, #ffffff, #9b9b9b);
-}
-
 /* Flat surface used by admin and blog cards */
 .glass-card {
   background: var(--card);
   border: 1px solid var(--border);
 }
 
-/* Scroll reveal: rise 32px and fade in, once */
-.reveal {
+/* Scroll reveal: blocks below the screen wait, then fade and rise 8px once */
+.reveal-pending {
   opacity: 0;
-  transform: translateY(32px);
-  transition:
-    opacity 700ms var(--ease-out-soft),
-    transform 700ms var(--ease-out-soft);
+  transform: translateY(8px);
 }
 
-.reveal.is-visible {
-  opacity: 1;
-  transform: none;
+@keyframes reveal-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.reveal-in {
+  animation: reveal-in 300ms var(--ease-out-soft) both;
 }
 
 /* Tagline words fade from muted to full ink one at a time */
@@ -236,7 +232,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .reveal {
+  .reveal-pending {
     transform: none;
   }
 
@@ -287,99 +283,6 @@
 
 .expand-in {
   animation: expand-in 500ms var(--ease-out-soft);
-}
-
-/* Hero logo strip: a slow, continuous scroll that pauses on hover */
-@keyframes marquee {
-  to {
-    transform: translateX(-50%);
-  }
-}
-
-.marquee {
-  overflow: hidden;
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
-  mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
-}
-
-.marquee-track {
-  display: flex;
-  width: max-content;
-  animation: marquee 40s linear infinite;
-}
-
-.marquee:hover .marquee-track {
-  animation-play-state: paused;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .marquee-track {
-    animation: none;
-    flex-wrap: wrap;
-    width: auto;
-  }
-}
-
-/* Hero name: each word rises out of a mask */
-@keyframes name-rise {
-  from {
-    transform: translateY(105%);
-  }
-
-  to {
-    transform: none;
-  }
-}
-
-.name-rise {
-  animation: name-rise 1000ms var(--ease-out-soft) both;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .name-rise {
-    animation: none;
-  }
-}
-
-/* Article code. Doubled class beats both the typography plugin and the Prism theme. */
-.blog-prose.blog-prose :not(pre) > code {
-  background: var(--secondary);
-  color: var(--foreground);
-  border-radius: 6px;
-  padding: 2px 6px;
-  font-size: 0.875em;
-  font-weight: 400;
-}
-
-.blog-prose.blog-prose :not(pre) > code::before,
-.blog-prose.blog-prose :not(pre) > code::after,
-.blog-prose.blog-prose pre code::before,
-.blog-prose.blog-prose pre code::after {
-  content: none;
-}
-
-/* Code blocks stay dark in both themes so the syntax colours read well. */
-.blog-prose.blog-prose pre {
-  background: #0a0a0a;
-  color: #e5e5e5;
-  border: 1px solid #272727;
-  border-radius: 12px;
-  margin: 32px 0;
-  padding: 20px 24px;
-  overflow-x: auto;
-  font-size: 14px;
-  line-height: 1.7;
-}
-
-.blog-prose.blog-prose pre code {
-  background: transparent;
-  color: inherit;
-  border-radius: 0;
-  padding: 0;
-  font-size: inherit;
-  font-weight: 400;
-  text-shadow: none;
-  white-space: pre;
 }
 
 /* Case study articles. Doubled class beats the typography plugin's defaults. */

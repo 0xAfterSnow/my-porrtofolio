@@ -28,32 +28,27 @@ export function About({ mode }: AboutProps) {
       title="Backend reliability, applied to onchain products"
       description="With 5+ years building production systems, I bring the discipline of traditional backend engineering to Web3. I've worked with startups and established companies to ship systems that solve real problems."
     >
-      <div className="grid gap-4 md:grid-cols-2">
-        {disciplines.map((d, i) => {
-          const current = d.key === mode
-          return (
-            <Reveal key={d.key} delay={i * 80} className="h-full">
-              <article
-                className={cn(
-                  "h-full rounded-2xl bg-card p-6 ring-1 ring-border transition-opacity duration-500 ease-soft md:p-8",
-                  !current && "opacity-60 hover:opacity-100",
-                )}
-              >
-                <div className="flex items-center justify-between gap-4">
-                  <h3 className="text-xl font-semibold tracking-tight">{d.title}</h3>
-                  {current && (
-                    <span className="rounded-md bg-foreground px-2 py-1 text-xs font-medium text-background">
-                      Viewing now
-                    </span>
-                  )}
-                </div>
-                <p className="mt-4 text-base text-muted-foreground">{d.body}</p>
-                <p className="mt-6 text-sm">{d.stack.join(" · ")}</p>
-              </article>
-            </Reveal>
-          )
-        })}
-      </div>
+      {/* The discipline being viewed leads and gets the wider column. */}
+      <Reveal>
+        <div className="grid divide-y divide-border rounded-2xl bg-card ring-1 ring-border md:grid-cols-5 md:divide-x md:divide-y-0">
+          {[...disciplines]
+            .sort((a, b) => Number(b.key === mode) - Number(a.key === mode))
+            .map((d) => {
+              const current = d.key === mode
+              return (
+                <article key={d.key} className={cn("p-6 md:p-8", current ? "md:col-span-3" : "md:col-span-2")}>
+                  <h3 className={cn("font-medium tracking-tight", current ? "text-2xl" : "text-lg text-muted-foreground")}>
+                    {d.title}
+                  </h3>
+                  <p className={cn("mt-4 text-muted-foreground", current ? "text-base" : "text-sm")}>{d.body}</p>
+                  <p className={cn("mt-6 font-mono text-xs", current ? "text-foreground" : "text-muted-foreground")}>
+                    {d.stack.join(" · ")}
+                  </p>
+                </article>
+              )
+            })}
+        </div>
+      </Reveal>
     </Section>
   )
 }

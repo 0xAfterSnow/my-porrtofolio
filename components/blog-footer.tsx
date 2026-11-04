@@ -18,7 +18,7 @@ export function BlogFooter() {
           <li>
             <Link
               href="/"
-              className={cn("rounded-md px-2 py-1 transition-colors duration-300 ease-soft hover:text-foreground", focusRing)}
+              className={cn("rounded-md px-2 py-1 transition-colors duration-150 ease-soft hover:text-foreground", focusRing)}
             >
               Portfolio
             </Link>
@@ -31,7 +31,7 @@ export function BlogFooter() {
                 rel="noopener noreferrer"
                 aria-label={label}
                 className={cn(
-                  "flex size-8 items-center justify-center rounded-md transition-colors duration-300 ease-soft hover:text-foreground",
+                  "flex size-8 items-center justify-center rounded-md transition-colors duration-150 ease-soft hover:text-foreground",
                   focusRing,
                 )}
               >

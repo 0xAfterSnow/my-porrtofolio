@@ -35,7 +35,7 @@ export function Tagline({ mode }: TaglineProps) {
   return (
     <section aria-label="What I care about" className="px-6 py-24">
       <div className="mx-auto max-w-6xl">
-        <p ref={ref} className="max-w-5xl text-4xl font-semibold tracking-tight md:text-5xl">
+        <p ref={ref} className="max-w-5xl text-4xl font-medium tracking-tight md:text-5xl">
           {lines[mode].map((line, i) => (
             <span key={i} className="md:block">
               {line.split(" ").map((word, j) => (

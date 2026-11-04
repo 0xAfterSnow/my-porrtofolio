@@ -72,7 +72,7 @@ export default async function BlogPage({ searchParams }: { searchParams: Promise
                         <header className="grid gap-4 md:grid-cols-12 md:gap-8">
                             <p className="text-sm font-medium text-muted-foreground md:col-span-3 md:pt-4">Blog</p>
                             <div className="md:col-span-9">
-                                <h1 className="text-hero max-w-[680px] pb-1 text-5xl font-semibold tracking-tighter md:text-6xl">
+                                <h1 className="max-w-[680px] pb-1 text-5xl font-medium tracking-tighter md:text-6xl">
                                     Notes from the backend and onchain
                                 </h1>
                                 <p className="mt-6 max-w-[560px] text-lg text-muted-foreground">
@@ -92,7 +92,7 @@ export default async function BlogPage({ searchParams }: { searchParams: Promise
                                     href={value === "all" ? "/blog" : `/blog?category=${value}`}
                                     aria-current={current ? "page" : undefined}
                                     className={cn(
-                                        "rounded-full px-3 py-2 text-sm font-semibold transition-colors duration-300 ease-soft",
+                                        "rounded-lg px-3 py-2 text-sm font-medium transition-colors duration-150 ease-soft",
                                         current
                                             ? "bg-foreground text-background"
                                             : "text-muted-foreground ring-1 ring-border hover:text-foreground hover:ring-foreground/30",
@@ -108,14 +108,14 @@ export default async function BlogPage({ searchParams }: { searchParams: Promise
                     {posts.length === 0 ? (
                         <Reveal>
                             <div className="mt-12 rounded-2xl bg-card p-8 ring-1 ring-border md:p-12">
-                                <h2 className="text-xl font-semibold">Nothing in this category yet</h2>
+                                <h2 className="text-xl font-medium">Nothing in this category yet</h2>
                                 <p className="mt-2 max-w-md text-muted-foreground">
                                     New posts land here first. In the meantime, the rest of the writing is one click away.
                                 </p>
                                 <Link
                                     href="/blog"
                                     className={cn(
-                                        "mt-6 inline-flex rounded-lg bg-foreground px-3 py-2 text-sm font-semibold text-background transition-[transform,background-color] duration-300 ease-soft hover:bg-foreground/85 active:scale-[0.98]",
+                                        "mt-6 inline-flex rounded-lg bg-foreground px-3 py-2 text-sm font-medium text-background transition-[transform,background-color] duration-150 ease-soft hover:bg-foreground/85 active:scale-[0.98]",
                                         focusRing,
                                     )}
                                 >

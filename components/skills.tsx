@@ -115,25 +115,23 @@ export function Skills({ mode }: SkillsProps) {
       title={mode === "backend" ? "The tools I reach for on the server" : "The tools I reach for onchain"}
       description={
         mode === "backend"
-          ? "Three I use every day, and the rest I bring in when a project calls for them."
-          : "Three I use on every contract, and the rest I bring in when a protocol calls for them."
+          ? "Three I use every day, and the rest I bring in when a project calls for them"
+          : "Three I use on every contract, and the rest I bring in when a protocol calls for them"
       }
     >
-      <ul className="grid gap-4 md:grid-cols-3">
-        {core.map((tool, i) => (
-          <li key={tool.name}>
-            <Reveal delay={i * 80} className="h-full">
-              <div className="group h-full rounded-2xl bg-card p-6 ring-1 ring-border transition-[transform,box-shadow] duration-500 ease-soft hover:-translate-y-1 hover:ring-foreground/40">
-                <span className="flex size-12 items-center justify-center rounded-xl bg-background text-foreground ring-1 ring-border">
-                  <Mark tool={tool} size={24} />
-                </span>
-                <h3 className="mt-8 text-lg font-semibold tracking-tight">{tool.name}</h3>
-                <p className="mt-1 text-sm text-muted-foreground">{tool.note}</p>
-              </div>
-            </Reveal>
-          </li>
-        ))}
-      </ul>
+      <Reveal>
+        <ul className="grid divide-y divide-border rounded-2xl bg-card ring-1 ring-border md:grid-cols-3 md:divide-x md:divide-y-0">
+          {core.map((tool) => (
+            <li key={tool.name} className="p-6">
+              <span className="flex size-12 items-center justify-center rounded-xl bg-background text-foreground ring-1 ring-border">
+                <Mark tool={tool} size={24} />
+              </span>
+              <h3 className="mt-8 text-lg font-medium tracking-tight">{tool.name}</h3>
+              <p className="mt-1 text-sm text-muted-foreground">{tool.note}</p>
+            </li>
+          ))}
+        </ul>
+      </Reveal>
 
       <div className="mt-12 divide-y divide-border border-y border-border">
         {groups.map((group) => (
@@ -144,7 +142,7 @@ export function Skills({ mode }: SkillsProps) {
                 {group.tools.map((tool) => (
                   <li
                     key={tool.name}
-                    className="inline-flex items-center gap-2 rounded-full bg-card px-3 py-2 text-sm font-medium text-foreground/90 ring-1 ring-border transition-colors duration-300 ease-soft hover:text-foreground hover:ring-foreground/30"
+                    className="inline-flex items-center gap-2 rounded-md bg-card px-3 py-2 text-sm font-medium text-foreground/90 ring-1 ring-border transition-colors duration-150 ease-soft hover:text-foreground hover:ring-foreground/30"
                   >
                     <Mark tool={tool} size={16} />
                     {tool.name}

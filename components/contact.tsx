@@ -2,31 +2,42 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
-import { ArrowUp01Icon, Mail01Icon } from "@hugeicons/core-free-icons"
+import { ArrowUp01Icon, ArrowUpRight01Icon, Copy01Icon, Mail01Icon, Tick02Icon } from "@hugeicons/core-free-icons"
 import { GitHubLogo, LinkedInLogo, XLogo } from "@/components/brand-logos"
 import { cn } from "@/lib/utils"
-import { GITHUB_USERNAME, type Contributions } from "@/lib/github"
+import { GITHUB_USERNAME } from "@/lib/github"
 import { Icon } from "@/components/icon"
-import { ContributionGraph } from "@/components/contribution-graph"
 import { ResumeModal } from "@/components/resume-modal"
 import { createBrowserSupabaseClient } from "@/lib/supabase/client"
-import { Reveal, buttonPrimary, buttonQuiet, focusRing } from "@/components/section"
+import { Reveal, buttonPrimary, buttonQuiet, focusRing, iconButton } from "@/components/section"
 
 const EMAIL = "snow@aftersnow.xyz"
 
 const footerLink = cn(
-  "inline-flex items-center gap-1 rounded-md px-2 py-1 transition-colors duration-300 ease-soft hover:text-foreground",
+  "inline-flex items-center gap-1 rounded-md px-2 py-1 transition-colors duration-150 ease-soft hover:text-foreground",
   focusRing,
 )
 
 interface ContactProps {
   mode?: "backend" | "web3"
-  contributions: Contributions | null
 }
 
-export function Contact({ mode, contributions }: ContactProps) {
+const handle = (url: string) => "@" + url.replace(/\/+$/, "").split("/").pop()
+
+export function Contact({ mode }: ContactProps) {
   const [showResume, setShowResume] = useState(false)
   const [settings, setSettings] = useState<any>(null)
+  const [copied, setCopied] = useState(false)
+
+  const copyEmail = async () => {
+    try {
+      await navigator.clipboard.writeText(EMAIL)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    } catch {
+      window.location.href = `mailto:${EMAIL}`
+    }
+  }
 
   useEffect(() => {
     async function fetchSettings() {
@@ -50,7 +61,7 @@ export function Contact({ mode, contributions }: ContactProps) {
           <div className="grid gap-12 rounded-2xl bg-card p-6 ring-1 ring-border md:p-12 lg:grid-cols-12 lg:gap-12 lg:p-16">
             <div className="flex flex-col lg:col-span-6">
               <p className="text-sm font-medium text-muted-foreground">Contact</p>
-              <h2 className="text-hero mt-4 max-w-[560px] pb-1 text-4xl font-semibold tracking-tighter md:text-5xl">
+              <h2 className="mt-4 max-w-[560px] pb-1 text-4xl font-medium tracking-tighter md:text-5xl">
                 Have something that needs building?
               </h2>
               <p className="mt-6 max-w-[480px] text-lg text-muted-foreground">
@@ -69,29 +80,52 @@ export function Contact({ mode, contributions }: ContactProps) {
               </div>
             </div>
 
-            <div className="min-w-0 self-end lg:col-span-6">
-              <div className="rounded-xl bg-background ring-1 ring-border">
-                <ContributionGraph data={contributions} username={GITHUB_USERNAME} />
-              </div>
-              <ul className="mt-3 flex items-center gap-2">
-                {socials.map(({ label, logo, href }) => (
-                  <li key={label}>
-                    <a
-                      href={href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label={label}
-                      className={cn(
-                        "flex size-9 items-center justify-center rounded-lg bg-background text-muted-foreground ring-1 ring-border transition-[transform,background-color,color] duration-300 ease-soft hover:bg-secondary hover:text-foreground active:scale-[0.98]",
-                        focusRing,
-                      )}
-                    >
-                      {logo}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
+            <ul className="min-w-0 self-end rounded-xl bg-background p-1 ring-1 ring-border lg:col-span-6">
+              <li className="flex items-center gap-4 rounded-lg p-4">
+                <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-secondary">
+                  <Icon icon={Mail01Icon} size={18} />
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block text-sm font-medium">Email</span>
+                  <span className="block truncate font-mono text-xs text-muted-foreground">{EMAIL}</span>
+                </span>
+                <button
+                  type="button"
+                  onClick={copyEmail}
+                  className={iconButton}
+                  aria-label={copied ? "Email address copied" : "Copy email address"}
+                >
+                  <Icon icon={copied ? Tick02Icon : Copy01Icon} size={18} />
+                </button>
+                <span role="status" className="sr-only">
+                  {copied ? "Email address copied" : ""}
+                </span>
+              </li>
+              {socials.map(({ label, logo, href }) => (
+                <li key={label}>
+                  <a
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={cn(
+                      "group flex items-center gap-4 rounded-lg p-4 transition-colors duration-150 ease-soft hover:bg-secondary",
+                      focusRing,
+                    )}
+                  >
+                    <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-secondary">{logo}</span>
+                    <span className="min-w-0 flex-1">
+                      <span className="block text-sm font-medium">{label}</span>
+                      <span className="block truncate font-mono text-xs text-muted-foreground">{handle(href)}</span>
+                    </span>
+                    <Icon
+                      icon={ArrowUpRight01Icon}
+                      size={18}
+                      className="mr-3 text-muted-foreground transition-colors duration-150 ease-soft group-hover:text-foreground"
+                    />
+                  </a>
+                </li>
+              ))}
+            </ul>
           </div>
         </Reveal>
       </section>

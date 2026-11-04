@@ -19,7 +19,7 @@ function ProjectCard({ project, featured }: { project: any; featured?: boolean }
   return (
     <article
       className={cn(
-        "group flex h-full flex-col gap-2 rounded-2xl bg-card p-2 ring-1 ring-border transition-shadow duration-300 ease-soft hover:ring-foreground/40",
+        "group flex h-full flex-col gap-2 rounded-2xl bg-card p-2 ring-1 ring-border transition-shadow duration-150 ease-soft hover:ring-foreground/40",
         featured && "md:grid md:grid-cols-5 md:gap-2",
       )}
     >
@@ -34,13 +34,13 @@ function ProjectCard({ project, featured }: { project: any; featured?: boolean }
           alt={`Screenshot of ${project.title}`}
           fill
           sizes={featured ? "(min-width: 768px) 60vw, 100vw" : "(min-width: 768px) 50vw, 100vw"}
-          className="object-cover transition-transform duration-500 ease-soft group-hover:scale-[1.03]"
+          className="object-cover"
         />
       </div>
 
       <div className={cn("flex flex-1 flex-col p-4", featured && "md:col-span-2 md:p-6")}>
         <div className="flex items-start justify-between gap-4">
-          <h3 className={cn("text-lg font-semibold tracking-tight", featured && "md:text-2xl")}>{project.title}</h3>
+          <h3 className={cn("text-lg font-medium tracking-tight", featured && "md:text-2xl")}>{project.title}</h3>
           <div className="-mt-2 -mr-2 flex shrink-0">
             {project.github && (
               <a
@@ -74,7 +74,7 @@ function ProjectCard({ project, featured }: { project: any; featured?: boolean }
         {project.impact && <p className="mt-4 text-sm font-medium">{project.impact}</p>}
 
         {project.tech?.length > 0 && (
-          <p className="mt-auto pt-6 text-xs text-muted-foreground">{project.tech.join(" · ")}</p>
+          <p className="mt-auto pt-6 font-mono text-xs text-muted-foreground">{project.tech.join(" · ")}</p>
         )}
       </div>
     </article>
@@ -96,7 +96,7 @@ export function Projects({ mode, projects }: ProjectsProps) {
       {filtered.length === 0 ? (
         <Reveal>
           <div className="rounded-2xl bg-card p-8 ring-1 ring-border md:p-12">
-            <h3 className="text-xl font-semibold">Write ups are on the way</h3>
+            <h3 className="text-xl font-medium">Write ups are on the way</h3>
             <p className="mt-2 max-w-md text-muted-foreground">
               I'm still documenting these projects. In the meantime, most of the code is public on GitHub.
             </p>
