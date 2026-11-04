@@ -10,12 +10,13 @@ import { getSiteSettings } from "@/lib/get-settings"
 import { cn } from "@/lib/utils"
 import { focusRing } from "@/lib/styles"
 import { Icon } from "@/components/icon"
-import { BlogContent } from "@/components/blog-content"
+import { BlogArticleBody } from "@/components/blog-article-body"
+import { PrevNextNav, type ArticleNeighbour } from "@/components/article-kit"
+import { renderArticle } from "@/lib/sanitize"
 import { BlogNavbar } from "@/components/blog-navbar"
 import { BlogFooter } from "@/components/blog-footer"
 import { AuthorCard } from "@/components/author-card"
 import { ReadingProgress } from "@/components/reading-progress"
-import { annotateCodeLanguages } from "@/lib/code-language"
 import { BlogPostCard, formatDate, labelFor, readingTime, type BlogPost } from "@/components/blog-post-card"
 
 type Props = {
@@ -89,8 +90,9 @@ export default async function BlogPostPage({ params }: Props) {
         ],
     }
 
-    const settings = await getSiteSettings()
+    const [settings, neighbours] = await Promise.all([getSiteSettings(), getNeighbours(post.slug)])
     const minutes = readingTime(post.content)
+    const article = renderArticle(post.content)
 
     return (
         <>
@@ -104,77 +106,85 @@ export default async function BlogPostPage({ params }: Props) {
 
             <main id="main" className="px-6 pt-36">
                 <article>
-                    <header className="mx-auto max-w-3xl">
-                        <Link
-                            href="/blog"
-                            className={cn(
-                                "-ml-2 inline-flex items-center gap-2 rounded-lg px-2 py-1 text-sm font-medium text-muted-foreground transition-colors duration-150 ease-soft hover:text-foreground",
-                                focusRing,
-                            )}
-                        >
-                            <Icon icon={ArrowLeft01Icon} size={16} />
-                            All posts
-                        </Link>
+                    <BlogArticleBody
+                        html={article.html}
+                        headings={article.headings}
+                        header={
+                            <header>
+                                <Link
+                                    href="/blog"
+                                    className={cn(
+                                        "-ml-2 inline-flex items-center gap-2 rounded-lg px-2 py-1 text-sm font-medium text-muted-foreground transition-colors duration-150 ease-soft hover:text-foreground",
+                                        focusRing,
+                                    )}
+                                >
+                                    <Icon icon={ArrowLeft01Icon} size={16} />
+                                    All posts
+                                </Link>
 
-                        <p className="mt-10 flex flex-wrap items-center gap-x-2 text-sm text-muted-foreground">
-                            <Link
-                                href={`/blog?category=${post.category}`}
-                                className={cn("rounded font-medium text-foreground hover:underline", focusRing)}
-                            >
-                                {labelFor(post.category)}
-                            </Link>
-                            <span aria-hidden>·</span>
-                            <time dateTime={post.created_at} className="font-mono text-xs tabular-nums">{formatDate(post.created_at, "long")}</time>
-                            <span aria-hidden>·</span>
-                            <span className="font-mono text-xs">{minutes} min read</span>
-                        </p>
+                                <p className="mt-10 flex flex-wrap items-center gap-x-2 text-sm text-muted-foreground">
+                                    <Link
+                                        href={`/blog?category=${post.category}`}
+                                        className={cn("rounded font-medium text-foreground hover:underline", focusRing)}
+                                    >
+                                        {labelFor(post.category)}
+                                    </Link>
+                                    <span aria-hidden>·</span>
+                                    <time dateTime={post.created_at} className="font-mono text-xs tabular-nums">
+                                        {formatDate(post.created_at, "long")}
+                                    </time>
+                                    <span aria-hidden>·</span>
+                                    <span className="font-mono text-xs">{minutes} min read</span>
+                                </p>
 
-                        <h1 className="mt-4 pb-1 text-4xl font-medium tracking-tighter md:text-6xl">
-                            {post.title}
-                        </h1>
+                                <h1 className="mt-4 pb-1 text-4xl font-medium tracking-tighter md:text-6xl">{post.title}</h1>
 
-                        {post.excerpt && <p className="mt-6 text-xl text-muted-foreground">{post.excerpt}</p>}
-                    </header>
+                                {post.excerpt && <p className="mt-6 text-xl text-muted-foreground">{post.excerpt}</p>}
 
-                    {post.cover_image && (
-                        <div className="mx-auto mt-12 max-w-5xl rounded-2xl bg-card p-2 ring-1 ring-border">
-                            <div className="relative aspect-[16/9] overflow-hidden rounded-lg">
-                                <Image
-                                    src={post.cover_image}
-                                    alt=""
-                                    fill
-                                    priority
-                                    className="object-cover"
-                                    sizes="(max-width: 1024px) 100vw, 1024px"
-                                />
-                            </div>
-                        </div>
-                    )}
-
-                    <div className="mx-auto mt-16 max-w-3xl">
-                        <BlogContent content={annotateCodeLanguages(post.content)} />
-
-                        {post.tags && post.tags.length > 0 && (
-                            <div className="mt-16 flex flex-wrap items-center gap-3">
-                                <p className="text-sm text-muted-foreground">Tagged</p>
-                                <ul className="flex flex-wrap gap-2">
-                                    {post.tags.map((tag: string) => (
-                                        <li
-                                            key={tag}
-                                            className="rounded-md px-2 py-1 text-sm font-medium ring-1 ring-border"
-                                        >
-                                            {tag}
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-                        )}
-                    </div>
+                                {post.cover_image && (
+                                    <div className="mt-12 rounded-2xl bg-card p-2 ring-1 ring-border">
+                                        <div className="relative aspect-[16/9] overflow-hidden rounded-lg">
+                                            <Image
+                                                src={post.cover_image}
+                                                alt=""
+                                                fill
+                                                priority
+                                                className="object-cover"
+                                                sizes="(max-width: 1024px) 100vw, 768px"
+                                            />
+                                        </div>
+                                    </div>
+                                )}
+                            </header>
+                        }
+                        after={
+                            post.tags && post.tags.length > 0 ? (
+                                <div className="mt-16 flex flex-wrap items-center gap-3">
+                                    <p className="text-sm text-muted-foreground">Tagged</p>
+                                    <ul className="flex flex-wrap gap-2">
+                                        {post.tags.map((tag: string) => (
+                                            <li key={tag} className="rounded-md px-2 py-1 text-sm font-medium ring-1 ring-border">
+                                                {tag}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            ) : null
+                        }
+                    />
                 </article>
 
                 <div className="mx-auto mt-20 max-w-3xl">
                     <AuthorCard settings={settings} />
                 </div>
+
+                <PrevNextNav
+                    prev={neighbours.prev}
+                    next={neighbours.next}
+                    basePath="/blog"
+                    noun="post"
+                    className="mx-auto mt-16 max-w-3xl"
+                />
 
                 <RelatedPosts currentPostId={post.id} category={post.category} />
             </main>
@@ -182,6 +192,20 @@ export default async function BlogPostPage({ params }: Props) {
             <BlogFooter />
         </>
     )
+}
+
+// Newest first, matching the blog index.
+async function getNeighbours(slug: string): Promise<{ prev: ArticleNeighbour; next: ArticleNeighbour }> {
+    const supabase = await createServerClient()
+    const { data } = await supabase
+        .from("blog_posts")
+        .select("slug, title")
+        .eq("published", true)
+        .order("created_at", { ascending: false })
+    const list = data ?? []
+    const i = list.findIndex((p) => p.slug === slug)
+    if (i === -1) return { prev: null, next: null }
+    return { prev: list[i - 1] ?? null, next: list[i + 1] ?? null }
 }
 
 async function RelatedPosts({ currentPostId, category }: { currentPostId: string; category: string }) {

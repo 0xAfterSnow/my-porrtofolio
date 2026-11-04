@@ -1,6 +1,7 @@
 import "server-only"
 import sanitizeHtml, { type IOptions } from "sanitize-html"
 import { annotateCodeLanguages } from "@/lib/code-language"
+import { slugify } from "@/lib/case-study"
 
 // Everything the rich text editor can produce, and nothing else.
 const baseOptions: IOptions = {
@@ -53,30 +54,14 @@ export function sanitizeRichText(html: string) {
   }).trim()
 }
 
-// Run on render. Each section already has an h2, so content headings shift down one
-// level to keep the outline semantic. Tables get a scroll wrapper and code blocks get
-// a wrapper that carries the language for the label and copy button.
-export function renderRichText(html: string) {
-  const clean = sanitizeHtml(html ?? "", {
-    ...baseOptions,
-    transformTags: {
-      h1: "h3",
-      h2: "h3",
-      h3: "h4",
-      h4: "h4",
-      b: "strong",
-      i: "em",
-      a: (tagName, attribs) => ({
-        tagName,
-        attribs: isExternal(attribs.href)
-          ? { ...attribs, target: "_blank", rel: "noopener noreferrer" }
-          : attribs,
-      }),
-    },
-  })
+const isExternalLink = (tagName: string, attribs: sanitizeHtml.Attributes) => ({
+  tagName,
+  attribs: isExternal(attribs.href) ? { ...attribs, target: "_blank", rel: "noopener noreferrer" } : attribs,
+})
 
-  // Safe to post-process with patterns: sanitize-html escapes every "<" in text, so
-  // these only ever match real tags.
+// Shared display transforms. Safe to post-process with patterns: sanitize-html escapes
+// every "<" in text, so these only ever match real tags.
+function decorate(clean: string) {
   return annotateCodeLanguages(clean)
     .replace(/<table\b/g, '<div class="table-scroll"><table')
     .replace(/<\/table>/g, "</table></div>")
@@ -84,4 +69,51 @@ export function renderRichText(html: string) {
       const lang = /class="[^"]*language-([\w+#-]+)/.exec(inner)?.[1] ?? ""
       return `<div class="code-block" data-language="${lang}"><pre${attrs}>${inner}</pre></div>`
     })
+}
+
+// Run on render. Each case study section already has an h2, so content headings shift
+// down one level to keep the outline semantic.
+export function renderRichText(html: string) {
+  return decorate(
+    sanitizeHtml(html ?? "", {
+      ...baseOptions,
+      transformTags: { h1: "h3", h2: "h3", h3: "h4", h4: "h4", b: "strong", i: "em", a: isExternalLink },
+    }),
+  )
+}
+
+export type ArticleHeading = { id: string; title: string; level: 2 | 3 }
+
+const decodeText = (html: string) =>
+  html
+    .replace(/<[^>]+>/g, "")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&amp;/g, "&")
+    .trim()
+
+// Run on render for blog posts: the page title is the only h1, so content keeps its h2/h3.
+// Headings get stable ids, returned for the table of contents.
+export function renderArticle(html: string): { html: string; headings: ArticleHeading[] } {
+  const clean = sanitizeHtml(html ?? "", {
+    ...baseOptions,
+    transformTags: { h1: "h2", h4: "h3", h5: "h3", h6: "h3", b: "strong", i: "em", a: isExternalLink },
+  })
+
+  const headings: ArticleHeading[] = []
+  const used = new Map<string, number>()
+  const withIds = clean.replace(/<(h[23])>([\s\S]*?)<\/\1>/g, (match, tag: string, inner: string) => {
+    const title = decodeText(inner)
+    if (!title) return match
+    const base = slugify(title) || "section"
+    const n = used.get(base) ?? 0
+    used.set(base, n + 1)
+    const id = n ? `${base}-${n + 1}` : base
+    headings.push({ id, title, level: tag === "h2" ? 2 : 3 })
+    return `<${tag} id="${id}">${inner}</${tag}>`
+  })
+
+  return { html: decorate(withIds), headings }
 }
