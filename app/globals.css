@@ -199,18 +199,26 @@
   border: 1px solid var(--border);
 }
 
-/* Scroll reveal: a short fade and 8px rise, once */
-.reveal {
+/* Scroll reveal: blocks below the screen wait, then fade and rise 8px once */
+.reveal-pending {
   opacity: 0;
   transform: translateY(8px);
-  transition:
-    opacity 400ms var(--ease-out-soft),
-    transform 400ms var(--ease-out-soft);
 }
 
-.reveal.is-visible {
-  opacity: 1;
-  transform: none;
+@keyframes reveal-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.reveal-in {
+  animation: reveal-in 300ms var(--ease-out-soft) both;
 }
 
 /* Tagline words fade from muted to full ink one at a time */
@@ -224,7 +232,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .reveal {
+  .reveal-pending {
     transform: none;
   }
 

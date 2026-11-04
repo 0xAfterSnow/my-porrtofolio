@@ -5,5 +5,6 @@ export async function middleware(request: any) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)"],
+  // Only the admin needs a session. Public pages skip the auth round trip entirely.
+  matcher: ["/admin/:path*"],
 }

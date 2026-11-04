@@ -11,23 +11,27 @@ interface RevealProps {
   delay?: number
 }
 
-// Rises 8px and fades in the first time it enters the viewport.
+// Content is visible as soon as the server sends it. After hydration, only blocks still
+// below the screen are hidden, and each fades in just before it scrolls into view.
 export function Reveal({ children, className, delay = 0 }: RevealProps) {
   const ref = useRef<HTMLDivElement>(null)
-  const [visible, setVisible] = useState(false)
+  const [state, setState] = useState<"shown" | "pending" | "revealed">("shown")
 
   useEffect(() => {
     const el = ref.current
     if (!el) return
+    if (el.getBoundingClientRect().top < window.innerHeight) return
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return
 
+    setState("pending")
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          setVisible(true)
+          setState("revealed")
           observer.disconnect()
         }
       },
-      { rootMargin: "0px 0px -10% 0px" },
+      { rootMargin: "0px 0px 15% 0px" },
     )
     observer.observe(el)
     return () => observer.disconnect()
@@ -36,8 +40,8 @@ export function Reveal({ children, className, delay = 0 }: RevealProps) {
   return (
     <div
       ref={ref}
-      className={cn("reveal", visible && "is-visible", className)}
-      style={delay ? { transitionDelay: `${delay}ms` } : undefined}
+      className={cn(state === "pending" && "reveal-pending", state === "revealed" && "reveal-in", className)}
+      style={state === "revealed" && delay ? { animationDelay: `${Math.min(delay, 120)}ms` } : undefined}
     >
       {children}
     </div>
