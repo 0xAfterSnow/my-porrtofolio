@@ -15,6 +15,7 @@ import { BlogNavbar } from "@/components/blog-navbar"
 import { BlogFooter } from "@/components/blog-footer"
 import { AuthorCard } from "@/components/author-card"
 import { ReadingProgress } from "@/components/reading-progress"
+import { annotateCodeLanguages } from "@/lib/code-language"
 import { BlogPostCard, formatDate, labelFor, readingTime, type BlogPost } from "@/components/blog-post-card"
 
 type Props = {
@@ -151,7 +152,7 @@ export default async function BlogPostPage({ params }: Props) {
                     )}
 
                     <div className="mx-auto mt-16 max-w-3xl">
-                        <BlogContent content={post.content} />
+                        <BlogContent content={annotateCodeLanguages(post.content)} />
 
                         {post.tags && post.tags.length > 0 && (
                             <div className="mt-16 flex flex-wrap items-center gap-3">

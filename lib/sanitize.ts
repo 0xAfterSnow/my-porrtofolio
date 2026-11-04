@@ -1,5 +1,6 @@
 import "server-only"
 import sanitizeHtml, { type IOptions } from "sanitize-html"
+import { annotateCodeLanguages } from "@/lib/code-language"
 
 // Everything the rich text editor can produce, and nothing else.
 const baseOptions: IOptions = {
@@ -76,7 +77,7 @@ export function renderRichText(html: string) {
 
   // Safe to post-process with patterns: sanitize-html escapes every "<" in text, so
   // these only ever match real tags.
-  return clean
+  return annotateCodeLanguages(clean)
     .replace(/<table\b/g, '<div class="table-scroll"><table')
     .replace(/<\/table>/g, "</table></div>")
     .replace(/<pre\b([^>]*)>([\s\S]*?)<\/pre>/g, (_, attrs: string, inner: string) => {
